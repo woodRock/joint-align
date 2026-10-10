@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Data (never commit; data/fish_oil is a symlink to the alignment repo)
+data/
+*.cdf
+*.mzML
+*.mzXML
+*.npz
+*.h5
+
+# Outputs
+checkpoints/
+*.pt
+results/
+logs/
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
