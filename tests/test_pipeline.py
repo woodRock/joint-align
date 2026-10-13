@@ -137,6 +137,7 @@ def test_script32_runs_on_script30_outputs(run30):
             'ticr30', 'coverage', 'benchmark'} <= site.keys()
     assert len(site['batches']) == 5 and len(site['cycle']) == 60 and len(site['lopo']) == 10
     assert site['meta']['n_anchors'] == len(np.load(res / 'anchors_all_pairs.npz')['ta'])
+    assert str(ROOT.parent) not in out.read_text() and '/Users/' not in site['meta']['gcmsalign']   # public
     shifts = [v for v in site['warps']['joint']['4-3'] if v is not None]
     assert len(shifts) > 150 and all(np.isfinite(shifts))                # clamped ends are null
 

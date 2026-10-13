@@ -40,6 +40,11 @@ def _s30():
     return mod
 
 
+def public_rev(rev: str) -> str:
+    """Provenance line without the local checkout path (the site is public)."""
+    return re.sub(r' from \S.*$', '', str(rev))
+
+
 def r(x, nd: int = 3):
     """Round arrays/floats for compact JSON (NaN → None)."""
     a = np.asarray(x, dtype=float)
@@ -81,7 +86,7 @@ def main(data: Path | None = None) -> None:
     site: dict = {
         'meta': {
             'generated': dt.datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'gcmsalign': str(z['gcmsalign']) if 'gcmsalign' in z.files else gcmsalign_revision(),
+            'gcmsalign': public_rev(z['gcmsalign'] if 'gcmsalign' in z.files else gcmsalign_revision()),
             'lam': lam, 'ref': ref, 'bin_min': BIN_MIN, 'n_bins': N_BINS,
             'eval_start_bin': EVAL_START_BIN, 'n_anchors': len(anc),
             'n_sample_pairs': int(sum(sizes[a] * sizes[b] for a, b in combinations(range(K), 2))),
@@ -200,7 +205,7 @@ def main(data: Path | None = None) -> None:
         methods = ['Unaligned', 'Pooled PCHIP', 'PCHIP + COW refine', 'COW-TIC', 'WarpTransformer',
                    'Joint', 'Neural joint']
         bench = {'methods': methods, 'protocols': ['B-frame', 'Midpoint'], 'pairs': [],
-                 'gcmsalign': str(zb['gcmsalign']) if 'gcmsalign' in zb.files else None}
+                 'gcmsalign': public_rev(zb['gcmsalign']) if 'gcmsalign' in zb.files else None}
         for A_, B_ in s30.PAIRS:
             row = {'a': idx[A_], 'b': idx[B_], 'mean': {}, 'per_a': {}}
             for proto in bench['protocols']:

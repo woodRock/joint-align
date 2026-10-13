@@ -75,7 +75,11 @@
       el.append(b); return b;
     });
   }
-  const lum = c => d3.lab(c).l;
+  // text colour for a filled cell: whichever of near-black / white has the higher WCAG contrast
+  const relLum = c => { const { r, g, b } = d3.rgb(c); const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+  const INK_L = relLum('#0b0b0b');
+  const inkOn = c => { const L = relLum(c); return (L + 0.05) / (INK_L + 0.05) >= 1.05 / (L + 0.05) ? '#0b0b0b' : '#ffffff'; };
 
   // ── Boot ──────────────────────────────────────────────────────────────────
   // data/site.js sets window.SITE_DATA (works from file://); fall back to fetching the JSON.
@@ -478,7 +482,7 @@
           if (asTable) { td.textContent = v == null ? '—' : fmt3(v); if (v === best) td.style.fontWeight = '700'; return; }
           td.className = 'cell' + (v === best ? ' best' : '');
           const d = document.createElement('div'); d.textContent = v == null ? '—' : fmt3(v);
-          if (v != null) { const c = color(v); d.style.background = c; d.style.color = lum(c) > 68 ? '#0b0b0b' : '#ffffff'; }
+          if (v != null) { const c = color(v); d.style.background = c; d.style.color = inkOn(c); }
           d.addEventListener('pointermove', evt => showTip(evt, pairLabel(p.a, p.b), [{ label: m, value: v == null ? 'n/a' : fmt3(v) }]));
           d.addEventListener('pointerleave', hideTip);
           td.append(d);
@@ -673,15 +677,15 @@
       heatmap('bench-heat', rows, B.methods, (p, m) => p.mean[`${m}|${proto}`] ?? null, benchTable, group);
       // group means as small multiples of horizontal bars
       const f = frame('bench-bars', 250, { top: 22, right: 20, bottom: 26, left: 130 });
-      const panelW = (f.w - 40) / 3;
+      const gap = 44, panelW = (f.w - 2 * gap) / 3;
       order.forEach((gname, gi) => {
         const gp = rows.filter(p => group(p) === gname);
         const vals = B.methods.map(m => ({ m, v: d3.mean(gp, p => p.mean[`${m}|${proto}`]) })).filter(d => d.v != null);
-        const g = f.g.append('g').attr('transform', `translate(${gi * (panelW + 20)},0)`);
+        const g = f.g.append('g').attr('transform', `translate(${gi * (panelW + gap)},0)`);
         const x = d3.scaleLinear().domain([Math.min(0, d3.min(vals, d => d.v)), 1]).range([0, panelW]);
         const y = d3.scaleBand().domain(B.methods).range([0, f.h]).padding(0.25);
         g.append('text').attr('class', 'direct-label').attr('y', -8).text(gname);
-        g.append('g').attr('class', 'axis').attr('transform', `translate(0,${f.h})`).call(d3.axisBottom(x).ticks(4));
+        g.append('g').attr('class', 'axis').attr('transform', `translate(0,${f.h})`).call(d3.axisBottom(x).ticks(4).tickSizeOuter(0));
         if (gi === 0) g.append('g').attr('class', 'axis').call(d3.axisLeft(y).tickSize(0)).call(s => s.select('.domain').remove());
         const best = d3.max(vals, d => d.v);
         g.selectAll('rect').data(vals).join('rect').attr('y', d => y(d.m)).attr('height', y.bandwidth()).attr('x', d => x(Math.min(0, d.v)))
