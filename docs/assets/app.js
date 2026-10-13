@@ -702,8 +702,10 @@
     drawBench(); renderers.push(drawBench);
   }).catch(err => {
     console.error(err);
-    document.querySelector('main').prepend(Object.assign(document.createElement('div'),
-      { className: 'pending', textContent: 'Could not load the page data (data/site.js). Regenerate it with python scripts/40_export_site_data.py.' }));
+    const msg = window.SITE_DATA
+      ? `A figure failed to render: ${err && err.message ? err.message : err}. The browser console has details.`
+      : 'The page data (docs/data/site.js) is missing. It is written by python scripts/40_export_site_data.py and must be committed with the site.';
+    document.querySelector('main').prepend(Object.assign(document.createElement('div'), { className: 'pending', textContent: msg }));
   });
 
   // ── Page chrome: theme, nav, reveal, progress, copy ─────────────────────

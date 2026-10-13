@@ -5,7 +5,8 @@ __pycache__/
 .venv/
 
 # Data (never commit; data/fish_oil is a symlink to the alignment repo)
-data/
+# Anchored to the repo root: docs/data/ is the project site's data and is tracked.
+/data/
 *.cdf
 *.mzML
 *.mzXML
