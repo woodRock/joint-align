@@ -44,9 +44,9 @@ from gcmsalign.warps import invert_src, pchip_warp, src_from_fn, warp_signal
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
-import multibatch as mb                                          # noqa: E402
-import neural_joint as nj                                        # noqa: E402
-from provenance import gcmsalign_revision                        # noqa: E402
+import multibatch as mb
+import neural_joint as nj
+from provenance import gcmsalign_revision
 
 DATA, RESULTS = Paths().fish_oil, ROOT / 'results'
 GRID = np.arange(N_BINS, dtype=float)
@@ -171,7 +171,8 @@ def main(neural_steps: int) -> None:
             native[(A_, B_, 'WarpTransformer')] = wz['r_native'].reshape(na, nb)
         mj = joint.map(b, a, GRID)
         maps['Joint'] = lambda i, j, mj=mj: mj
-        maps['Neural joint'] = lambda i, j: np.interp(np.interp(GRID, G[offs[b] + j], taus), taus, G[offs[a] + i])
+        maps['Neural joint'] = lambda i, j, a=a, b=b: np.interp(np.interp(GRID, G[offs[b] + j], taus),
+                                                                taus, G[offs[a] + i])
 
         for meth, f in maps.items():
             out = np.array([[score(TA[i], TB[j], f(i, j)) for j in range(nb)] for i in range(na)])

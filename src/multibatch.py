@@ -23,8 +23,7 @@ from itertools import combinations
 
 import numpy as np
 from gcmsalign.anchors import detect_peaks, fingerprint
-from gcmsalign.config import (BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS,
-                              SIM_THRESHOLD)
+from gcmsalign.config import BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS, SIM_THRESHOLD
 from scipy.interpolate import PchipInterpolator
 from scipy.linalg import solve_triangular
 from scipy.optimize import linear_sum_assignment, lsq_linear
@@ -118,10 +117,10 @@ class Anchors:
     def __len__(self) -> int:
         return len(self.ta)
 
-    def subset(self, mask: np.ndarray) -> 'Anchors':
+    def subset(self, mask: np.ndarray) -> Anchors:
         return Anchors(*(getattr(self, f)[mask] for f in ('ba', 'bb', 'sa', 'sb', 'ta', 'tb')))
 
-    def pair(self, a: int, b: int) -> 'Anchors':
+    def pair(self, a: int, b: int) -> Anchors:
         """Anchors between batches a and b, oriented so that ta is in a and tb is in b."""
         if a < b:
             return self.subset((self.ba == a) & (self.bb == b))
@@ -132,7 +131,7 @@ class Anchors:
 def harvest_anchors(chromas, tics=None) -> Anchors:
     """Run match_anchors on every cross-batch sample pair. chromas[k][i] is sample i of batch
     k; tics[k][i] its raw TIC for peak detection (default: the chromatogram sum)."""
-    cols = [[] for _ in range(6)]
+    cols: list[list[np.ndarray]] = [[] for _ in range(6)]
     tic = (lambda k, i: None) if tics is None else (lambda k, i: tics[k][i])
     for a, b in combinations(range(len(chromas)), 2):
         for i, ca in enumerate(chromas[a]):
@@ -278,16 +277,14 @@ def pchip_pairwise(anchors: Anchors, a: int, b: int):
     if len(pa) < 2:
         return lambda t: np.asarray(t, dtype=float)
     ra = np.round(pa.ta).astype(int)
-    xs, ys = [], []
-    for r in np.unique(ra):
-        xs.append(float(np.median(pa.ta[ra == r])))
-        ys.append(float(np.median(pa.tb[ra == r])))
+    groups = np.unique(ra)
+    mx = np.array([np.median(pa.ta[ra == r]) for r in groups])
+    my = np.array([np.median(pa.tb[ra == r]) for r in groups])
     mono = [0]
-    for i in range(1, len(xs)):
-        if ys[i] > ys[mono[-1]]:
+    for i in range(1, len(mx)):
+        if my[i] > my[mono[-1]]:
             mono.append(i)
-    xs = np.array(xs)[mono]
-    ys = np.array(ys)[mono]
+    xs, ys = mx[mono], my[mono]
     keep = (xs > 0) & (xs < N_BINS - 1) & (ys > 0) & (ys < N_BINS - 1)
     f = PchipInterpolator(np.concatenate([[0], xs[keep], [N_BINS - 1]]),
                           np.concatenate([[0], ys[keep], [N_BINS - 1]]))

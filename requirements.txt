@@ -1,0 +1,9 @@
+# gcmsalign, pinned to a pushed commit of github.com/woodRock/cow-dcnn (the alignment repo).
+# CI installs this. Locally, use the editable checkout instead so fixes apply immediately:
+#   pip install -e ~/Desktop/alignment
+# Bump the commit when this repo should follow a gcmsalign change.
+gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@5b75419af208579afd4da18a0bf7e7b602a028ed
+
+# test / tooling
+pytest>=8
+coverage>=7

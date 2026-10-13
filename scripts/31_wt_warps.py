@@ -24,7 +24,7 @@ from gcmsalign.steps.calibrate_pair import compute
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
-from provenance import gcmsalign_revision   # noqa: E402
+from provenance import gcmsalign_revision
 
 DATA = Paths().fish_oil
 PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),

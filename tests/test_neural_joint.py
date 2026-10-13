@@ -114,7 +114,7 @@ def test_model_starts_at_joint_backbone(sample_level):
 
 
 def test_model_reference_batch_is_fixed_and_warps_monotone():
-    m, tau, g0 = _model(ref=1)
+    m, _, g0 = _model(ref=1)
     with torch.no_grad():
         for p in m.parameters():
             p.normal_(0, 1.0)
@@ -148,7 +148,6 @@ def tiny_problem(library):
                for k, s in enumerate(shifts)]
     anc = mb.harvest_anchors(chromas)
     joint = mb.fit_joint(anc, 3, lam=10.0, gauge=0)
-    sizes = [2, 2, 2]
     batch_of = np.repeat(np.arange(3), 2)
     sidx = np.arange(6).reshape(3, 2)
     X = torch.tensor(np.stack([c for cs in chromas for c in cs]))
@@ -167,7 +166,7 @@ def _train(tiny_problem, steps=12, sample_level=True, **kw):
 
 
 def test_joint_fit_on_tiny_problem(tiny_problem):
-    *_, joint, _, _, _, shifts = tiny_problem
+    *_, joint, _, _, _, _ = tiny_problem
     t = np.linspace(30, 170, 20)
     np.testing.assert_allclose(joint.map(1, 2, t), t - 7.0, atol=0.5)
 
@@ -190,14 +189,14 @@ def test_train_runs_and_logs(tiny_problem):
 
 def test_train_keeps_good_backbone(tiny_problem):
     """Starting from an already correct joint fit, training must not wreck the anchor fit."""
-    model, out, _ = _train(tiny_problem, steps=30)
+    _, out, _ = _train(tiny_problem, steps=30)
     assert out['hist'][-1][1] < 1.5
 
 
 @pytest.mark.parametrize('kw', [dict(use_dense=False), dict(use_anchors=False),
                                 dict(sample_level=False)])
 def test_train_ablations(tiny_problem, kw):
-    model, out, _ = _train(tiny_problem, steps=4, **kw)
+    _, out, _ = _train(tiny_problem, steps=4, **kw)
     if kw.get('use_dense') is False:
         assert out['d0'] == 1.0 and all(h[2] == 0.0 for h in out['hist'])
     if kw.get('use_anchors') is False:

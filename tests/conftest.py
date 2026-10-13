@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
 
-from gcmsalign.config import Paths  # noqa: E402
+from gcmsalign.config import Paths
 
 DATA = Paths().fish_oil    # the fish oil data lives in the gcmsalign (alignment) repo
 RESULTS = ROOT / 'results'

@@ -11,7 +11,6 @@ from itertools import combinations
 
 import numpy as np
 import pytest
-
 from gcmsalign.data import load_batch
 
 import multibatch as mb
@@ -161,6 +160,7 @@ def test_cached_tic_r_matches_current_data(names, batches):
 def test_script31_calibrates_one_pair_with_gcmsalign(tmp_path, monkeypatch):
     """Script 31 runs gcmsalign's calibrate step with its default (v2) checkpoint."""
     from gcmsalign.config import Paths
+
     from conftest import load_script
     _need(Paths().default_ckpt)
     s31 = load_script('31_wt_warps.py')

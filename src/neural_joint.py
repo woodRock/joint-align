@@ -38,7 +38,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from multibatch import Anchors, JointWarp, N_BINS
+from multibatch import N_BINS, Anchors, JointWarp
 
 RHO = math.log(2.0)          # slope relative to the backbone stays in [0.5, 2]
 
@@ -68,7 +68,7 @@ def warp_rows(X: torch.Tensor, pos: torch.Tensor) -> torch.Tensor:
 def blur_rt(X: torch.Tensor, sigma: float) -> torch.Tensor:
     if sigma <= 0:
         return X
-    r = int(math.ceil(3 * sigma))
+    r = math.ceil(3 * sigma)
     k = torch.exp(-0.5 * (torch.arange(-r, r + 1, dtype=X.dtype, device=X.device) / sigma) ** 2)
     k = (k / k.sum()).view(1, 1, -1)
     N, T, M = X.shape
@@ -89,6 +89,14 @@ class _Field(nn.Module):
 
 
 class NeuralJointWarp(nn.Module):
+    # registered buffers (declared for type checkers)
+    tau: torch.Tensor
+    g0_start: torch.Tensor
+    g0_slope: torch.Tensor
+    batch_of: torch.Tensor
+    ff: torch.Tensor
+    free: torch.Tensor
+
     def __init__(self, tau: np.ndarray, g0: np.ndarray, batch_of: np.ndarray, ref: int,
                  sample_level: bool = True, d_emb: int = 8, hidden: int = 64, n_freq: int = 8):
         super().__init__()
@@ -99,10 +107,10 @@ class NeuralJointWarp(nn.Module):
         self.register_buffer('g0_slope', torch.tensor(np.diff(g0, axis=1), dtype=torch.float32)
                              .clamp_min(1e-3))
         self.register_buffer('batch_of', torch.tensor(batch_of, dtype=torch.long))
-        tau = torch.arange(T - 1, dtype=torch.float32) + 0.5
+        mid = torch.arange(T - 1, dtype=torch.float32) + 0.5         # slope intervals
         freqs = 2.0 ** torch.arange(n_freq) * math.pi / T
-        ff = torch.cat([torch.sin(tau[:, None] * freqs), torch.cos(tau[:, None] * freqs),
-                        (tau / T)[:, None]], dim=1)
+        ff = torch.cat([torch.sin(mid[:, None] * freqs), torch.cos(mid[:, None] * freqs),
+                        (mid / T)[:, None]], dim=1)
         self.register_buffer('ff', ff)                                     # (T−1, 2F+1)
         self.batch_emb  = nn.Parameter(0.1 * torch.randn(K, d_emb))
         self.batch_off  = nn.Parameter(torch.zeros(K))
@@ -115,7 +123,7 @@ class NeuralJointWarp(nn.Module):
         self.sample_field = _Field(ff.shape[1] + 2 * d_emb, hidden)
 
     def residuals(self) -> tuple[torch.Tensor, torch.Tensor]:
-        T1, F_ = self.ff.shape
+        T1 = self.ff.shape[0]
         e = self.batch_emb[:, None, :].expand(-1, T1, -1)
         s_b = self.batch_field(torch.cat([self.ff.expand(self.K, -1, -1), e], -1)) * self.free[:, None]
         if not self.sample_level:

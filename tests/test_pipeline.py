@@ -7,7 +7,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from conftest import load_script, make_chroma, make_library, T
+from conftest import T, load_script, make_chroma, make_library
 
 pytestmark = pytest.mark.slow
 

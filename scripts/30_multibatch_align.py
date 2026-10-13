@@ -45,8 +45,8 @@ from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
-import multibatch as mb                                                # noqa: E402
-from provenance import gcmsalign_revision                              # noqa: E402
+import multibatch as mb
+from provenance import gcmsalign_revision
 
 DATA    = Paths().fish_oil
 RESULTS = ROOT / 'results'
@@ -258,7 +258,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
                 float(np.median(R[p][x].mean(1) - R[p][y].mean(1)))) for p in tested]
         adj = holm([q for _, q, _ in res])
         say(f'   {x} vs {y}:')
-        for (p, q, md), qa in zip(res, adj):
+        for (p, _, md), qa in zip(res, adj):
             say(f'     {short(p[0]) + "×" + short(p[1]):<18} Holm p={qa:.2e}  median Δr {md:+.4f}')
 
     # ── 3. Held-out anchor error ─────────────────────────────────────────────
@@ -454,7 +454,7 @@ def plot(names, anc, joint, pairwise, band, lopo_width, idx) -> None:
         ax.set_title(f'{short(A_)} → {short(B_)}  (n={len(p)})', color=INK, fontsize=9)
         ax.grid(axis='y', color='#e6e5e0', lw=0.6)
     for ax in axes[1]:
-        ax.set_xlabel(f'RT in batch A (min)')
+        ax.set_xlabel('RT in batch A (min)')
     for ax in axes[:, 0]:
         ax.set_ylabel('RT shift A → B (min)')
     h, l = axes.flat[0].get_legend_handles_labels()

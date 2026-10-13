@@ -1,9 +1,0 @@
-[run]
-source = src, scripts
-omit = scripts/__pycache__/*
-
-[report]
-exclude_also =
-    if __name__ == .__main__.:
-show_missing = true
-skip_covered = false
