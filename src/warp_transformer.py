@@ -65,9 +65,11 @@ def apply_warp(chromas: Tensor, warps: Tensor) -> Tensor:
     returns : [N, T, M]
     """
     N, T, M = chromas.shape
-    idx_lo  = warps.floor().long().clamp(0, T - 2)          # [N, T]
-    idx_hi  = (idx_lo + 1).clamp(0, T - 1)
-    alpha   = (warps - warps.floor()).unsqueeze(-1)          # [N, T, 1]  gradient flows here
+    warps   = warps.clamp(0, T - 1)
+    idx_lo  = warps.detach().floor().long().clamp(0, T - 2)  # [N, T]
+    idx_hi  = idx_lo + 1
+    # alpha relative to the clamped index, so warps == T−1 gives alpha = 1 (bin T−1), not bin T−2
+    alpha   = (warps - idx_lo).unsqueeze(-1)                 # [N, T, 1]  gradient flows here
     n_idx   = torch.arange(N, device=chromas.device).unsqueeze(1)
     lo      = chromas[n_idx, idx_lo, :]                     # [N, T, M]
     hi      = chromas[n_idx, idx_hi, :]

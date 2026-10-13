@@ -17,7 +17,9 @@ from encoder import DilatedSpectrumEncoder, ChromaSpectrumEncoder, PeakSequenceT
 N_BINS    = 200
 RUN_MIN   = 45.0
 BIN_MIN   = RUN_MIN / N_BINS
-TIME_AXIS = np.linspace(0, RUN_MIN, N_BINS)
+# Bin i starts at i · BIN_MIN minutes. (linspace(0, RUN_MIN, N_BINS) has step RUN_MIN/(N_BINS−1),
+# which disagreed with every minutes → bins conversion t / BIN_MIN by up to one bin.)
+TIME_AXIS = np.arange(N_BINS) * BIN_MIN
 
 MAX_DRIFT_MIN    = 20.0
 SIM_THRESHOLD    = 0.30

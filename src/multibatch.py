@@ -56,7 +56,7 @@ def match_anchors(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     positions (t_a, t_b). Matching follows alignment.align_pair: TIC peaks, context
     fingerprints, Hungarian assignment under a drift limit, adaptive cosine threshold,
     ±REFINE_BINS search in b. Adds parabolic sub-bin refinement on both sides and works in
-    bin units, so it avoids align_pair's TIME_AXIS/BIN_MIN mismatch.
+    bin units throughout.
     """
     empty = np.empty((0, 2))
     pa, pb = detect_peaks(a), detect_peaks(b)

@@ -91,6 +91,8 @@ Data and checkpoints are not tracked. `data/fish_oil` is a local symlink to
 - **Uncertainty.** Use ensembles over seeds and anchor subsets, MC dropout, or a probabilistic warp head.
 - **Transitive consistency.** Check that the A↔B and B↔C warps compose to the A↔C warp.
 - **Model choice.** In the cow-dcnn mechanism ablation, batch-shared warps matched per-sample warps,
-  and pooled PCHIP (+ COW) beat the warp transformer by a wide margin.
+  so a batch-level model is enough (TIC r 0.611–0.663 for both; Holm p ≥ 0.13). The warp
+  transformer beat pooled-anchor PCHIP (0.611–0.663 vs 0.476–0.517). Against PCHIP + COW
+  refinement the result was mixed: COW did better on two pairs and the WT on one.
 - **Testbed.** Four fish oil batches is a thin testbed, and batch is confounded with species and tissue.
   A dataset with more batches and repeated QC samples is needed.

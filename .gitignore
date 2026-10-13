@@ -24,3 +24,7 @@ logs/
 
 # OS
 .DS_Store
+
+# Test artefacts
+.coverage
+.pytest_cache/
