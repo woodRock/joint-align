@@ -5,7 +5,7 @@ Reads the outputs of scripts 30–32 and the data, refits the few small models t
 (pairwise fits, leave-one-pair-out fits, the λ sweep) and writes docs/data/site.json. Nothing
 on the site is hand-entered: rerun this after rerunning the experiments.
 
-Output: docs/data/site.json
+Output: docs/data/site.json and docs/data/site.js (the same data, loadable from file://)
 """
 from __future__ import annotations
 
@@ -62,8 +62,10 @@ def shift(m: np.ndarray) -> np.ndarray:
     return out
 
 
-def main() -> None:
+def main(data: Path | None = None) -> None:
     s30 = _s30()
+    if data is not None:
+        s30.DATA = data
     z = np.load(RESULTS / 'multibatch_align.npz')
     names = [str(n) for n in z['names']]
     K = len(names)
@@ -211,11 +213,20 @@ def main() -> None:
         site['benchmark'] = bench
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(site, separators=(',', ':')))
-    print(f'{OUT.relative_to(ROOT)}: {OUT.stat().st_size / 1e6:.2f} MB '
+    payload = json.dumps(site, separators=(',', ':'))
+    OUT.write_text(payload)
+    # The same data as a script, so docs/index.html also works opened straight from disk (file://),
+    # where browsers block fetch() of local JSON.
+    OUT.with_suffix('.js').write_text(f'window.SITE_DATA = {payload};\n')
+    print(f'{OUT}: {OUT.stat().st_size / 1e6:.2f} MB '
           f'(benchmark {"included" if "benchmark" in site else "not yet available"})')
 
 
 if __name__ == '__main__':
-    argparse.ArgumentParser(description=__doc__).parse_args()
-    main()
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--data', type=Path, default=None, help="batch_* folders (default: script 30's default)")
+    ap.add_argument('--results', type=Path, default=RESULTS, help='outputs of scripts 30–32 (default: results/)')
+    ap.add_argument('--out', type=Path, default=OUT, help='JSON to write (default: docs/data/site.json)')
+    a = ap.parse_args()
+    RESULTS, OUT = a.results, a.out
+    main(a.data)

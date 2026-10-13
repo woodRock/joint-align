@@ -1,36 +1,28 @@
 """
-End-to-end smoke tests: scripts 30, 31 and 32 on five small synthetic batches with known
-shifts, written to a temporary directory. Marked slow (about a minute together).
+End-to-end runs of scripts 30, 31 and 32 on the public synthetic dataset (src/synthetic.py),
+whose true drifts are known. Marked slow (well under a minute together).
 """
 from __future__ import annotations
+
+import json
+import subprocess
+import sys
 
 import numpy as np
 import pytest
 
-from conftest import T, load_script, make_chroma, make_library
+import synthetic as syn
+from conftest import ROOT, T, load_script
 
 pytestmark = pytest.mark.slow
 
-# batch → (n samples, shift in bins); same names as the fish oil batches
-BATCHES = {'batch_aug2015': (2, 5.0), 'batch_sep2015': (6, 0.0), 'batch_jan2016': (6, 1.0),
-           'batch_apr2016': (4, -6.0), 'batch_jul2016': (3, -7.0)}
-PEAKS = np.array([22.0, 31.0, 40.0, 47.0, 55.0, 63.0, 71.0, 84.0, 90.0, 99.0, 108.0, 114.0, 121.0,
-                  133.0, 141.0, 150.0, 163.0, 170.0, 177.0])
+BATCHES = {b.name: b for b in syn.DEFAULT_BATCHES}
 
 
 @pytest.fixture(scope='module')
 def workspace(tmp_path_factory):
     root = tmp_path_factory.mktemp('ws')
-    lib = make_library(len(PEAKS), 80, seed=7)
-    rng = np.random.default_rng(7)
-    for k, (name, (n, shift)) in enumerate(BATCHES.items()):
-        d = root / 'data' / name / 'chroma'
-        d.mkdir(parents=True)
-        for i in range(n):
-            jitter = rng.normal(0, 0.3, len(PEAKS))
-            x = make_chroma(lib, PEAKS + shift + jitter, heights=rng.uniform(0.5, 1.5, len(PEAKS)),
-                            seed=100 * k + i)
-            np.savez(d / f'{i:02d}.npz', chroma=x, tic_raw=x.sum(1))   # gcmsalign layout
+    syn.make_dataset(root / 'data', seed=0)
     (root / 'results').mkdir()
     (root / 'figs').mkdir()
     return root
@@ -70,26 +62,42 @@ def test_script30_outputs(run30):
 
 def test_script30_joint_aligns_synthetic_batches(run30):
     z = np.load(run30 / 'results' / 'multibatch_align.npz')
-    # sep2015 → jul2016 is shifted by 7 bins: joint warp must fix it, unaligned must not
     unal = z['ticr_sep2015_jul2016_Unaligned'].mean()
     joint = z['ticr_sep2015_jul2016_Joint'].mean()
     cf = z['ticr_sep2015_jul2016_Joint_CF'].mean()
-    # random peak heights cap between-sample TIC r near 0.85 even when perfectly aligned
-    assert unal < 0.5 and joint > 0.75 and cf > 0.75
-    # recovered drifts match the simulated shifts (reference gauge)
-    names = list(z['names'])
-    ref = int(z['ref'])
-    inner = (z['knots'] > 30) & (z['knots'] < 170)
-    for k, n in enumerate(names):
-        expected = BATCHES[names[ref]][1] - BATCHES[n][1]              # f_k(t) = t + d_k
-        np.testing.assert_allclose(np.median(z['drift'][k][inner]), expected, atol=0.6)
+    assert unal < 0.2 and joint > 0.7 and cf > 0.7
+
+
+def test_script30_recovers_true_drifts(run30):
+    """The joint warps between every pair of batches match the generator's true drifts."""
+    import multibatch as mb
+    z = np.load(run30 / 'results' / 'multibatch_align.npz')
+    names = [str(n) for n in z['names']]
+    model = mb.JointWarp(z['knots'], z['drift'], np.full((5, 5), np.nan), np.ones(1))
+    truth = json.loads((run30 / 'data' / 'truth.json').read_text())
+    t = np.linspace(8.0, 40.0, 40)                                   # minutes, inside every run
+    # judge recovery where compounds exist in both batches; beyond the last compound the warp is
+    # an extrapolation (a documented limitation), and the map saturates at the run ends
+    tau = np.asarray(truth['compound_tau_min'])
+    span = {n: tau + BATCHES[n].drift(tau) for n in names}
+    for a in range(5):
+        for b in range(5):
+            if a == b:
+                continue
+            est = model.map(a, b, t / syn.BIN_MIN) * syn.BIN_MIN
+            true = syn.true_map(truth, names[a], names[b], t)
+            inside = ((t >= span[names[a]].min()) & (t <= span[names[a]].max())
+                      & (true >= span[names[b]].min()) & (true <= span[names[b]].max()))
+            assert inside.sum() > 20
+            np.testing.assert_allclose(est[inside], true[inside], atol=0.15,
+                                       err_msg=f'{names[a]} → {names[b]}')
 
 
 def test_script32_runs_on_script30_outputs(run30):
     s32 = load_script('32_fair_benchmark.py')
     res = run30 / 'results'
     # a cached WarpTransformer result for one pair (identity warps) exercises that branch
-    na, nb = BATCHES['batch_sep2015'][0], BATCHES['batch_jul2016'][0]
+    na, nb = BATCHES['batch_sep2015'].n, BATCHES['batch_jul2016'].n
     (res / 'wt_warps').mkdir()
     np.savez(res / 'wt_warps' / 'batch_sep2015__batch_jul2016.npz',
              warps=np.tile(np.arange(T, dtype=float), (na + nb, 1)), r_native=np.zeros(na * nb))
@@ -109,9 +117,28 @@ def test_script32_runs_on_script30_outputs(run30):
     z = np.load(res / 'fair_benchmark.npz')
     j = z['sep2015_jul2016|Joint|B-frame']
     u = z['sep2015_jul2016|Unaligned|B-frame']
-    assert j.shape == (na, nb) and j.mean() > 0.75 and u.mean() < 0.5
+    assert j.shape == (na, nb) and j.mean() > 0.7 and u.mean() < 0.2
     np.testing.assert_allclose(z['sep2015_jul2016|WarpTransformer|B-frame'], u, atol=1e-6)
     assert 'aug2015_apr2016|WarpTransformer|B-frame' not in z.files
+
+    # the website export runs on these outputs too (script 40)
+    s40 = load_script('40_export_site_data.py')
+    out = run30 / 'site' / 'site.json'
+    mp = pytest.MonkeyPatch()
+    mp.setattr(s40, 'RESULTS', res)
+    mp.setattr(s40, 'OUT', out)
+    try:
+        s40.main(run30 / 'data')
+    finally:
+        mp.undo()
+    site = json.loads(out.read_text())
+    assert out.with_suffix('.js').read_text().startswith('window.SITE_DATA = {')
+    assert {'meta', 'batches', 'tic', 'warps', 'cycle', 'anchors', 'band', 'lopo', 'lambda_sweep',
+            'ticr30', 'coverage', 'benchmark'} <= site.keys()
+    assert len(site['batches']) == 5 and len(site['cycle']) == 60 and len(site['lopo']) == 10
+    assert site['meta']['n_anchors'] == len(np.load(res / 'anchors_all_pairs.npz')['ta'])
+    shifts = [v for v in site['warps']['joint']['4-3'] if v is not None]
+    assert len(shifts) > 150 and all(np.isfinite(shifts))                # clamped ends are null
 
 
 def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
@@ -123,3 +150,15 @@ def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(s31, 'ROOT', tmp_path)
     s31.main(seed=0, device='cpu')
     assert capsys.readouterr().out.count('cached') == len(s31.PAIRS)
+
+
+def test_demo_commands_from_the_docs(tmp_path):
+    """The synthetic demo exactly as documented: script 00, then 30 with --data/--results/--figs."""
+    run = lambda *args: subprocess.run([sys.executable, *args], cwd=ROOT, check=True,
+                                       capture_output=True, text=True, timeout=600)
+    data, res, figs = tmp_path / 'data', tmp_path / 'results', tmp_path / 'figs'
+    run('scripts/00_make_synthetic_data.py', '--out', str(data))
+    assert (data / 'truth.json').exists() and len(list(data.glob('batch_*/chroma/*.npz'))) == 31
+    run('scripts/30_multibatch_align.py', '--data', str(data), '--results', str(res), '--figs', str(figs),
+        '--n-boot', '2', '--n-boot-cv', '2')
+    assert f'Data: {data}' in (res / 'multibatch_align.txt').read_text()

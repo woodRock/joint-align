@@ -41,6 +41,7 @@ ignore = [
     "RUF002",
     "RUF003",
     "RUF005",   # list concatenation
+    "SIM300",   # comparisons against UPPER_CASE arrays (TIME_AXIS < x) are not Yoda conditions
 ]
 
 [tool.ruff.lint.isort]

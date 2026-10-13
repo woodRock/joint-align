@@ -30,7 +30,7 @@
       <a href="#uncertainty">Uncertainty</a>
       <a href="#benchmark">Benchmark</a>
       <a href="#limits">Caveats</a>
-      <a href="#reproduce">Reproduce</a>
+      <a href="#reproduce">Try it</a>
     </div>
     <button class="icon-btn" id="theme-btn" aria-label="Toggle colour theme" title="Toggle theme">
       <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-9.54-4.54A5.4 5.4 0 0 1 13.36 3.1C12.92 3.04 12.46 3 12 3Z"/></svg>
@@ -352,24 +352,44 @@
 <!-- 10 ─────────────────────────────────────────────────────────────────── -->
 <section class="chapter" id="reproduce">
   <div class="chapter-head reveal">
-    <div class="num">10 — REPRODUCE</div>
-    <h2>Run it yourself</h2>
-    <p class="intro">Shared code, data loading, baselines and the WarpTransformer come from the
-      <a href="https://github.com/woodRock/cow-dcnn">gcmsalign</a> package; this repository adds the joint model.</p>
+    <div class="num">10 — TRY IT</div>
+    <h2>Run it on synthetic data with a known answer</h2>
+    <p class="intro">The fish oil chromatograms are private, so the repository ships a generator for a public
+      stand-in: five batches with the same names and design, drifts shaped like the real ones (two batches eluting
+      2.5–5 min early, growing along the run), staggered acquisition starts and column bleed. The true drift of
+      every batch is saved next to the data, so you can check that the joint model recovers it.</p>
   </div>
-  <div class="card reveal relative">
-    <button class="icon-btn copy" id="copy-btn">Copy</button>
-<pre class="code" id="code"><span class="c"># one source of truth for shared code</span>
-git clone https://github.com/woodRock/cow-dcnn alignment &amp;&amp; pip install -e alignment
+  <div class="grid-2">
+    <div class="card reveal relative">
+      <button class="icon-btn copy" id="copy-btn">Copy</button>
+<pre class="code" id="code"><span class="c"># shared code: the gcmsalign package</span>
+pip install "gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git"
 git clone https://github.com/woodRock/many-batch-align &amp;&amp; cd many-batch-align
-make check                                   <span class="c"># ruff, mypy, tests</span>
 
-python scripts/30_multibatch_align.py        <span class="c"># joint model, ~4 min</span>
-python scripts/31_wt_warps.py                <span class="c"># WarpTransformer warps, ~45 min</span>
-python scripts/32_fair_benchmark.py          <span class="c"># every method, same protocols</span>
-python scripts/40_export_site_data.py        <span class="c"># regenerate this page's data</span></pre>
-    <p class="sub" style="margin:10px 0 0">Data on this page: <span class="mono" data-bind="gcmsalign"></span>, exported <span data-bind="generated"></span>.</p>
+<span class="c"># 31 chromatograms, 5 batches, true drifts in truth.json</span>
+python scripts/00_make_synthetic_data.py
+<span class="c"># joint model on it, ~1.5 min</span>
+python scripts/30_multibatch_align.py --data data/synthetic \
+    --results results/synthetic --figs figs/synthetic
+<span class="c"># every method, same protocols, ~1 min</span>
+python scripts/32_fair_benchmark.py --data data/synthetic \
+    --results results/synthetic --neural-steps 300</pre>
+    </div>
+    <div class="card reveal">
+      <h3>What to expect</h3>
+      <p class="sub">On the synthetic batches the joint warps land within about 0.1 min of the true drift wherever
+        compounds exist in both batches (checked in <span class="mono">tests/test_pipeline.py</span>). Beyond the last
+        compound of a batch the warp is an extrapolation.</p>
+      <div class="kpis" style="grid-template-columns:1fr 1fr">
+        <div class="kpi"><div class="v">~2.5 min</div><div class="k">whole demo on a laptop CPU</div></div>
+        <div class="kpi"><div class="v">≤ 0.15 min</div><div class="k">error vs the true drift, tested</div></div>
+      </div>
+      <p class="sub" style="margin-top:12px">The WarpTransformer baseline needs gcmsalign's pretrained checkpoint, so
+        the demo benchmark leaves that column empty. <span class="mono">make check</span> runs the linters and the
+        test suite, which includes this demo.</p>
+    </div>
   </div>
+  <p class="sub reveal" style="margin-top:14px">Figures on this page: fish oil data, <span class="mono" data-bind="gcmsalign"></span>, exported <span data-bind="generated"></span>.</p>
 </section>
 </main>
 
@@ -382,6 +402,7 @@ python scripts/40_export_site_data.py        <span class="c"># regenerate this p
 
 <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="data/site.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

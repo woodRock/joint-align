@@ -472,6 +472,12 @@ if __name__ == '__main__':
     ap.add_argument('--n-boot', type=int, default=200)
     ap.add_argument('--n-boot-cv', type=int, default=50)
     ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--data', type=Path, default=DATA,
+                    help='batch_* folders in gcmsalign layout (default: the fish oil data; '
+                         'scripts/00_make_synthetic_data.py writes a public synthetic stand-in)')
+    ap.add_argument('--results', type=Path, default=RESULTS, help='output folder (default: results/)')
+    ap.add_argument('--figs', type=Path, default=FIGS, help='figure folder (default: figs/)')
     a = ap.parse_args()
-    RESULTS.mkdir(exist_ok=True)
+    DATA, RESULTS, FIGS = a.data, a.results, a.figs
+    RESULTS.mkdir(parents=True, exist_ok=True)
     main(a.n_boot, a.n_boot_cv, a.seed)

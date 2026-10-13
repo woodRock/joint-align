@@ -34,6 +34,21 @@ Every result file records the gcmsalign version, commit and whether its `src/` w
 frozen environment, pin a commit instead:
 `gcmsalign @ git+ssh://git@github.com/woodRock/cow-dcnn.git@<sha>`.
 
+## Try it without the private data
+
+The fish oil data is private. `scripts/00_make_synthetic_data.py` writes a public stand-in with
+the same five batch names and design, realistic drifts and the true drifts in `truth.json`
+(`src/synthetic.py`). The whole pipeline runs on it in about 2.5 minutes:
+
+```
+python scripts/00_make_synthetic_data.py
+python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
+python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
+```
+
+`tests/test_pipeline.py` runs the same demo and checks that the joint warps recover the true
+drifts to within 0.15 min wherever compounds exist in both batches.
+
 ## Project site
 
 `docs/` is an interactive website explaining the project, with every chart drawn from the real
@@ -46,6 +61,7 @@ results (`docs/data/site.json`, written by `scripts/40_export_site_data.py`). Pr
   joint fit, pairwise baselines)
 - `src/neural_joint.py`: neural refinement of the joint model
 - `src/provenance.py`: the gcmsalign revision line written into results
+- `src/synthetic.py`, `scripts/00_make_synthetic_data.py`: public synthetic data with known drifts
 - `scripts/30_multibatch_align.py`: the full fish oil evaluation of the joint model
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols

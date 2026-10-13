@@ -78,7 +78,9 @@
   const lum = c => d3.lab(c).l;
 
   // ── Boot ──────────────────────────────────────────────────────────────────
-  fetch('data/site.json').then(r => r.json()).then(D => {
+  // data/site.js sets window.SITE_DATA (works from file://); fall back to fetching the JSON.
+  const load = window.SITE_DATA ? Promise.resolve(window.SITE_DATA) : fetch('data/site.json').then(r => r.json());
+  load.then(D => {
     const K = D.batches.length, T = D.meta.n_bins, BIN = D.meta.bin_min, REF = D.meta.ref;
     const names = D.batches.map(b => b.name);
     const tMin = d3.range(T).map(i => i * BIN);
@@ -701,7 +703,7 @@
   }).catch(err => {
     console.error(err);
     document.querySelector('main').prepend(Object.assign(document.createElement('div'),
-      { className: 'pending', textContent: 'Could not load data/site.json. Serve this folder over HTTP (e.g. python -m http.server) rather than opening the file directly.' }));
+      { className: 'pending', textContent: 'Could not load the page data (data/site.js). Regenerate it with python scripts/40_export_site_data.py.' }));
   });
 
   // ── Page chrome: theme, nav, reveal, progress, copy ─────────────────────

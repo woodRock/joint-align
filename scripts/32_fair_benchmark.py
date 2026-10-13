@@ -237,4 +237,9 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--neural-steps', type=int, default=1500)
-    main(ap.parse_args().neural_steps)
+    ap.add_argument('--data', type=Path, default=DATA, help='batch_* folders (default: the fish oil data)')
+    ap.add_argument('--results', type=Path, default=RESULTS,
+                    help="script 30's output folder, also written to (default: results/)")
+    a = ap.parse_args()
+    DATA, RESULTS = a.data, a.results
+    main(a.neural_steps)
