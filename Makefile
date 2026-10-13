@@ -1,5 +1,5 @@
 # Local equivalents of the CI jobs. `make check` runs all three.
-.PHONY: check lint types test test-fast
+.PHONY: check lint types test test-fast site
 
 check: lint types test
 
@@ -14,3 +14,8 @@ test:
 
 test-fast:
 	python3.11 -m pytest -m "not slow"
+
+site:
+	python3.11 scripts/40_export_site_data.py
+	@echo "Serving docs/ at http://localhost:8000"
+	cd docs && python3.11 -m http.server 8000

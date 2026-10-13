@@ -34,6 +34,12 @@ Every result file records the gcmsalign version, commit and whether its `src/` w
 frozen environment, pin a commit instead:
 `gcmsalign @ git+ssh://git@github.com/woodRock/cow-dcnn.git@<sha>`.
 
+## Project site
+
+`docs/` is an interactive website explaining the project, with every chart drawn from the real
+results (`docs/data/site.json`, written by `scripts/40_export_site_data.py`). Preview it with
+`make site`; publish it with GitHub Pages (Settings → Pages → Deploy from branch → `main`, `/docs`).
+
 ## Layout
 
 - `src/multibatch.py`: joint K-batch alignment (sub-bin anchor harvesting on every sample pair,
@@ -43,6 +49,7 @@ frozen environment, pin a commit instead:
 - `scripts/30_multibatch_align.py`: the full fish oil evaluation of the joint model
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
+- `scripts/40_export_site_data.py`: exports the data behind the project site in `docs/`
 - `tests/`: unit, synthetic end-to-end and real-data integrity tests
 
 ## Method: joint monotone batch warps (`src/multibatch.py`)

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Many-Batch Alignment</title>
+<meta name="description" content="Aligning GC-MS retention times across many batches at once: one monotone warp per batch into a shared clock, fitted to every spectral anchor jointly.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24 C8 24 9 6 12 6 S15 24 18 24 21 12 23 12 26 24 30 24' fill='none' stroke='%232a78d6' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+  // Apply a saved theme before first paint (no flash).
+  try { const t = localStorage.getItem('mba-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 24 C8 24 9 6 12 6 S15 24 18 24 21 12 23 12 26 24 30 24" fill="none" stroke="var(--s1)" stroke-width="3" stroke-linecap="round"/></svg>
+      many-batch-align
+    </a>
+    <div class="nav-links">
+      <a href="#problem">Drift</a>
+      <a href="#cycle">Pairwise</a>
+      <a href="#method">Method</a>
+      <a href="#anchors">Anchors</a>
+      <a href="#results">Results</a>
+      <a href="#missing">Missing pairs</a>
+      <a href="#uncertainty">Uncertainty</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#limits">Caveats</a>
+      <a href="#reproduce">Reproduce</a>
+    </div>
+    <button class="icon-btn" id="theme-btn" aria-label="Toggle colour theme" title="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-9.54-4.54A5.4 5.4 0 0 1 13.36 3.1C12.92 3.04 12.46 3 12 3Z"/></svg>
+    </button>
+    <a class="icon-btn" href="https://github.com/woodRock/many-batch-align" aria-label="GitHub repository">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.34.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+    </a>
+  </div>
+  <div class="progress" id="progress"></div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <div class="reveal">
+      <div class="eyebrow">GC-MS retention-time alignment</div>
+      <h1>Five batches. <span class="grad">One shared clock.</span></h1>
+      <p class="lede">Gas chromatography runs drift: the same compound leaves the column minutes earlier or
+        later depending on when the batch was measured. Instead of aligning batches two at a time, this project
+        fits <strong>one monotone warp per batch into a shared retention-time frame</strong>, using
+        <span data-bind="n_anchors"></span> spectral anchors from every cross-batch sample pair at once.</p>
+      <div class="cta">
+        <a class="btn primary" href="#problem">See how it works ↓</a>
+        <a class="btn" href="#results">Jump to the results</a>
+      </div>
+    </div>
+    <figure class="hero-figure reveal" style="margin:0">
+      <div class="fig-head">
+        <span class="state-label" id="hero-state"><span class="state-dot"></span><span>Unaligned: each batch on its own clock</span></span>
+        <div class="seg" role="group" aria-label="Hero animation">
+          <button id="hero-play" aria-pressed="true">Auto-play</button>
+          <button id="hero-raw" aria-pressed="false">Unaligned</button>
+          <button id="hero-al" aria-pressed="false">Aligned</button>
+        </div>
+      </div>
+      <div class="chart" id="hero-chart" aria-label="Total ion chromatograms of five batches, morphing between their own retention times and the shared frame"></div>
+      <figcaption class="legend" id="hero-legend"></figcaption>
+    </figure>
+  </div>
+  <div class="stats">
+    <div class="stat reveal"><div class="v" data-count="n_samples">0</div><div class="k">chromatograms in <span data-bind="n_batches"></span> batches</div></div>
+    <div class="stat reveal"><div class="v" data-count="n_sample_pairs">0</div><div class="k">cross-batch sample pairs matched</div></div>
+    <div class="stat reveal"><div class="v" data-count="n_anchors">0</div><div class="k">spectral anchors, fitted jointly</div></div>
+    <div class="stat reveal"><div class="v"><span data-bind="cycle_joint"></span><small>min</small></div><div class="k">cycle error, vs <span data-bind="cycle_pairwise"></span> min pairwise</div></div>
+  </div>
+</header>
+
+<main>
+<!-- 01 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="problem">
+  <div class="chapter-head reveal">
+    <div class="num">01 — THE PROBLEM</div>
+    <h2>The same compound, a different minute in every batch</h2>
+    <p class="intro">Fish oil extracts from five acquisition batches (Aug 2015 to Jul 2016). Within a batch the runs
+      agree; between batches whole chromatograms are shifted by up to several minutes, and not by a constant. Hover
+      to read every batch at the same retention time; switch to see them in the shared frame.</p>
+  </div>
+  <div class="card reveal">
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Frame">
+        <button data-frame="raw" aria-pressed="true">Each batch's own clock</button>
+        <button data-frame="aligned" aria-pressed="false">Shared frame (joint warps)</button>
+      </div>
+      <label class="inline"><input type="checkbox" id="ridge-overlay"> Overlay batches</label>
+    </div>
+    <div class="chart" id="ridge-chart"></div>
+    <div class="legend" id="ridge-legend"></div>
+  </div>
+  <p class="prose reveal" style="margin-top:18px">Each row is a batch; each line one sample's normalised total ion
+    chromatogram (TIC). Shaded on the left: the first ≈ <span data-bind="eval_start_min"></span> minutes, before every
+    run had started acquiring, which is excluded from every score on this page.</p>
+</section>
+
+<!-- 02 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="cycle">
+  <div class="chapter-head reveal">
+    <div class="num">02 — WHY NOT PAIRWISE?</div>
+    <h2>Pairwise warps disagree with each other</h2>
+    <p class="intro">Align batches two at a time and you get ten separate warps that need not agree: going A → B → C
+      can land somewhere different from going A → C directly. Pick a route through the batches below.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card reveal">
+      <h3>Route <span id="cyc-route"></span></h3>
+      <p class="sub">Retention-time shift along the route. Pairwise: the composed path (dashed) vs the direct warp (solid). Joint: both are the same curve.</p>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Model">
+          <button data-cyc="pairwise" aria-pressed="true">Pairwise warps</button>
+          <button data-cyc="joint" aria-pressed="false">Joint warps</button>
+        </div>
+      </div>
+      <div class="chart" id="cyc-chart"></div>
+      <div class="legend" id="cyc-legend"></div>
+    </div>
+    <div class="stack">
+      <div class="card reveal">
+        <h3>Choose a route</h3>
+        <p class="sub">Click three batches in order. Line width is the number of direct anchors between two batches.</p>
+        <div class="chart" id="cyc-graph"></div>
+      </div>
+      <div class="card reveal">
+        <h3>All 60 routes</h3>
+        <p class="sub">Mean disagreement over 5–40 min, sorted. Hover a bar; click to show that route.</p>
+        <div class="chart" id="cyc-bars"></div>
+        <div class="legend" id="cyc-bars-legend"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="method">
+  <div class="chapter-head reveal">
+    <div class="num">03 — THE METHOD</div>
+    <h2>One warp per batch, into one shared clock</h2>
+    <p class="intro">Every batch k gets a single monotone map f<sub>k</sub>(t) = t + d<sub>k</sub>(t) into a latent
+      retention-time axis. A warp between any two batches is f<sub>l</sub><sup>−1</sup> ∘ f<sub>k</sub>, so all
+      the pairwise warps are consistent by construction, and a pair with few anchors borrows strength from the others.</p>
+  </div>
+  <div class="steps reveal">
+    <div class="step">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="12" cy="14" r="5" fill="var(--s1)"/><circle cx="32" cy="30" r="5" fill="var(--s2)"/><path d="M16 17 L28 27" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 3"/></svg>
+      <h4>Harvest anchors</h4><p>Peaks on the raw TIC are matched by mass spectrum between <em>every</em> cross-batch sample pair, with sub-bin refinement: <span data-bind="n_anchors"></span> anchors.</p>
+    </div>
+    <div class="step">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M4 36 C14 34 18 12 40 8" fill="none" stroke="var(--s1)" stroke-width="3" stroke-linecap="round"/><g fill="var(--muted)"><circle cx="8" cy="40" r="1.6"/><circle cx="16" cy="40" r="1.6"/><circle cx="24" cy="40" r="1.6"/><circle cx="32" cy="40" r="1.6"/><circle cx="40" cy="40" r="1.6"/></g></svg>
+      <h4>One warp per batch</h4><p>Drift d<sub>k</sub> is piecewise linear on 41 knots; slopes are bounded to 0.5–2, so every warp is strictly monotone.</p>
+    </div>
+    <div class="step">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><rect x="6" y="8" width="32" height="28" rx="6" fill="none" stroke="var(--s3)" stroke-width="2.5"/><path d="M12 28 L19 20 L25 25 L33 14" fill="none" stroke="var(--s3)" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <h4>Fit them jointly</h4><p>One bounded least-squares problem over all anchors, with Huber then Tukey reweighting so mismatched compounds are rejected.</p>
+    </div>
+    <div class="step">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M6 30 Q22 2 38 30" fill="none" stroke="var(--s2)" stroke-width="2.5"/><path d="M6 30 Q22 14 38 30" fill="none" stroke="var(--s1)" stroke-width="2.5"/></svg>
+      <h4>Choose smoothness honestly</h4><p>λ is picked by held-out anchor error on whole retention-time windows. TIC correlation is never used to tune anything.</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:22px">
+    <div class="card reveal">
+      <h3>Drift of every batch into the shared clock</h3>
+      <p class="sub">d<sub>k</sub>(t) = f<sub>k</sub>(t) − t for the selected smoothness λ. The reference batch (<span data-bind="ref_name"></span>) is fixed at zero.</p>
+      <div class="controls" style="gap:14px">
+        <span class="mono" style="min-width:110px">λ = <b id="lam-val"></b></span>
+        <input type="range" id="lam-slider" min="0" max="8" step="1" aria-label="Smoothness lambda">
+      </div>
+      <div class="chart" id="drift-chart"></div>
+      <div class="legend" id="drift-legend"></div>
+    </div>
+    <div class="card reveal">
+      <h3>Picking λ without peeking</h3>
+      <p class="sub">Median held-out anchor error (RT-blocked cross-validation). The minimum is the selected λ; the marker follows the slider.</p>
+      <div class="chart" id="cv-chart"></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="lam-cv"></div><div class="k">held-out error (min)</div></div>
+        <div class="kpi"><div class="v" id="lam-dr"></div><div class="k">TIC r, drifted pairs</div></div>
+        <div class="kpi"><div class="v" id="lam-na"></div><div class="k">TIC r, near-aligned</div></div>
+      </div>
+      <p class="sub" style="margin-top:10px">TIC r shown for information only: it played no part in choosing λ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="anchors">
+  <div class="chapter-head reveal">
+    <div class="num">04 — THE EVIDENCE</div>
+    <h2>Thousands of anchors, a few of them wrong</h2>
+    <p class="intro">Each point is one compound matched between a sample of batch A and a sample of batch B: where
+      it eluted in A, and how far it moved. The joint fit follows the dense consensus and gives zero weight to
+      mismatches. Choose a batch pair.</p>
+  </div>
+  <div class="card reveal">
+    <div class="controls" id="anc-pairs"></div>
+    <div class="controls">
+      <label class="inline"><input type="checkbox" id="anc-pw" checked> Pairwise fit</label>
+      <label class="inline"><input type="checkbox" id="anc-band" checked> 90 % bootstrap band</label>
+    </div>
+    <div class="chart" id="anc-chart"></div>
+    <div class="legend" id="anc-legend"></div>
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="anc-n"></div><div class="k">anchors for this pair</div></div>
+      <div class="kpi"><div class="v" id="anc-rej"></div><div class="k">rejected by the robust fit</div></div>
+      <div class="kpi"><div class="v" id="anc-shift"></div><div class="k">median shift (min)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="results">
+  <div class="chapter-head reveal">
+    <div class="num">05 — RESULTS</div>
+    <h2>Better alignment where batches drift, no harm where they don't</h2>
+    <p class="intro">Mean Pearson correlation between batch-A and batch-B chromatograms after warping A into B's
+      frame (common acquisition window), for every batch pair and method. Drifted pairs are those with unaligned
+      r &lt; 0.5.</p>
+  </div>
+  <div class="stats" style="margin:0 0 18px">
+    <div class="stat reveal"><div class="v" id="res-joint-dr"></div><div class="k">Joint, drifted pairs (mean TIC r)</div></div>
+    <div class="stat reveal"><div class="v" id="res-best-other"></div><div class="k" id="res-best-other-k">best other method, drifted</div></div>
+    <div class="stat reveal"><div class="v" id="res-joint-na"></div><div class="k">Joint, near-aligned pairs</div></div>
+    <div class="stat reveal"><div class="v" id="res-unal-na"></div><div class="k">Unaligned, near-aligned pairs</div></div>
+  </div>
+  <div class="card reveal">
+    <div class="controls" style="justify-content:space-between">
+      <h3 style="margin:0">TIC r by batch pair and method</h3>
+      <button class="chip" id="heat-table-btn" aria-pressed="false">Show as table</button>
+    </div>
+    <div class="tablewrap" id="heat"></div>
+    <p class="sub" style="margin-top:8px">Darker = higher correlation. Outlined: best on that pair. "CF" = cross-fitted: each A sample warped by a model that never saw it.</p>
+  </div>
+  <div class="card reveal" style="margin-top:18px">
+    <h3>Sample by sample</h3>
+    <p class="sub">Every batch-A sample's mean r against batch B, for two methods. Lines join the same sample.</p>
+    <div class="controls">
+      <label class="inline">Compare <select id="cmp-a"></select></label>
+      <label class="inline">with <select id="cmp-b"></select></label>
+    </div>
+    <div class="chart" id="cmp-chart"></div>
+    <div class="legend" id="cmp-legend"></div>
+  </div>
+</section>
+
+<!-- 06 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="missing">
+  <div class="chapter-head reveal">
+    <div class="num">06 — MISSING CORRESPONDENCES</div>
+    <h2>Delete a pair's anchors. The warp mostly survives.</h2>
+    <p class="intro">Because every batch lives on the shared clock, the warp between A and B is pinned down by the
+      paths through the other batches. Remove every direct A–B anchor, refit, and compare: for most pairs the
+      correlation hardly changes; the right-hand panel shows where it does.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card reveal">
+      <div class="controls" id="lopo-pairs"></div>
+      <div class="controls">
+        <button class="chip" id="lopo-toggle" aria-pressed="false">✂ Remove direct anchors</button>
+      </div>
+      <div class="chart" id="lopo-chart"></div>
+      <div class="legend" id="lopo-legend"></div>
+    </div>
+    <div class="card reveal">
+      <h3>What changed</h3>
+      <p class="sub">Joint fit with all anchors vs refitted without this pair's anchors.</p>
+      <div class="kpis" style="grid-template-columns:1fr 1fr">
+        <div class="kpi"><div class="v" id="lopo-r-j"></div><div class="k">TIC r, all anchors</div></div>
+        <div class="kpi"><div class="v" id="lopo-r-l"></div><div class="k">TIC r, pair's anchors removed</div></div>
+        <div class="kpi"><div class="v" id="lopo-e-j"></div><div class="k">anchor error (min), all</div></div>
+        <div class="kpi"><div class="v" id="lopo-e-l"></div><div class="k">anchor error (min), removed</div></div>
+      </div>
+      <div class="chart" id="lopo-all" style="margin-top:14px"></div>
+      <p class="sub">TIC r on all ten pairs: with (●) and without (○) the pair's own anchors.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 07 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="uncertainty">
+  <div class="chapter-head reveal">
+    <div class="num">07 — UNCERTAINTY</div>
+    <h2>Confident bands, honestly calibrated</h2>
+    <p class="intro">Resampling samples within each batch and refitting 200 times gives a band around every warp.
+      Those bands are narrow, and the predictive intervals built from them cover fewer held-out anchors than they
+      should, so they need calibration before anyone relies on them.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card reveal">
+      <h3>Band width along the run</h3>
+      <p class="sub">Width of the 90 % bootstrap band for each batch pair (minutes). Hover for values.</p>
+      <div class="chart" id="band-chart"></div>
+      <div class="legend" id="band-legend"></div>
+    </div>
+    <div class="card reveal">
+      <h3>Held-out coverage</h3>
+      <p class="sub">Share of held-out anchors inside their 90 % interval.</p>
+      <div class="chart" id="cov-chart"></div>
+      <div class="callout">Warp-only bands capture estimation noise, not the scatter of individual anchors; even with
+        that scatter added, coverage falls short of 90 %. A conformal rescaling is the obvious next step.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="benchmark">
+  <div class="chapter-head reveal">
+    <div class="num">08 — FAIR BENCHMARK</div>
+    <h2>Every method, the same yardstick</h2>
+    <p class="intro">Published numbers mix protocols: some methods warp only A, some resample both batches, some fit
+      a separate warp for every sample pair. Here each method is reduced to the map it estimates (RT in B → RT in A)
+      and scored two ways: in B's frame, and in the frame halfway between the batches.</p>
+  </div>
+  <div class="card reveal" id="bench-card">
+    <div class="controls" style="justify-content:space-between">
+      <div class="seg" role="group" aria-label="Protocol">
+        <button data-proto="B-frame" aria-pressed="true">B-frame</button>
+        <button data-proto="Midpoint" aria-pressed="false">Midpoint</button>
+      </div>
+      <button class="chip" id="bench-table-btn" aria-pressed="false">Show as table</button>
+    </div>
+    <div class="tablewrap" id="bench-heat"></div>
+    <div class="chart" id="bench-bars" style="margin-top:16px"></div>
+    <p class="sub" id="bench-note"></p>
+  </div>
+</section>
+
+<!-- 09 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="limits">
+  <div class="chapter-head reveal">
+    <div class="num">09 — CAVEATS</div>
+    <h2>What these results do and don't show</h2>
+  </div>
+  <div class="limits">
+    <div class="limit reveal"><h4>Five batches, one study</h4><p>Batch is confounded with species and tissue, and aug2015 has two samples. A dataset with more batches and repeated QC samples is needed.</p></div>
+    <div class="limit reveal"><h4>TIC r is a proxy</h4><p>Correlation of total ion chromatograms rewards overlapping peaks, not correct compound identities. Held-out anchor error is reported alongside it.</p></div>
+    <div class="limit reveal"><h4>Under-covering intervals</h4><p>Bootstrap bands of a regularised fit miss its bias. Predictive coverage is <span data-bind="coverage_pct"></span> against a 90 % target.</p></div>
+    <div class="limit reveal"><h4>End-of-run anchors</h4><p>Late, bleed-like peaks with similar spectra produce conflicting anchors; the robust fit rejects them, so the last minutes rest on extrapolation.</p></div>
+  </div>
+</section>
+
+<!-- 10 ─────────────────────────────────────────────────────────────────── -->
+<section class="chapter" id="reproduce">
+  <div class="chapter-head reveal">
+    <div class="num">10 — REPRODUCE</div>
+    <h2>Run it yourself</h2>
+    <p class="intro">Shared code, data loading, baselines and the WarpTransformer come from the
+      <a href="https://github.com/woodRock/cow-dcnn">gcmsalign</a> package; this repository adds the joint model.</p>
+  </div>
+  <div class="card reveal relative">
+    <button class="icon-btn copy" id="copy-btn">Copy</button>
+<pre class="code" id="code"><span class="c"># one source of truth for shared code</span>
+git clone https://github.com/woodRock/cow-dcnn alignment &amp;&amp; pip install -e alignment
+git clone https://github.com/woodRock/many-batch-align &amp;&amp; cd many-batch-align
+make check                                   <span class="c"># ruff, mypy, tests</span>
+
+python scripts/30_multibatch_align.py        <span class="c"># joint model, ~4 min</span>
+python scripts/31_wt_warps.py                <span class="c"># WarpTransformer warps, ~45 min</span>
+python scripts/32_fair_benchmark.py          <span class="c"># every method, same protocols</span>
+python scripts/40_export_site_data.py        <span class="c"># regenerate this page's data</span></pre>
+    <p class="sub" style="margin:10px 0 0">Data on this page: <span class="mono" data-bind="gcmsalign"></span>, exported <span data-bind="generated"></span>.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span>many-batch-align · Jesse Wood</span>
+    <span><a href="https://github.com/woodRock/many-batch-align">GitHub</a> · <a href="https://github.com/woodRock/cow-dcnn">gcmsalign</a></span>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
