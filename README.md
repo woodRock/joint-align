@@ -4,19 +4,37 @@ Retention time alignment of GC-MS chromatograms across many (K > 2) batches,
 with a shared latent RT frame and calibrated uncertainty.
 
 Follow-up to the pairwise Test-Time Calibrated Warp Transformer
-([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn)). The core code was copied
-from cow-dcnn at commit `c7baa82` and is expected to diverge; bug fixes are ported by hand.
+([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn), now the `gcmsalign` package in
+`~/Desktop/alignment`).
+
+## Dependency: gcmsalign
+
+Everything shared with the pairwise project comes from `gcmsalign`, not from a copy: the
+data loader and the fish oil data (`gcmsalign.config.Paths().fish_oil`), peak detection and
+fingerprints, the pooled-anchor extraction, PCHIP/COW baselines, warping, the WarpTransformer
+and its calibration, and the metrics (TIC r on the common acquisition window, bins ≥ 22). A fix
+in gcmsalign applies here immediately.
+
+```
+pip install -e ~/Desktop/alignment        # editable: one source of truth
+python -m pytest                          # ~40 s; -m "not slow" skips the end-to-end runs
+```
+
+Every result file records the gcmsalign version, commit and whether its `src/` was dirty
+(`src/provenance.py`). Commit gcmsalign before a run whose results you intend to keep. For a
+frozen environment, pin a commit instead:
+`gcmsalign @ git+ssh://git@github.com/woodRock/cow-dcnn.git@<sha>`.
 
 ## Layout
 
-- `src/warp_transformer.py`: `ChromaWarpTransformer` and the warp smoothness loss
-- `src/alignment.py`, `src/encoder.py`: chromatogram loading, spectral anchor extraction, warping
-- `scripts/preprocess_fish_oil_batches.py`: raw fish oil CSVs → `data/fish_oil/`
-- `scripts/13_train_warp_transformer.py`: synthetic pretraining
-- `scripts/16_align_testtime_calib.py`: pairwise test-time calibration (anchor extraction lives here)
-- `scripts/24_pchip_pooled_anchors.py`: pooled-anchor PCHIP baseline
-- `src/multibatch.py`: joint K-batch alignment (anchor harvesting, joint fit, pairwise baselines)
-- `scripts/30_multibatch_align.py`: the full fish oil evaluation
+- `src/multibatch.py`: joint K-batch alignment (sub-bin anchor harvesting on every sample pair,
+  joint fit, pairwise baselines)
+- `src/neural_joint.py`: neural refinement of the joint model
+- `src/provenance.py`: the gcmsalign revision line written into results
+- `scripts/30_multibatch_align.py`: the full fish oil evaluation of the joint model
+- `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
+- `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
+- `tests/`: unit, synthetic end-to-end and real-data integrity tests
 
 ## Method: joint monotone batch warps (`src/multibatch.py`)
 
@@ -38,6 +56,8 @@ Uncertainty comes from a bootstrap over samples within each batch. The 90 % pred
 intervals combine the bootstrap band with each batch pair's robust anchor scatter.
 
 ## Results on fish oil (`scripts/30_multibatch_align.py` → `results/multibatch_align.txt`)
+
+> **Stale.** These numbers predate the 2026-10-11 re-preprocessing of the data and the move to gcmsalign (common-window TIC r, gcmsalign anchors, WarpTransformer v2). Re-run scripts 30–32 after clearing `results/` caches; `tests/test_real_data.py` checks the results match the data.
 
 Mean TIC r between batches. A is warped into B's frame. "Drifted" means unaligned TIC r < 0.5;
 there are 5 drifted pairs and 5 near-aligned pairs.
@@ -81,8 +101,10 @@ there are 5 drifted pairs and 5 near-aligned pairs.
 
 ## Data
 
-Data and checkpoints are not tracked. `data/fish_oil` is a local symlink to
-`../alignment/data/fish_oil`, and `checkpoints/warp_transformer.pt` is copied from cow-dcnn.
+Data and checkpoints are not tracked here. The scripts read the fish oil data and the
+WarpTransformer checkpoint (`warp_transformer_v2.pt`) from the gcmsalign repo through
+`gcmsalign.config.Paths()`. The old `data/fish_oil` symlink and the v1
+`checkpoints/warp_transformer.pt` are no longer used.
 
 ## Open design questions
 

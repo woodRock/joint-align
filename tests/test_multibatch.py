@@ -71,6 +71,28 @@ def test_match_anchors_recovers_shift(library, shift):
     np.testing.assert_allclose(anc[:, 1] - anc[:, 0], shift, atol=0.5)
 
 
+def test_match_anchors_detects_peaks_on_raw_tic(library):
+    """With a raw TIC given, peaks come from it, not from the (normalised) chromatogram."""
+    p = library_positions(len(library))
+    a = make_chroma(library, p, seed=1)
+    b = make_chroma(library, p + 3, seed=2)
+    keep = slice(0, 6)                                   # raw TIC shows only six compounds
+    tic_a = make_chroma(library[keep], p[keep], noise=0.0).sum(1)
+    tic_b = make_chroma(library[keep], p[keep] + 3, noise=0.0).sum(1)
+    anc = mb.match_anchors(a, b, tic_a, tic_b)
+    assert 2 <= len(anc) <= 6
+    assert anc[:, 0].max() < p[6]
+    assert len(mb.match_anchors(a, b)) > 6
+
+
+def test_harvest_anchors_passes_raw_tics(warped_batches):
+    chromas, _ = warped_batches
+    small = [c[:1] for c in chromas]
+    tics = [[c.sum(1) for c in cs] for cs in small]
+    a, b = mb.harvest_anchors(small), mb.harvest_anchors(small, tics)
+    np.testing.assert_allclose(a.ta, b.ta)
+
+
 def test_match_anchors_strictly_monotone(library):
     p = library_positions(len(library))
     a = make_chroma(library, p, seed=1)
@@ -94,7 +116,7 @@ def test_match_anchors_respects_drift_limit(library):
     p = library_positions(len(library))
     anc = mb.match_anchors(make_chroma(library, p), make_chroma(library, p[::-1].copy(), seed=4))
     if len(anc):
-        assert np.all(np.abs(anc[:, 1] - anc[:, 0]) <= mb.MAX_DRIFT_BINS + mb.REFINE_BINS + 1)
+        assert np.all(np.abs(anc[:, 1] - anc[:, 0]) <= mb.MAX_DRIFT_BINS + mb.REFINE_RADIUS + 1)
 
 
 def test_match_anchors_empty_inputs():
@@ -372,16 +394,3 @@ def test_pchip_pairwise_pinned_ends_and_monotone():
     y = f(GRID)
     assert y[0] == pytest.approx(0.0) and y[-1] == pytest.approx(T - 1)
     assert np.all(np.diff(y) > 0)
-
-
-# ── warp_bins ─────────────────────────────────────────────────────────────────
-
-def test_warp_bins():
-    x = np.random.default_rng(0).random((T, 7)).astype(np.float32)
-    np.testing.assert_array_equal(mb.warp_bins(x, GRID), x)
-    np.testing.assert_allclose(mb.warp_bins(x, GRID + 3)[:-3], x[3:])
-    np.testing.assert_allclose(mb.warp_bins(x, GRID + 0.5)[0], 0.5 * (x[0] + x[1]), rtol=1e-6)
-    out = mb.warp_bins(x, np.r_[-5.0, GRID[1:-1], T + 5.0])
-    np.testing.assert_array_equal(out[0], x[0])
-    np.testing.assert_array_equal(out[-1], x[-1])
-    assert out.dtype == np.float32

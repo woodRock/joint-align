@@ -4,6 +4,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import torch
+from gcmsalign.warps import warp_signal
 
 import multibatch as mb
 import neural_joint as nj
@@ -40,11 +41,11 @@ def test_torch_interp_gradients():
     assert fp.grad[0, 2].item() == pytest.approx(0.75) and fp.grad[0, 3].item() == pytest.approx(0.25)
 
 
-def test_warp_rows_matches_warp_bins_including_last_bin():
+def test_warp_rows_matches_gcmsalign_warp_signal_including_last_bin():
     x = np.random.default_rng(0).random((T, 6)).astype(np.float32)
     pos = np.r_[np.linspace(-3, T + 3, T)]
     out = nj.warp_rows(torch.tensor(x)[None], torch.tensor(pos, dtype=torch.float32)[None])[0]
-    np.testing.assert_allclose(out.numpy(), mb.warp_bins(x, pos), atol=1e-5)
+    np.testing.assert_allclose(out.numpy(), warp_signal(x, pos), atol=1e-5)
     ident = nj.warp_rows(torch.tensor(x)[None], torch.tensor(GRID, dtype=torch.float32)[None])[0]
     np.testing.assert_allclose(ident.numpy(), x, atol=1e-6)
 

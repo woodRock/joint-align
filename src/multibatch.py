@@ -18,23 +18,19 @@ Times are RT bins (0 … N_BINS−1) throughout; multiply by BIN_MIN for minutes
 """
 from __future__ import annotations
 
-import sys
 from dataclasses import dataclass
 from itertools import combinations
-from pathlib import Path
 
 import numpy as np
+from gcmsalign.anchors import detect_peaks, fingerprint
+from gcmsalign.config import (BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS,
+                              SIM_THRESHOLD)
 from scipy.interpolate import PchipInterpolator
 from scipy.linalg import solve_triangular
 from scipy.optimize import linear_sum_assignment, lsq_linear
 from sklearn.linear_model import RANSACRegressor
 
-sys.path.insert(0, str(Path(__file__).parent))
-from alignment import N_BINS, BIN_MIN, MAX_DRIFT_MIN, SIM_THRESHOLD, detect_peaks, fingerprints, _ctx_fp
-
 MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN
-REFINE_BINS    = 3       # search radius for the matched peak in the second chromatogram
-RANSAC_BINS    = 3.0     # per-sample-pair linear RANSAC residual threshold
 N_KNOTS        = 41      # knot spacing ≈ 5 bins ≈ 1.1 min
 S_MIN, S_MAX   = 0.5, 2.0
 GAUGE_WEIGHT   = 1e3
@@ -50,19 +46,27 @@ def _parabolic(ym: float, y0: float, yp: float) -> float:
     return float(np.clip(0.5 * (ym - yp) / den, -0.5, 0.5))
 
 
-def match_anchors(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+def _fingerprints(chroma: np.ndarray, pks: np.ndarray) -> np.ndarray:
+    return np.array([fingerprint(chroma, int(p)) for p in pks])
+
+
+def match_anchors(a: np.ndarray, b: np.ndarray, tic_a: np.ndarray | None = None,
+                  tic_b: np.ndarray | None = None) -> np.ndarray:
     """
     Spectral anchors between chromatograms a and b, as an (n, 2) array of sub-bin RT
-    positions (t_a, t_b). Matching follows alignment.align_pair: TIC peaks, context
-    fingerprints, Hungarian assignment under a drift limit, adaptive cosine threshold,
-    ±REFINE_BINS search in b. Adds parabolic sub-bin refinement on both sides and works in
-    bin units throughout.
+    positions (t_a, t_b). Matching follows gcmsalign.anchors.match_anchors: peaks on the raw
+    TIC (tic_a, tic_b; the chromatogram sum if not given), context fingerprints, Hungarian
+    assignment under MAX_DRIFT_MIN, adaptive cosine threshold, ±REFINE_RADIUS search in b,
+    RANSAC (RANSAC_RESID bins), monotone filter. Adds parabolic sub-bin refinement on both
+    sides, so anchors are fractional bins rather than gcmsalign's integer bins.
     """
     empty = np.empty((0, 2))
-    pa, pb = detect_peaks(a), detect_peaks(b)
+    tic_a = a.sum(axis=1) if tic_a is None else np.asarray(tic_a, dtype=float)
+    tic_b = b.sum(axis=1) if tic_b is None else np.asarray(tic_b, dtype=float)
+    pa, pb = detect_peaks(tic_a), detect_peaks(tic_b)
     if len(pa) < 2 or len(pb) < 2:
         return empty
-    fa, fb = fingerprints(a, pa), fingerprints(b, pb)
+    fa, fb = _fingerprints(a, pa), _fingerprints(b, pb)
     sim  = fa @ fb.T
     far  = np.abs(pa[:, None] - pb[None, :]) > MAX_DRIFT_BINS
     ri, ci = linear_sum_assignment(-np.where(far, -1.0, sim))
@@ -73,13 +77,12 @@ def match_anchors(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     if len(ri) < 2:
         return empty
 
-    tic_a = a.sum(axis=1)
     out = []
     for i, j in zip(ri, ci):
         p = int(pa[i])
         ta = p + (_parabolic(tic_a[p - 1], tic_a[p], tic_a[p + 1]) if 0 < p < N_BINS - 1 else 0.0)
-        cands = np.arange(max(0, pb[j] - REFINE_BINS), min(N_BINS, pb[j] + REFINE_BINS + 1))
-        s = np.array([float(fa[i] @ _ctx_fp(b, c)) for c in cands])
+        cands = np.arange(max(0, pb[j] - REFINE_RADIUS), min(N_BINS, pb[j] + REFINE_RADIUS + 1))
+        s = np.array([float(fa[i] @ fingerprint(b, int(c))) for c in cands])
         k = int(np.argmax(s))
         tb = cands[k] + (_parabolic(s[k - 1], s[k], s[k + 1]) if 0 < k < len(s) - 1 else 0.0)
         out.append((ta, tb))
@@ -87,7 +90,7 @@ def match_anchors(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
     if len(anc) >= 4:
         try:
-            rs = RANSACRegressor(residual_threshold=RANSAC_BINS, min_samples=2, random_state=0)
+            rs = RANSACRegressor(residual_threshold=RANSAC_RESID, min_samples=2, random_state=0)
             rs.fit(anc[:, :1], anc[:, 1])
             if rs.inlier_mask_.sum() >= 2:
                 anc = anc[rs.inlier_mask_]
@@ -126,13 +129,15 @@ class Anchors:
         return Anchors(s.bb, s.ba, s.sb, s.sa, s.tb, s.ta)
 
 
-def harvest_anchors(chromas: list[list[np.ndarray]]) -> Anchors:
-    """Run match_anchors on every cross-batch sample pair."""
+def harvest_anchors(chromas, tics=None) -> Anchors:
+    """Run match_anchors on every cross-batch sample pair. chromas[k][i] is sample i of batch
+    k; tics[k][i] its raw TIC for peak detection (default: the chromatogram sum)."""
     cols = [[] for _ in range(6)]
+    tic = (lambda k, i: None) if tics is None else (lambda k, i: tics[k][i])
     for a, b in combinations(range(len(chromas)), 2):
         for i, ca in enumerate(chromas[a]):
             for j, cb in enumerate(chromas[b]):
-                anc = match_anchors(ca, cb)
+                anc = match_anchors(ca, cb, tic(a, i), tic(b, j))
                 n = len(anc)
                 for col, v in zip(cols, (a, b, i, j)):
                     col.append(np.full(n, v, dtype=int))
@@ -288,13 +293,3 @@ def pchip_pairwise(anchors: Anchors, a: int, b: int):
                           np.concatenate([[0], ys[keep], [N_BINS - 1]]))
     return lambda t: f(np.asarray(t, dtype=float))
 
-
-# ── Applying warps ────────────────────────────────────────────────────────────
-
-def warp_bins(chroma: np.ndarray, src: np.ndarray) -> np.ndarray:
-    """Resample chroma so that output row i is chroma at fractional RT bin src[i]."""
-    src = np.clip(src, 0, N_BINS - 1)
-    i0  = np.floor(src).astype(int)
-    i1  = np.minimum(i0 + 1, N_BINS - 1)
-    f   = (src - i0)[:, None]
-    return ((1 - f) * chroma[i0] + f * chroma[i1]).astype(np.float32)

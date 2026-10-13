@@ -30,7 +30,7 @@ def workspace(tmp_path_factory):
             jitter = rng.normal(0, 0.3, len(PEAKS))
             x = make_chroma(lib, PEAKS + shift + jitter, heights=rng.uniform(0.5, 1.5, len(PEAKS)),
                             seed=100 * k + i)
-            np.savez(d / f'{i:02d}.npz', chroma=x)
+            np.savez(d / f'{i:02d}.npz', chroma=x, tic_raw=x.sum(1))   # gcmsalign layout
     (root / 'results').mkdir()
     (root / 'figs').mkdir()
     return root
@@ -54,6 +54,7 @@ def run30(workspace):
 def test_script30_outputs(run30):
     res = run30 / 'results'
     txt = (res / 'multibatch_align.txt').read_text()
+    assert 'gcmsalign 2' in txt and '@' in txt                     # provenance line
     for section in ('1. Hyper-parameters', '2. Mean between-batch TIC r', '3. Cross-fitted',
                     '4. Missing correspondences', '5. Cycle inconsistency', '6. Uncertainty',
                     'Wall time'):
@@ -102,6 +103,7 @@ def test_script32_runs_on_script30_outputs(run30):
         mp.undo()
     txt = (res / 'fair_benchmark.txt').read_text()
     assert 'B-frame' in txt and 'Midpoint' in txt and 'Native protocols' in txt
+    assert txt.splitlines()[2].startswith('gcmsalign ')
     assert (res / 'neural_joint_G_3.npz').exists()
     assert len(list((res / 'cow_tic_maps').glob('*.npy'))) == 10
     z = np.load(res / 'fair_benchmark.npz')

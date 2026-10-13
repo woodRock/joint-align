@@ -7,7 +7,11 @@ methods on all 10 batch pairs of the five fish oil batches.
 
 Hyper-parameters are chosen without TIC r: λ by blocked cross-validation over RT (whole
 RT windows held out, so the score measures interpolation between compounds), the gauge
-reference as the batch with the most anchors. TIC r is evaluation only.
+reference as the batch with the most anchors. TIC r is evaluation only: Pearson r of the
+normalised TIC on the common acquisition window (gcmsalign.metrics.pearson_rows, bins ≥ 22).
+
+Data, anchors for the pooled-anchor PCHIP baseline, warping and statistics come from gcmsalign
+(~/Desktop/alignment), so fixes there apply here; the report records the gcmsalign commit.
 
 Experiments
   1. λ selection (held-out anchor error, RT-blocked folds) and gauge ablation
@@ -26,21 +30,25 @@ Output: results/multibatch_align.txt, results/multibatch_align.npz, figs/multiba
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import sys
 import time
 from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
-from scipy.stats import spearmanr, wilcoxon
+from gcmsalign.anchors import extract_anchors
+from gcmsalign.config import BIN_MIN, N_BINS, Paths
+from gcmsalign.data import load_batch
+from gcmsalign.metrics import holm, paired_wilcoxon, pearson_rows
+from gcmsalign.warps import pchip_warp, src_from_fn, warp_rows
+from scipy.stats import spearmanr
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
-from alignment import load_chromas, warp_chroma_2d, BIN_MIN, N_BINS   # noqa: E402
 import multibatch as mb                                                # noqa: E402
+from provenance import gcmsalign_revision                              # noqa: E402
 
-DATA    = ROOT / 'data' / 'fish_oil'
+DATA    = Paths().fish_oil
 RESULTS = ROOT / 'results'
 FIGS    = ROOT / 'figs'
 LAMBDAS = [0.1, 1.0, 10.0, 30.0, 100.0, 300.0, 1000.0, 3000.0, 10000.0]
@@ -55,27 +63,19 @@ PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),
          ('batch_aug2015', 'batch_apr2016'), ('batch_aug2015', 'batch_jul2016')]
 
 
-def _load_script(name: str, filename: str):
-    spec = importlib.util.spec_from_file_location(name, ROOT / 'scripts' / filename)
-    mod  = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
 def short(b: str) -> str:
     return b.replace('batch_', '')
 
 
-def tic_r(tics_a: list, tics_b: list) -> np.ndarray:
-    """(n_a, n_b) Pearson r between TICs."""
-    A = np.stack(tics_a); B = np.stack(tics_b)
-    A = (A - A.mean(1, keepdims=True)) / A.std(1, keepdims=True)
-    B = (B - B.mean(1, keepdims=True)) / B.std(1, keepdims=True)
-    return A @ B.T / A.shape[1]
+def tic_r(tics_a, tics_b) -> np.ndarray:
+    """(n_a, n_b) Pearson r between TICs on the common acquisition window."""
+    A, B = np.asarray(tics_a), np.asarray(tics_b)
+    return pearson_rows(A, B).reshape(len(A), len(B))
 
 
-def warp_tics(tics: list, src: np.ndarray) -> list:
-    return [np.interp(np.clip(src, 0, N_BINS - 1), GRID, t) for t in tics]
+def warp_tics(tics, src: np.ndarray) -> np.ndarray:
+    """Every TIC read at source positions src (bins, clamped to the run)."""
+    return warp_rows(np.asarray(tics), src)
 
 
 def assign_folds(sizes: list[int], rng: np.random.Generator) -> list[np.ndarray]:
@@ -110,15 +110,6 @@ def boot_weights(anc: mb.Anchors, sizes: list[int], rng: np.random.Generator) ->
                     dtype=float)
 
 
-def holm(ps: list[float]) -> list[float]:
-    order = np.argsort(ps)
-    adj, running = np.empty(len(ps)), 0.0
-    for k, i in enumerate(order):
-        running = max(running, min(1.0, (len(ps) - k) * ps[i]))
-        adj[i] = running
-    return adj.tolist()
-
-
 class Composed:
     """Pairwise warps composed through one hub batch: a → h → b."""
     def __init__(self, m_ah: mb.JointWarp, a: int, h: int, m_hb: mb.JointWarp, b: int):
@@ -139,10 +130,11 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     names  = sorted(p.name for p in DATA.glob('batch_*') if p.is_dir())
     idx    = {b: i for i, b in enumerate(names)}
     K      = len(names)
-    chroma = [load_chromas(DATA / b / 'chroma') for b in names]
-    tics   = [[c.sum(1) for c in cs] for cs in chroma]
-    sizes  = [len(c) for c in chroma]
-    L = [__doc__.strip().splitlines()[0], '']
+    batches = [load_batch(b, DATA) for b in names]
+    chroma = [bt.chromas for bt in batches]
+    tics   = [bt.tic for bt in batches]
+    sizes  = [len(bt) for bt in batches]
+    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {DATA}', '']
     say = lambda s='': (L.append(s), print(s))
     say('Batches: ' + ', '.join(f'{short(b)} (n={n})' for b, n in zip(names, sizes)))
 
@@ -152,7 +144,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         z   = np.load(cache)
         anc = mb.Anchors(*(z[k] for k in ('ba', 'bb', 'sa', 'sb', 'ta', 'tb')))
     else:
-        anc = mb.harvest_anchors(chroma)
+        anc = mb.harvest_anchors(chroma, [bt.tic_raw for bt in batches])
         np.savez(cache, ba=anc.ba, bb=anc.bb, sa=anc.sa, sb=anc.sb, ta=anc.ta, tb=anc.tb)
     n_pair = np.zeros((K, K), int)
     for a, b in combinations(range(K), 2):
@@ -209,9 +201,6 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
                for tr, _ in fold_masks]
     pw = lambda d, a, b: d[(min(a, b), max(a, b))]
 
-    # cow-dcnn pooled-anchor PCHIP (script 24: A[0..2] vs B[0], median, PCHIP, ends pinned)
-    s24 = _load_script('pchip24', '24_pchip_pooled_anchors.py')
-
     # ── 2. TIC r ─────────────────────────────────────────────────────────────
     say('\n' + '=' * 96)
     say('2. Mean between-batch TIC r (A warped into B frame; mean over all A_i × B_j)')
@@ -225,9 +214,10 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         a, b = idx[A_], idx[B_]
         r = {}
         r['Unaligned'] = tic_r(tics[a], tics[b])
-        anchors24 = s24.calib16.extract_anchors(chroma[a], chroma[b])
-        w24, _ = s24.pooled_pchip_warp(anchors24)
-        r['Pooled PCHIP (cow-dcnn)'] = tic_r([warp_chroma_2d(c, w24).sum(1) for c in chroma[a]], tics[b])
+        # gcmsalign pooled-anchor PCHIP: A[0..2] vs B[0], pooled and filtered, PCHIP B → A
+        pooled = extract_anchors(chroma[a], chroma[b], batches[a].tic_raw, batches[b].tic_raw)
+        r['Pooled PCHIP (cow-dcnn)'] = tic_r(warp_tics(tics[a], src_from_fn(pchip_warp(pooled.anchors))),
+                                             tics[b])
         r['Dense PCHIP'] = tic_r(warp_tics(tics[a], mb.pchip_pairwise(anc, b, a)(GRID)), tics[b])
         r['Pairwise smooth'] = tic_r(warp_tics(tics[a], pw(pairwise, a, b).map(b, a, GRID)), tics[b])
         r['Joint (mean gauge)'] = tic_r(warp_tics(tics[a], joint_mean.map(b, a, GRID)), tics[b])
@@ -264,7 +254,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     tested = [p for p in PAIRS if sizes[idx[p[0]]] >= 6]
     for x, y in (('Joint', 'Pooled PCHIP (cow-dcnn)'), ('Joint', 'Pairwise smooth'),
                  ('Joint CF', 'Pairwise smooth CF'), ('Joint', 'Unaligned')):
-        res = [(p, wilcoxon(R[p][x].mean(1), R[p][y].mean(1)).pvalue,
+        res = [(p, paired_wilcoxon(R[p][x].mean(1), R[p][y].mean(1))[1],
                 float(np.median(R[p][x].mean(1) - R[p][y].mean(1)))) for p in tested]
         adj = holm([q for _, q, _ in res])
         say(f'   {x} vs {y}:')
@@ -422,6 +412,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         f'{cover_pi[~gross].mean():.3f}')
 
     np.savez(RESULTS / 'multibatch_align.npz', names=np.array(names), lam=lam, ref=ref,
+             gcmsalign=gcmsalign_revision(),
              knots=joint.knots, drift=joint.drift, n_pair=n_pair,
              boot_drift=np.stack([m.drift for m in boots]),
              **{f'ticr_{short(A_)}_{short(B_)}_{c.replace(" ", "_")}': v

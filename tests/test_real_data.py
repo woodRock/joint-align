@@ -12,8 +12,9 @@ from itertools import combinations
 import numpy as np
 import pytest
 
+from gcmsalign.data import load_batch
+
 import multibatch as mb
-from alignment import load_chromas
 from conftest import DATA, RESULTS, ROOT, requires_data
 
 pytestmark = requires_data
@@ -31,8 +32,13 @@ def names():
 
 
 @pytest.fixture(scope='module')
-def chroma(names):
-    return [load_chromas(DATA / b / 'chroma') for b in names]
+def batches(names):
+    return [load_batch(b, DATA) for b in names]
+
+
+@pytest.fixture(scope='module')
+def chroma(batches):
+    return [b.chromas for b in batches]
 
 
 @pytest.fixture(scope='module')
@@ -60,14 +66,15 @@ def test_anchor_cache_indices_valid(anchors, chroma):
     assert np.all((anchors.ta >= 0) & (anchors.ta <= 199) & (anchors.tb >= 0) & (anchors.tb <= 199))
 
 
-def test_anchor_cache_matches_current_code(anchors, chroma):
+def test_anchor_cache_matches_current_code(anchors, chroma, batches):
     """Recompute a sample of sample pairs: the cache must equal what match_anchors gives now."""
     rng = np.random.default_rng(0)
     pairs = [(a, b) for a, b in combinations(range(len(chroma)), 2)]
     for a, b in pairs:
         i, j = rng.integers(len(chroma[a])), rng.integers(len(chroma[b]))
         m = (anchors.ba == a) & (anchors.bb == b) & (anchors.sa == i) & (anchors.sb == j)
-        fresh = mb.match_anchors(chroma[a][i], chroma[b][j])
+        fresh = mb.match_anchors(chroma[a][i], chroma[b][j], batches[a].tic_raw[i],
+                                 batches[b].tic_raw[j])
         np.testing.assert_allclose(np.c_[anchors.ta[m], anchors.tb[m]], fresh, atol=1e-9,
                                    err_msg=f'stale anchor cache for batches {a}×{b}, samples {i}×{j}')
 
@@ -134,17 +141,33 @@ def test_neural_and_cow_caches_shapes(names, chroma):
         assert np.load(f).shape == (sizes[names.index(a)], sizes[names.index(b)], 200)
 
 
-def test_cached_tic_r_matches_current_data(names, chroma):
+def test_cached_tic_r_matches_current_data(names, batches):
     """Unaligned TIC r depends only on the data: a mismatch means results predate the data."""
+    from gcmsalign.metrics import pearson_rows
     z = np.load(_need(RESULTS / 'multibatch_align.npz'))
-    tics = {b.replace('batch_', ''): [c.sum(1) for c in cs] for b, cs in zip(names, chroma)}
+    tics = {b.replace('batch_', ''): bt.tic for b, bt in zip(names, batches)}
     stale = []
     for key in z.files:
         m = re.fullmatch(r'ticr_(\w+?)_(\w+?)_Unaligned', key)
         if not m:
             continue
         a, b = m.groups()
-        now = np.array([[np.corrcoef(x, y)[0, 1] for y in tics[b]] for x in tics[a]])
+        now = pearson_rows(tics[a], tics[b]).reshape(len(tics[a]), len(tics[b]))
         if z[key].shape != now.shape or not np.allclose(z[key], now, atol=1e-4):
             stale.append(f'{a}×{b}: cached {z[key].mean():.3f}, data now {now.mean():.3f}')
     assert not stale, 'results/ were computed on different data:\n  ' + '\n  '.join(stale)
+
+
+def test_script31_calibrates_one_pair_with_gcmsalign(tmp_path, monkeypatch):
+    """Script 31 runs gcmsalign's calibrate step with its default (v2) checkpoint."""
+    from gcmsalign.config import Paths
+    from conftest import load_script
+    _need(Paths().default_ckpt)
+    s31 = load_script('31_wt_warps.py')
+    monkeypatch.setattr(s31, 'ROOT', tmp_path)
+    monkeypatch.setattr(s31, 'PAIRS', [('batch_aug2015', 'batch_apr2016')])
+    s31.main(seed=0, device='cpu', calib_steps=2)
+    z = np.load(tmp_path / 'results' / 'wt_warps' / 'batch_aug2015__batch_apr2016.npz')
+    n_a, n_b = int(z['n_a']), int(z['n_b'])
+    assert z['warps'].shape == (n_a + n_b, 200) and z['r_native'].shape == (n_a * n_b,)
+    assert str(z['gcmsalign']).startswith('gcmsalign ')

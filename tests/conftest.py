@@ -11,9 +11,11 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
 
-DATA = ROOT / 'data' / 'fish_oil'
+from gcmsalign.config import Paths  # noqa: E402
+
+DATA = Paths().fish_oil    # the fish oil data lives in the gcmsalign (alignment) repo
 RESULTS = ROOT / 'results'
-T = 200          # RT bins, matches alignment.N_BINS
+T = 200          # RT bins, matches gcmsalign.config.N_BINS
 M = 120          # m/z channels for synthetic data (the code is agnostic to M)
 
 _scripts: dict[str, object] = {}

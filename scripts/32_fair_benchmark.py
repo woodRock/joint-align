@@ -13,11 +13,14 @@ ways:
   Native     the WarpTransformer's own consensus frame and "PCHIP + COW refine" with both
              batches refined (as published), for reference
 
+All TIC r is Pearson r of the normalised TIC on the common acquisition window (gcmsalign
+EVAL_BINS, bins ≥ 22).
+
 Methods
-  Pooled PCHIP          cow-dcnn script 24 (A[0..2] vs B[0] anchors, PCHIP, ends pinned)
+  Pooled PCHIP          gcmsalign anchors (A[0..2] vs B[0], pooled, filtered) + warps.pchip_warp
   PCHIP + COW refine    pooled PCHIP, then per-A_i COW (8 segments, ±4 bins) onto mean B TIC
-  COW-TIC               per (A_i, B_j) COW (4 segments, ±22 bins) — optimises TIC r per pair
-  WarpTransformer       script 31 cache (cow-dcnn protocol, seed 0, CPU)
+  COW-TIC               gcmsalign.baselines.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
+  WarpTransformer       script 31 cache (gcmsalign calibrate_pair, v2 checkpoint, seed 0, CPU)
   Joint                 src/multibatch.py, λ and reference from script 30
   Neural joint          src/neural_joint.py on top of Joint (anchors + dense, sample level)
 
@@ -26,22 +29,26 @@ Output: results/fair_benchmark.txt, results/fair_benchmark.npz
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import sys
 import time
 from pathlib import Path
 
 import numpy as np
 import torch
-from scipy.stats import wilcoxon
+from gcmsalign.anchors import extract_anchors
+from gcmsalign.baselines import cow_tic_align
+from gcmsalign.config import N_BINS, Paths
+from gcmsalign.data import load_batch
+from gcmsalign.metrics import holm, paired_wilcoxon, pearson
+from gcmsalign.warps import invert_src, pchip_warp, src_from_fn, warp_signal
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
-from alignment import load_chromas, BIN_MIN, TIME_AXIS, N_BINS   # noqa: E402
 import multibatch as mb                                          # noqa: E402
 import neural_joint as nj                                        # noqa: E402
+from provenance import gcmsalign_revision                        # noqa: E402
 
-DATA, RESULTS = ROOT / 'data' / 'fish_oil', ROOT / 'results'
+DATA, RESULTS = Paths().fish_oil, ROOT / 'results'
 GRID = np.arange(N_BINS, dtype=float)
 PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),
          ('batch_jan2016', 'batch_apr2016'), ('batch_jan2016', 'batch_jul2016'),
@@ -53,25 +60,27 @@ METHODS = ['Unaligned', 'Pooled PCHIP', 'PCHIP + COW refine', 'COW-TIC', 'WarpTr
            'Joint', 'Neural joint']
 
 
-def _load(name: str, filename: str):
-    spec = importlib.util.spec_from_file_location(name, ROOT / 'scripts' / filename)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
 def short(b: str) -> str:
     return b.replace('batch_', '')
 
 
 def corr(x: np.ndarray, y: np.ndarray) -> float:
-    x = x - x.mean(); y = y - y.mean()
-    d = np.sqrt((x * x).sum() * (y * y).sum())
-    return float((x * y).sum() / d) if d > 0 else 0.0
+    """Pearson r on the common acquisition window (0 if either signal is constant there)."""
+    r = pearson(x, y)
+    return 0.0 if np.isnan(r) else r
 
 
 def sample(tic: np.ndarray, pos: np.ndarray) -> np.ndarray:
-    return np.interp(np.clip(pos, 0, N_BINS - 1), GRID, tic)
+    """tic read at fractional bins pos (clamped to the run)."""
+    return warp_signal(np.asarray(tic, dtype=float), pos)
+
+
+def read_warp(w: np.ndarray, t: np.ndarray) -> np.ndarray:
+    """Warp w [T] (output bin → source bin) at fractional output positions t, continued
+    linearly with the end segments' slope (v2 warps are not pinned to [0, T−1])."""
+    out = np.interp(t, GRID, w)
+    out = np.where(t < 0, w[0] + t * (w[1] - w[0]), out)
+    return np.where(t > N_BINS - 1, w[-1] + (t - N_BINS + 1) * (w[-1] - w[-2]), out)
 
 
 def score(ta: np.ndarray, tb: np.ndarray, m: np.ndarray) -> tuple[float, float]:
@@ -88,13 +97,9 @@ def strict(w: np.ndarray) -> np.ndarray:
     return np.maximum.accumulate(w) + 1e-6 * np.arange(len(w))
 
 
-def cow_map(cow17, q: np.ndarray, r: np.ndarray, n_segs: int, slack: int) -> np.ndarray:
-    """COW node path as a map: reference (B) bin → query (A) bin."""
-    out = cow17.cow_tic_align(q, r, n_segs=n_segs, slack=slack)
-    if len(out) < 3:
-        return GRID.copy()
-    wf = out[2]
-    return wf(GRID * BIN_MIN) / BIN_MIN
+def cow_map(q: np.ndarray, r: np.ndarray, n_segs: int, slack: int) -> np.ndarray:
+    """COW (gcmsalign) as a map: reference (B) bin → query (A) bin."""
+    return cow_tic_align(q, r, n_segs=n_segs, slack=slack).src
 
 
 def main(neural_steps: int) -> None:
@@ -102,11 +107,12 @@ def main(neural_steps: int) -> None:
     names = sorted(p.name for p in DATA.glob('batch_*') if p.is_dir())
     idx = {b: i for i, b in enumerate(names)}
     K = len(names)
-    chroma = [load_chromas(DATA / b / 'chroma') for b in names]
-    tics = [[c.sum(1) for c in cs] for cs in chroma]
-    sizes = [len(c) for c in chroma]
+    batches = [load_batch(b, DATA) for b in names]
+    chroma = [bt.chromas for bt in batches]
+    tics = [bt.tic for bt in batches]
+    sizes = [len(bt) for bt in batches]
     offs = np.cumsum([0] + sizes[:-1])
-    L = [__doc__.strip().splitlines()[0], '']
+    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {DATA}', '']
     say = lambda s='': (L.append(s), print(s, flush=True))
 
     z = np.load(RESULTS / 'anchors_all_pairs.npz')
@@ -128,15 +134,12 @@ def main(neural_steps: int) -> None:
             sidx[k, :sizes[k]] = offs[k] + np.arange(sizes[k])
         torch.manual_seed(0)
         model = nj.NeuralJointWarp(taus, g0, batch_of, ref, sample_level=True)
-        X = torch.tensor(np.concatenate([np.stack(c) for c in chroma]))
+        X = torch.tensor(np.concatenate(chroma))
         nj.train(model, X, anc, joint.weights, sidx, nj.TrainConfig(steps=neural_steps))
         with torch.no_grad():
             G = model()[0].numpy()
         np.savez(g_path, taus=taus, G=G)
     G = np.stack([strict(g) for g in G])
-
-    s24 = _load('pchip24', '24_pchip_pooled_anchors.py')
-    cow17 = _load('cow17', '17_literature_baselines.py')
 
     R = {}          # (pair, method, protocol) → (n_a, n_b) array
     native = {}
@@ -146,25 +149,25 @@ def main(neural_steps: int) -> None:
         na, nb = len(TA), len(TB)
         maps = {}
         maps['Unaligned'] = lambda i, j: GRID
-        w24, _ = s24.pooled_pchip_warp(s24.calib16.extract_anchors(chroma[a], chroma[b]))
-        m24 = GRID.copy() if w24 is None else w24(TIME_AXIS) / BIN_MIN
+        pooled = extract_anchors(chroma[a], chroma[b], batches[a].tic_raw, batches[b].tic_raw)
+        m24 = src_from_fn(pchip_warp(pooled.anchors))
         maps['Pooled PCHIP'] = lambda i, j, m24=m24: m24
         ref_b = np.mean(TB, axis=0)
-        cref = [np.interp(cow_map(cow17, sample(TA[i], m24), ref_b, 8, 4), GRID, m24) for i in range(na)]
+        cref = [read_warp(m24, cow_map(sample(TA[i], m24), ref_b, 8, 4)) for i in range(na)]
         maps['PCHIP + COW refine'] = lambda i, j, c=cref: c[i]
         cache = RESULTS / 'cow_tic_maps' / f'{A_}__{B_}.npy'
         if cache.exists():
             ct = np.load(cache)
         else:
             cache.parent.mkdir(exist_ok=True)
-            ct = np.stack([[cow_map(cow17, TA[i], TB[j], 4, 22) for j in range(nb)] for i in range(na)])
+            ct = np.stack([[cow_map(TA[i], TB[j], 4, 22) for j in range(nb)] for i in range(na)])
             np.save(cache, ct)
         maps['COW-TIC'] = lambda i, j, ct=ct: ct[i, j]
         wt_file = RESULTS / 'wt_warps' / f'{A_}__{B_}.npz'
         if wt_file.exists():
             wz = np.load(wt_file)
             W = np.stack([strict(w) for w in wz['warps']])
-            maps['WarpTransformer'] = lambda i, j, W=W, na=na: np.interp(np.interp(GRID, W[na + j], GRID), GRID, W[i])
+            maps['WarpTransformer'] = lambda i, j, W=W, na=na: read_warp(W[i], invert_src(W[na + j], GRID))
             native[(A_, B_, 'WarpTransformer')] = wz['r_native'].reshape(na, nb)
         mj = joint.map(b, a, GRID)
         maps['Joint'] = lambda i, j, mj=mj: mj
@@ -176,7 +179,7 @@ def main(neural_steps: int) -> None:
             R[(A_, B_, meth, 'Midpoint')] = out[..., 1]
         # Native PCHIP + COW refine: both batches refined onto mean B (as in cow-dcnn script 25)
         ra = [sample(TA[i], cref[i]) for i in range(na)]
-        rb = [sample(TB[j], cow_map(cow17, TB[j], ref_b, 8, 4)) for j in range(nb)]
+        rb = [sample(TB[j], cow_map(TB[j], ref_b, 8, 4)) for j in range(nb)]
         native[(A_, B_, 'PCHIP + COW refine')] = np.array([[corr(x, y) for y in rb] for x in ra])
         print(f'  {short(A_)}×{short(B_)} done ({time.time() - t0:.0f} s)', flush=True)
 
@@ -216,19 +219,16 @@ def main(neural_steps: int) -> None:
                 if y is None:
                     continue
                 dx, dy = x.mean(1), y.mean(1)
-                res.append((A_, B_, wilcoxon(dx, dy).pvalue, float(np.median(dx - dy))))
+                res.append((A_, B_, paired_wilcoxon(dx, dy)[1], float(np.median(dx - dy))))
             if not res:
                 continue
-            ps = [p for *_, p, _ in res]
-            order = np.argsort(ps); adj = np.empty(len(ps)); run = 0.0
-            for k, i in enumerate(order):
-                run = max(run, min(1.0, (len(ps) - k) * ps[i])); adj[i] = run
+            adj = holm([p for *_, p, _ in res])
             say(f'  {proto}: Joint vs {other}: ' + '; '.join(
                 f'{short(a_)}×{short(b_)} Δ{md:+.3f} p={q:.1e}' for (a_, b_, _, md), q in zip(res, adj)))
 
     say(f'\nWall time {time.time() - t0:.0f} s')
     (RESULTS / 'fair_benchmark.txt').write_text('\n'.join(L) + '\n')
-    np.savez(RESULTS / 'fair_benchmark.npz',
+    np.savez(RESULTS / 'fair_benchmark.npz', gcmsalign=gcmsalign_revision(),
              **{f'{short(k[0])}_{short(k[1])}|{k[2]}|{k[3]}': v for k, v in R.items()})
 
 
