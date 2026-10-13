@@ -1,5 +1,7 @@
 # many-batch-align
 
+[![CI](https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml/badge.svg)](https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml)
+
 Retention time alignment of GC-MS chromatograms across many (K > 2) batches,
 with a shared latent RT frame and calibrated uncertainty.
 
@@ -17,8 +19,15 @@ in gcmsalign applies here immediately.
 
 ```
 pip install -e ~/Desktop/alignment        # editable: one source of truth
-python -m pytest                          # ~40 s; -m "not slow" skips the end-to-end runs
+make check                                # ruff, mypy, full tests + coverage (~40 s)
+make test-fast                            # skips the end-to-end runs
 ```
+
+CI (`.github/workflows/ci.yml`) runs ruff, mypy and the full test suite on every push and pull
+request, against the gcmsalign commit pinned in `requirements.txt`; coverage must stay ≥ 90 %.
+The fish oil data is private, so the real-data tests run only locally. A non-blocking canary
+job runs the tests against gcmsalign's latest `main` (weekly and on every push), so a breaking
+upstream change shows up before the pin is bumped. Dependabot keeps the Actions versions current.
 
 Every result file records the gcmsalign version, commit and whether its `src/` was dirty
 (`src/provenance.py`). Commit gcmsalign before a run whose results you intend to keep. For a

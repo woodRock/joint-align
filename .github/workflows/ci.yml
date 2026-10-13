@@ -1,0 +1,103 @@
+name: CI
+
+# Every push and pull request: lint, type-check, and the whole test suite (unit + synthetic
+# end-to-end, ~1 min) against the gcmsalign commit pinned in requirements.txt. The private
+# fish-oil data is not available here, so tests/test_real_data.py skips itself.
+#
+# Upstream canary: the same tests against gcmsalign's latest main (weekly, on demand, and on
+# every push). It is non-blocking: a failure means bumping the pin will need changes here.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'  # Mondays 04:00 UTC: canary against gcmsalign main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: '3.11'
+  TORCH_VERSION: '2.7.1'  # same as gcmsalign's CI and the local environment
+  TORCH_INDEX: https://download.pytorch.org/whl/cpu  # CPU wheels: no CUDA download
+  RUFF_VERSION: '0.17.0'
+  MYPY_VERSION: '2.4.0'
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install ruff==$RUFF_VERSION
+      - run: ruff check --output-format=github .
+
+  types:
+    name: Types (mypy)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
+      - run: pip install -r requirements.txt mypy==$MYPY_VERSION
+      - run: mypy
+
+  tests:
+    name: Tests (pinned gcmsalign)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
+      - run: pip install -r requirements.txt
+      - name: Record gcmsalign revision
+        run: python -c "import importlib.metadata as m; print(m.distribution('gcmsalign').read_text('direct_url.json'))"
+      - name: Run tests with coverage
+        run: python -m coverage run -m pytest --junitxml=junit.xml
+      - name: Coverage report (fails under the threshold in pyproject.toml)
+        if: always()
+        run: |
+          python -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+          python -m coverage report
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: junit.xml
+
+  gcmsalign-main:
+    name: Canary (gcmsalign main)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
+      - run: pip install -r requirements.txt
+      - run: pip install --force-reinstall --no-deps "gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@main"
+      - run: python -m pytest

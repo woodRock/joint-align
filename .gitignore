@@ -28,3 +28,4 @@ logs/
 # Test artefacts
 .coverage
 .pytest_cache/
+junit.xml
