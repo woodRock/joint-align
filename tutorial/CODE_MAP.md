@@ -68,7 +68,8 @@ used in the benchmark (`gcmsalign.baselines`, `gcmsalign.calibration`, `gcmsalig
 
 `src/jointalign/synthetic.py` (`make_dataset`, `BatchSpec`, `true_map`) writes the public stand-in for the fish
 oil data (T = 200, M = 1000, 60 compounds, 31 samples). The notebook builds its own, smaller toy
-world from scratch so every array can be printed.
+world from scratch so every array can be printed. `make_world` returns the same synthetic data
+in memory instead of writing it, for experiments that draw many worlds.
 
 ## Neural refinement (appendix only)
 

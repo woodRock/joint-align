@@ -324,8 +324,8 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
   - `multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
     pairwise baselines); its public API is re-exported from `jointalign`
   - `neural_joint.py`: neural refinement of the joint model (needs torch)
-  - `synthetic.py`: public synthetic data with known drifts (written by
-    `scripts/00_make_synthetic_data.py`)
+  - `synthetic.py`: public synthetic data with known drifts: `make_dataset` writes it to disk
+    (`scripts/00_make_synthetic_data.py`), `make_world` returns the same world in memory
   - `provenance.py`: the gcmsalign and jointalign revision lines written into results
 - `scripts/30_multibatch_align.py`: the full evaluation of the joint model
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`

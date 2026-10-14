@@ -14,6 +14,10 @@ Generative model, per batch k and sample i:
   before the batch's acquisition start.
 Stored like gcmsalign's preprocessing: chroma = sqrt-then-L2 per RT bin [T, M], tic_raw = the
 summed raw intensity per bin [T].
+
+make_dataset writes a world to disk in the gcmsalign layout; make_world returns the same world in
+memory (no disk writes), for experiments that draw thousands of worlds. Same arguments and seed,
+same arrays and truth.
 """
 from __future__ import annotations
 
@@ -91,24 +95,23 @@ def _sample(lib, tau, spec: BatchSpec, abundance, rng, sigma_bins: float, jitter
     return chroma.astype(np.float32), tic_raw.astype(np.float32)
 
 
-def make_dataset(out_dir: Path, batches=DEFAULT_BATCHES, n_compounds: int = 60, mz_bins: int = 1000,
-                 sigma_bins: float = 0.9, jitter_min: float = 0.04, seed: int = 0) -> dict:
-    """Write <out_dir>/<batch>/chroma/*.npz (chroma, tic_raw) and <out_dir>/truth.json.
-    Returns the truth dictionary."""
-    out_dir = Path(out_dir)
+def _generate(batches, n_compounds: int, mz_bins: int, sigma_bins: float, jitter_min: float, seed: int):
+    """Draw one world: per batch, chromas [n, T, M] and tic_raws [n, T] (float32), plus the latent
+    compound times τ. The order of the random draws defines the world; keep it fixed."""
     rng = np.random.default_rng(seed)
     lib = _library(n_compounds, mz_bins, rng)
     tau = np.sort(rng.uniform(5.5, 42.5, n_compounds))
     abundance = rng.lognormal(0.0, 0.8, n_compounds)
+    chromas, tic_raws = [], []
     for spec in batches:
-        d = out_dir / spec.name / 'chroma'
-        d.mkdir(parents=True, exist_ok=True)
-        for old in d.glob('*.npz'):
-            old.unlink()
-        for i in range(spec.n):
-            chroma, tic_raw = _sample(lib, tau, spec, abundance, rng, sigma_bins, jitter_min)
-            np.savez_compressed(d / f'{spec.name}_{i:02d}.npz', chroma=chroma, tic_raw=tic_raw)
-    truth = {
+        pairs = [_sample(lib, tau, spec, abundance, rng, sigma_bins, jitter_min) for _ in range(spec.n)]
+        chromas.append(np.stack([c for c, _ in pairs]))
+        tic_raws.append(np.stack([t for _, t in pairs]))
+    return chromas, tic_raws, tau
+
+
+def _truth(batches, tau: np.ndarray, seed: int) -> dict:
+    return {
         'description': 'Synthetic stand-in for the fish oil batches (src/synthetic.py). A compound '
                        'at latent time tau elutes in batch k at tau + drift_k(tau) (minutes).',
         'seed': seed, 'bin_min': BIN_MIN, 'n_bins': N_BINS,
@@ -117,6 +120,31 @@ def make_dataset(out_dir: Path, batches=DEFAULT_BATCHES, n_compounds: int = 60, 
         'batches': {s.name: {**asdict(s), 'drift_min': np.round(s.drift(TIME_AXIS), 5).tolist()}
                     for s in batches},
     }
+
+
+def make_world(batches=DEFAULT_BATCHES, n_compounds: int = 60, mz_bins: int = 1000, sigma_bins: float = 0.9,
+               jitter_min: float = 0.04, seed: int = 0) -> tuple[list[np.ndarray], list[np.ndarray], dict]:
+    """One synthetic world in memory: (chromas, tic_raws, truth), where chromas[k] is batch k's
+    [n_k, T, M] float32 array and tic_raws[k] its [n_k, T] raw TICs, in the order of `batches`.
+    Identical to what make_dataset writes for the same arguments; nothing touches the disk."""
+    chromas, tic_raws, tau = _generate(batches, n_compounds, mz_bins, sigma_bins, jitter_min, seed)
+    return chromas, tic_raws, _truth(batches, tau, seed)
+
+
+def make_dataset(out_dir: Path, batches=DEFAULT_BATCHES, n_compounds: int = 60, mz_bins: int = 1000,
+                 sigma_bins: float = 0.9, jitter_min: float = 0.04, seed: int = 0) -> dict:
+    """Write <out_dir>/<batch>/chroma/*.npz (chroma, tic_raw) and <out_dir>/truth.json.
+    Returns the truth dictionary."""
+    out_dir = Path(out_dir)
+    chromas, tic_raws, tau = _generate(batches, n_compounds, mz_bins, sigma_bins, jitter_min, seed)
+    for spec, chroma_k, tic_k in zip(batches, chromas, tic_raws):
+        d = out_dir / spec.name / 'chroma'
+        d.mkdir(parents=True, exist_ok=True)
+        for old in d.glob('*.npz'):
+            old.unlink()
+        for i in range(spec.n):
+            np.savez_compressed(d / f'{spec.name}_{i:02d}.npz', chroma=chroma_k[i], tic_raw=tic_k[i])
+    truth = _truth(batches, tau, seed)
     (out_dir / 'truth.json').write_text(json.dumps(truth, indent=1))
     return truth
 
