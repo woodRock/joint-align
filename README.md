@@ -29,7 +29,7 @@ On five fish oil batches (90 chromatograms, 25,011 anchors):
 - **Not yet solved.** Dense PCHIP wins on two pairs, and the 90 % intervals cover only 81 % of
   held-out anchors (see [Limitations](#limitations)).
 
-All numbers below come from `results/` produced at gcmsalign `2ec54ea` (clean source tree).
+All numbers below come from `results/` produced at gcmsalign `1ffaa24` (clean source tree).
 TIC r is the Pearson correlation of normalised total ion chromatograms on the common acquisition
 window (bins ≥ 22, i.e. from 5 min, when every run has started acquiring).
 
