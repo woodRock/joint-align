@@ -1,15 +1,112 @@
 # many-batch-align
 
-[![CI](https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml/badge.svg)](https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml)
+<p align="center">
+  <img src="meme.png" alt="Five batches of chromatograms with peaks at different times are matched by compound, fitted with one monotone time warp per batch, and come out aligned in a shared time frame." width="820">
+</p>
 
-Retention-time alignment of GC-MS chromatograms across many (K > 2) batches at once: one
-monotone warp per batch into a shared retention-time frame, fitted jointly to spectral anchors
-from every cross-batch sample pair, with bootstrap uncertainty.
+<p align="center">
+  <a href="https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml"><img src="https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11">
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/lint-ruff-D7FF64?logo=ruff&logoColor=black" alt="Lint: ruff"></a>
+  <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/types-mypy-2A6DB2" alt="Types: mypy"></a>
+  <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
+  <a href="tutorial/mba_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
+  <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
+  <a href="https://github.com/woodRock/cow-dcnn"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
+</p>
 
-This follows up the pairwise Test-Time Calibrated WarpTransformer
-([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn), now the `gcmsalign` package).
-An interactive walk-through of the method and results lives in [`docs/`](docs/) (see
-[Project site](#project-site)).
+**Line up GC-MS chromatograms from many batches at once, with one smooth time warp per batch.**
+
+## What problem does this solve?
+
+In gas chromatography–mass spectrometry (GC-MS), each compound leaves the column at a
+characteristic *retention time*. Samples run weeks or months apart, in different *batches*,
+drift: the same compound shows up a little earlier or later in each batch. To compare samples
+across batches, you first have to undo that drift, which is called *alignment*.
+
+Most methods align two batches at a time. With five batches that means ten separate pairwise
+alignments, which need not agree with each other: going A → B → C can land somewhere different
+from going A → C directly. This repository aligns **all batches together**:
+
+1. **Match compounds.** Find peaks in every chromatogram and match them by mass spectrum
+   across every pair of samples from different batches. Each match is an *anchor*: "this time
+   in batch A is the same compound as that time in batch B".
+2. **Fit one warp per batch.** Map every batch into a shared time frame with a smooth,
+   always-increasing warp. All warps are fitted together, so every anchor helps every batch.
+3. **Get consistent, uncertainty-aware alignments.** Any batch can be mapped onto any other
+   through the shared frame, so the pairwise maps are consistent by construction. A bootstrap
+   gives error bands.
+
+It follows up the pairwise Test-Time Calibrated WarpTransformer
+([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn), now the `gcmsalign` package), and
+reuses that package's data loading, peak detection, baselines and metrics.
+
+## Contents
+
+- [Quick start](#quick-start)
+- [Learn how it works](#learn-how-it-works)
+- [Glossary](#glossary)
+- [Results at a glance](#results-at-a-glance)
+- [Method](#method-joint-monotone-batch-warps-srcmultibatchpy)
+- [Results on fish oil](#results-on-fish-oil)
+- [Limitations](#limitations)
+- [Development setup](#development-setup)
+- [Repository layout](#repository-layout)
+- [Open questions](#open-questions)
+
+## Quick start
+
+You need Python 3.11. The real fish oil data is private, so the quick start uses a public
+synthetic stand-in with the same design and *known* true drifts.
+
+```bash
+git clone https://github.com/woodRock/many-batch-align.git
+cd many-batch-align
+pip install -r requirements.txt     # installs the pinned gcmsalign from GitHub
+
+python scripts/00_make_synthetic_data.py
+python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
+python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
+```
+
+The pipeline takes about 2.5 minutes in all. Then look at:
+
+- `results/synthetic/multibatch_align.txt`: the report, covering TIC r per batch pair,
+  cross-validation, cycle consistency and uncertainty.
+- `figs/synthetic/multibatch_warps.png`: the fitted warp for each batch.
+- `data/synthetic/truth.json`: the true drifts, so you can check the fit yourself.
+
+`tests/test_pipeline.py` runs the same demo. It checks that the joint warps recover the true
+drifts to within 0.15 min wherever compounds exist in both batches. Script 31 (the
+WarpTransformer) needs gcmsalign's pretrained checkpoint, and script 32 skips that method when
+its warps are absent.
+
+## Learn how it works
+
+- **[Tutorial notebook](tutorial/mba_from_scratch.ipynb).** Build the joint model from scratch
+  on a toy world small enough to print every array. It has 18 short sections with plots,
+  sliders and exercises, and it ends by checking that the toy code matches `src/multibatch.py`
+  to about 1e-10 bins. Install `tutorial/requirements.txt`, then run
+  `jupyter lab tutorial/mba_from_scratch.ipynb`. The notebook is saved without outputs, so run
+  it to see the figures.
+- **[Code map](tutorial/CODE_MAP.md).** Each paper concept mapped to the file, function and
+  variable that implement it.
+- **[Project site](#project-site).** An interactive walk-through of the method and the real
+  results, in `docs/`.
+
+## Glossary
+
+| Term | Meaning here |
+|---|---|
+| **Retention time (RT)** | When a compound leaves the GC column. Time is binned into 200 bins of 0.225 min. |
+| **Batch** | A set of samples run together. Drift is mostly shared within a batch and differs between batches. |
+| **TIC** | Total ion chromatogram: the summed intensity over all m/z at each time bin. |
+| **Anchor** | A pair of peaks in two samples from different batches, matched by mass spectrum as the same compound. |
+| **Warp** | A monotone (always-increasing) map from one batch's time axis to another's, or to the shared frame. |
+| **Joint model** | One warp per batch into a shared frame, fitted to all anchors at once. This repository's method. |
+| **λ (lambda)** | Smoothness strength. Chosen by cross-validation on held-out anchors, never on TIC r. |
+| **TIC r** | Pearson correlation of two normalised TICs after alignment. Higher is better; it is a proxy, not ground truth. |
+| **Drifted / near-aligned pair** | A batch pair with unaligned TIC r below / above 0.5. |
 
 ## Results at a glance
 
@@ -143,39 +240,24 @@ per group:
 - **Thin testbed.** Five batches from one study, with batch confounded with species and tissue,
   and aug2015 has only two samples.
 
-## Try it without the private data
-
-The fish oil data is private. `scripts/00_make_synthetic_data.py` writes a public stand-in with
-the same five batch names and design, realistic drifts, and the true drifts in `truth.json`
-(`src/synthetic.py`). The whole pipeline runs on it in about 2.5 minutes:
-
-```
-python scripts/00_make_synthetic_data.py
-python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
-python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
-```
-
-`tests/test_pipeline.py` runs the same demo. It checks that the joint warps recover the true
-drifts to within 0.15 min wherever compounds exist in both batches. Script 31 (the
-WarpTransformer) needs gcmsalign's pretrained checkpoint, and script 32 skips that method when
-its warps are absent.
-
-## Setup and dependency on gcmsalign
+## Development setup
 
 Everything shared with the pairwise project comes from `gcmsalign`, not from a copy: the data
 loader and data paths, peak detection and fingerprints, the pooled-anchor extraction, the
-PCHIP/COW baselines, warping, the WarpTransformer and its calibration, and the metrics. A fix in
-gcmsalign applies here immediately.
+PCHIP/COW baselines, warping, the WarpTransformer and its calibration, and the metrics.
+`pip install -r requirements.txt` installs the pinned commit. To work on both repositories, swap
+it for an editable checkout, so a fix in gcmsalign applies here immediately:
 
-```
+```bash
+pip install -r requirements.txt
 pip install -e path/to/alignment          # editable checkout of github.com/woodRock/cow-dcnn
 make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs
 ```
 
-Running on the fish oil data:
+Running on the fish oil data (needs access to the private data):
 
-```
+```bash
 python scripts/30_multibatch_align.py     # joint model, ~4 min
 python scripts/31_wt_warps.py             # WarpTransformer warps, ~50 min on CPU
 python scripts/32_fair_benchmark.py       # every method, same protocols, ~5 min
@@ -206,7 +288,7 @@ results (`docs/data/site.json` and `site.js`, written by `scripts/40_export_site
 `docs/index.html` directly or run `make site`. To publish it with GitHub Pages, go to Settings →
 Pages → Deploy from branch, and choose `main` and `/docs`.
 
-## Layout
+## Repository layout
 
 - `src/multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
   pairwise baselines)
