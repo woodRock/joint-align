@@ -1,7 +1,7 @@
 """
 30_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
 
-Fits one monotone warp per batch into a shared latent RT frame (src/multibatch.py) from
+Fits one monotone warp per batch into a shared latent RT frame (src/jointalign/multibatch.py) from
 spectral anchors pooled over every cross-batch sample pair, and compares it with pairwise
 methods on all 10 batch pairs of the five fish oil batches.
 
@@ -30,7 +30,6 @@ Output: results/multibatch_align.txt, results/multibatch_align.npz, figs/multiba
 from __future__ import annotations
 
 import argparse
-import sys
 import time
 from itertools import combinations, permutations
 from pathlib import Path
@@ -43,10 +42,10 @@ from gcmsalign.metrics import holm, paired_wilcoxon, pearson_rows
 from gcmsalign.warps import pchip_warp, src_from_fn, warp_rows
 from scipy.stats import spearmanr
 
+from jointalign import multibatch as mb
+from jointalign.provenance import display_path, gcmsalign_revision
+
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
-import multibatch as mb
-from provenance import display_path, gcmsalign_revision
 
 DATA    = Paths().fish_oil
 RESULTS = ROOT / 'results'
@@ -107,7 +106,7 @@ def anchor_errors(model: mb.JointWarp, anc: mb.Anchors) -> np.ndarray:
 def in_run(model: mb.JointWarp, a: int, b: int) -> np.ndarray:
     """Bins where the map a → b is not clamped at a run end. There every bootstrap fit is pinned to
     the same end value, so the band width is ~0 for a trivial reason; band statistics exclude them
-    (src/analysis.py uses the same rule for the site and the figures)."""
+    (scripts/analysis.py uses the same rule for the site and the figures)."""
     m = model.map(a, b, GRID)
     return (m > 1e-6) & (m < N_BINS - 1 - 1e-6)
 

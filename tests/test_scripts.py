@@ -4,8 +4,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-import multibatch as mb
 from conftest import T, load_script
+from jointalign import multibatch as mb
 
 GRID = np.arange(T, dtype=float)
 

@@ -1,4 +1,4 @@
-"""Tests for src/multibatch.py: anchors, the joint monotone warp fit and its baselines."""
+"""Tests for jointalign.multibatch: anchors, the joint monotone warp fit and its baselines."""
 from __future__ import annotations
 
 from itertools import combinations
@@ -6,8 +6,8 @@ from itertools import combinations
 import numpy as np
 import pytest
 
-import multibatch as mb
 from conftest import T, library_positions, make_chroma, make_library
+from jointalign import multibatch as mb
 
 GRID = np.arange(T, dtype=float)
 

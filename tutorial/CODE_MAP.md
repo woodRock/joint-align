@@ -4,7 +4,7 @@ Where each piece of Many-Batch Alignment (MBA) lives in the code, with the names
 (`joint_from_scratch.ipynb`) uses. Paths are relative to the repository root. Everything was read from
 the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 
-## The joint model (`src/multibatch.py`)
+## The joint model (`src/jointalign/multibatch.py`)
 
 | Paper | Code | Key names |
 |---|---|---|
@@ -28,7 +28,7 @@ the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 | Pairwise baseline (same fitter, one pair) | `fit_pairwise(anchors, a, b, K, **kw)` | fits a 2-batch problem; other batches left at identity |
 | Dense PCHIP baseline | `pchip_pairwise(anchors, a, b)` | per-integer-bin medians, monotone filter, PCHIP with pinned ends |
 
-## Anchor harvesting (`src/multibatch.py`, building blocks from gcmsalign)
+## Anchor harvesting (`src/jointalign/multibatch.py`, building blocks from gcmsalign)
 
 | Step | Code | Key names / constants |
 |---|---|---|
@@ -66,11 +66,11 @@ used in the benchmark (`gcmsalign.baselines`, `gcmsalign.calibration`, `gcmsalig
 
 ## Synthetic data
 
-`src/synthetic.py` (`make_dataset`, `BatchSpec`, `true_map`) writes the public stand-in for the fish
+`src/jointalign/synthetic.py` (`make_dataset`, `BatchSpec`, `true_map`) writes the public stand-in for the fish
 oil data (T = 200, M = 1000, 60 compounds, 31 samples). The notebook builds its own, smaller toy
 world from scratch so every array can be printed.
 
 ## Neural refinement (appendix only)
 
-`src/neural_joint.py`: `NeuralJointWarp` (per-sample monotone warps g_i on the latent grid, starting at
+`src/jointalign/neural_joint.py`: `NeuralJointWarp` (per-sample monotone warps g_i on the latent grid, starting at
 the joint model), `train` (anchor Huber loss + groupwise dense similarity), `latent_grid_from_joint`.

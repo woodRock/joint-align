@@ -1,18 +1,18 @@
-# many-batch-align
+# joint-align
 
 <p align="center">
   <img src="meme.png" alt="Five batches of chromatograms with peaks at different times are matched by compound, fitted with one monotone time warp per batch, and come out aligned in a shared time frame." width="820">
 </p>
 
 <p align="center">
-  <a href="https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml"><img src="https://github.com/woodRock/many-batch-align/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/woodRock/joint-align/actions/workflows/ci.yml"><img src="https://github.com/woodRock/joint-align/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11">
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/lint-ruff-D7FF64?logo=ruff&logoColor=black" alt="Lint: ruff"></a>
   <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/types-mypy-2A6DB2" alt="Types: mypy"></a>
   <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
   <a href="tutorial/joint_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
   <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
-  <a href="https://github.com/woodRock/cow-dcnn"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
+  <a href="https://github.com/woodRock/warp-align"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
 </p>
 
 **Line up GC-MS chromatograms from many batches at once, with one smooth time warp per batch.**
@@ -38,7 +38,7 @@ from going A → C directly. This repository aligns **all batches together**:
    gives error bands.
 
 It follows up the pairwise Test-Time Calibrated WarpTransformer
-([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn), now the `gcmsalign` package), and
+([woodRock/warp-align](https://github.com/woodRock/warp-align), Python package `gcmsalign`), and
 reuses that package's data loading, peak detection, baselines and metrics.
 
 ## Contents
@@ -47,9 +47,10 @@ reuses that package's data loading, peak detection, baselines and metrics.
 - [Learn how it works](#learn-how-it-works)
 - [Glossary](#glossary)
 - [Results at a glance](#results-at-a-glance)
-- [Method](#method-joint-monotone-batch-warps-srcmultibatchpy)
+- [Method](#method-joint-monotone-batch-warps-jointalignmultibatch)
 - [Results on fish oil](#results-on-fish-oil)
 - [Limitations](#limitations)
+- [Use it as a library](#use-it-as-a-library)
 - [Development setup](#development-setup)
 - [Repository layout](#repository-layout)
 - [Open questions](#open-questions)
@@ -60,9 +61,9 @@ You need Python 3.11. The real fish oil data is private, so the quick start uses
 synthetic stand-in with the same design and *known* true drifts.
 
 ```bash
-git clone https://github.com/woodRock/many-batch-align.git
-cd many-batch-align
-pip install -r requirements.txt     # installs the pinned gcmsalign from GitHub
+git clone https://github.com/woodRock/joint-align.git
+cd joint-align
+pip install -e ".[dev,neural]"      # the package, plus the pinned gcmsalign from GitHub
 
 python scripts/00_make_synthetic_data.py
 python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
@@ -85,8 +86,8 @@ its warps are absent.
 
 - **[Tutorial notebook](tutorial/joint_from_scratch.ipynb).** Build the joint model from scratch
   on a toy world small enough to print every array. It has 18 short sections with plots,
-  sliders and exercises, and it ends by checking that the toy code matches `src/multibatch.py`
-  to about 1e-10 bins. Install `tutorial/requirements.txt`, then run
+  sliders and exercises, and it ends by checking that the toy code matches `jointalign.multibatch`
+  to about 1e-10 bins. Install the package with `pip install -e ".[dev,tutorial]"`, then run
   `jupyter lab tutorial/joint_from_scratch.ipynb`. It is saved with its outputs, so GitHub shows
   the figures without running it.
 - **[Companion slides](tutorial/The%20Joint%20Model,%20Step%20by%20Step.pdf)** ([pptx](tutorial/The%20Joint%20Model,%20Step%20by%20Step.pptx)).
@@ -133,7 +134,7 @@ All numbers below come from `results/` produced at gcmsalign `1ffaa24` (clean so
 TIC r is the Pearson correlation of normalised total ion chromatograms on the common acquisition
 window (bins ≥ 22, i.e. from 5 min, when every run has started acquiring).
 
-## Method: joint monotone batch warps (`src/multibatch.py`)
+## Method: joint monotone batch warps (`jointalign.multibatch`)
 
 Each batch k gets one warp f_k(t) = t + d_k(t) into a shared latent frame. d_k is piecewise
 linear on 41 knots. All warps are fitted together in one bounded least-squares problem:
@@ -155,7 +156,7 @@ pair with few or poor direct anchors borrows strength from the paths through the
 Uncertainty comes from a bootstrap over samples within each batch (200 refits). The 90 %
 predictive intervals combine the bootstrap band with each pair's robust anchor scatter.
 
-`src/neural_joint.py` adds an optional refinement. Per-sample monotone warps start at the
+`jointalign.neural_joint` adds an optional refinement. Per-sample monotone warps start at the
 joint model and are trained on the anchors plus a groupwise m/z-resolved similarity term.
 
 ## Results on fish oil
@@ -243,17 +244,39 @@ per group:
 - **Thin testbed.** Five batches from one study, with batch confounded with species and tissue,
   and aug2015 has only two samples.
 
+## Use it as a library
+
+The joint model is the installable package `jointalign` (distribution name `joint-align`).
+Pin it to a tag or commit so your results stay reproducible:
+
+```bash
+pip install "joint-align @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"
+pip install "joint-align[neural] @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"  # + neural refinement
+```
+
+```python
+import jointalign as ja
+
+anchors = ja.harvest_anchors(chromas)            # chromas[k][i]: (T, M) array, sample i of batch k
+model = ja.fit_joint(anchors, len(chromas), lam=10.0)
+t_in_l = model.map(k, l, t)                      # retention times of batch k, mapped into batch l
+```
+
+Record which version produced your numbers with `jointalign.provenance.jointalign_revision()`.
+
 ## Development setup
 
 Everything shared with the pairwise project comes from `gcmsalign`, not from a copy: the data
 loader and data paths, peak detection and fingerprints, the pooled-anchor extraction, the
 PCHIP/COW baselines, warping, the WarpTransformer and its calibration, and the metrics.
-`pip install -r requirements.txt` installs the pinned commit. To work on both repositories, swap
-it for an editable checkout, so a fix in gcmsalign applies here immediately:
+`pyproject.toml` pins gcmsalign to a pushed commit, and `pip install -e ".[dev,neural]"` installs
+it. To work on both repositories, use an editable gcmsalign checkout instead, so a fix there applies
+here immediately. Install this package with `--no-deps` (or `make install`), otherwise pip
+replaces the editable gcmsalign with the pinned commit:
 
 ```bash
-pip install -r requirements.txt
-pip install -e path/to/alignment          # editable checkout of github.com/woodRock/cow-dcnn
+pip install -e path/to/warp-align         # editable checkout of github.com/woodRock/warp-align
+pip install --no-deps -e .                # this package, editable (= make install)
 make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs
 ```
@@ -276,10 +299,14 @@ Git holds the text reports (`results/*.txt`) and figure captions, not caches or 
 regenerate the `.npz` caches and the figure PDFs/PNGs with the scripts above.
 
 Every result file records the gcmsalign version and commit, and whether its `src/` was dirty
-(`src/provenance.py`). Commit gcmsalign before a run whose results you intend to keep.
+(`jointalign.provenance.gcmsalign_revision`). Commit gcmsalign before a run whose results you
+intend to keep. Projects that build on this package can record its revision the same way with
+`jointalign.provenance.jointalign_revision()`.
 
 CI (`.github/workflows/ci.yml`) runs ruff, mypy and the full test suite on every push and pull
-request, against the gcmsalign commit pinned in `requirements.txt`. Coverage must stay ≥ 90 %.
+request, against the gcmsalign commit pinned in `pyproject.toml`. Coverage must stay ≥ 90 %. A
+package job installs the package non-editable into a clean environment and imports it from
+outside the checkout, which catches files missing from the package.
 The fish oil data is private, so the real-data tests run only locally. A non-blocking canary job
 tests against gcmsalign's latest `main`, so a breaking upstream change shows up before the pin
 is bumped.
@@ -293,18 +320,21 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 
 ## Repository layout
 
-- `src/multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
-  pairwise baselines)
-- `src/neural_joint.py`: neural refinement of the joint model
-- `src/synthetic.py`, `scripts/00_make_synthetic_data.py`: public synthetic data with known drifts
-- `src/provenance.py`: the gcmsalign revision line written into results
+- `src/jointalign/`: the installable package (`import jointalign`; distribution `joint-align`)
+  - `multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
+    pairwise baselines); its public API is re-exported from `jointalign`
+  - `neural_joint.py`: neural refinement of the joint model (needs torch)
+  - `synthetic.py`: public synthetic data with known drifts (written by
+    `scripts/00_make_synthetic_data.py`)
+  - `provenance.py`: the gcmsalign and jointalign revision lines written into results
 - `scripts/30_multibatch_align.py`: the full evaluation of the joint model
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
 - `scripts/40_export_site_data.py`: exports the data behind the project site
 - `scripts/50_paper_figures.py`: paper figures (`figs/paper/*.pdf`) and `figs/paper/captions.md`, whose
   numbers are computed from the results
-- `src/analysis.py`: analyses shared by the site and the figures, so the two cannot disagree
+- `scripts/analysis.py`: analyses shared by the site and the figures, so the two cannot disagree
+  (paper-specific: it reads `results/`, so it is not part of the package)
 - `tests/`: unit, synthetic end-to-end and real-data integrity tests
 - `docs/`: the project site
 

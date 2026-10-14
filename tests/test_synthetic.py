@@ -1,4 +1,4 @@
-"""Tests for src/synthetic.py: the public stand-in dataset with known drifts."""
+"""Tests for jointalign.synthetic: the public stand-in dataset with known drifts."""
 from __future__ import annotations
 
 import json
@@ -6,7 +6,7 @@ import json
 import numpy as np
 from gcmsalign.data import load_batch
 
-import synthetic as syn
+from jointalign import synthetic as syn
 
 
 def test_dataset_layout_and_truth(tmp_path):

@@ -1,9 +1,5 @@
-# gcmsalign, pinned to a pushed commit of github.com/woodRock/cow-dcnn (the alignment repo).
-# CI installs this. Locally, use the editable checkout instead so fixes apply immediately:
-#   pip install -e ~/Desktop/alignment
-# Bump the commit when this repo should follow a gcmsalign change.
-gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@1ffaa24a44dde64dca41c958fe2fefd0725aec84
-
-# test / tooling
-pytest>=8
-coverage>=7
+# The package and everything CI uses (gcmsalign is pinned in pyproject.toml):
+#   pip install -e ".[dev,neural]"
+# Developing against a local, editable gcmsalign checkout instead (keeps it from being replaced):
+#   pip install -e path/to/warp-align && pip install --no-deps -e .
+-e .[dev,neural]

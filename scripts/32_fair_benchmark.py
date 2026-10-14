@@ -21,15 +21,14 @@ Methods
   PCHIP + COW refine    pooled PCHIP, then per-A_i COW (8 segments, ±4 bins) onto mean B TIC
   COW-TIC               gcmsalign.baselines.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
   WarpTransformer       script 31 cache (gcmsalign calibrate_pair, v2 checkpoint, seed 0, CPU)
-  Joint                 src/multibatch.py, λ and reference from script 30
-  Neural joint          src/neural_joint.py on top of Joint (anchors + dense, sample level)
+  Joint                 src/jointalign/multibatch.py, λ and reference from script 30
+  Neural joint          src/jointalign/neural_joint.py on top of Joint (anchors + dense, sample level)
 
 Output: results/fair_benchmark.txt, results/fair_benchmark.npz
 """
 from __future__ import annotations
 
 import argparse
-import sys
 import time
 from pathlib import Path
 
@@ -42,11 +41,11 @@ from gcmsalign.data import load_batch
 from gcmsalign.metrics import holm, paired_wilcoxon, pearson
 from gcmsalign.warps import invert_src, pchip_warp, src_from_fn, warp_signal
 
+from jointalign import multibatch as mb
+from jointalign import neural_joint as nj
+from jointalign.provenance import display_path, gcmsalign_revision
+
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
-import multibatch as mb
-import neural_joint as nj
-from provenance import display_path, gcmsalign_revision
 
 DATA, RESULTS = Paths().fish_oil, ROOT / 'results'
 GRID = np.arange(N_BINS, dtype=float)

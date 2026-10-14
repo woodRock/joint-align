@@ -10,19 +10,18 @@ against the truth:
     python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
 
 (Script 31, the WarpTransformer baseline, needs the gcmsalign checkpoint; script 32 skips that
-method when its warps are absent.) See src/synthetic.py for the generative model.
+method when its warps are absent.) See src/jointalign/synthetic.py for the generative model.
 
 Output: data/synthetic/<batch>/chroma/*.npz, data/synthetic/truth.json
 """
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 
+from jointalign.synthetic import DEFAULT_BATCHES, make_dataset
+
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
-from synthetic import DEFAULT_BATCHES, make_dataset
 
 
 def main(out: Path, seed: int) -> None:

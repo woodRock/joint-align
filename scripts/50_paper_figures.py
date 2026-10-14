@@ -1,13 +1,13 @@
 """
 50_paper_figures.py — Publication figures (vector PDF + PNG preview) and captions.
 
-Reads the same results as the project site (src/analysis.py), so the paper and the site cannot
+Reads the same results as the project site (scripts/analysis.py), so the paper and the site cannot
 disagree. Main figures:
 
   fig1_problem_method    TICs of every batch on its own clock and in the shared frame; the
                          shared frame drawn from the fitted warps
   fig2_recovery          anchors and fits for one drifted pair; recovery of known drifts on the
-                         synthetic data (src/synthetic.py)
+                         synthetic data (src/jointalign/synthetic.py)
   fig3_comparison        TIC r per batch-A sample for the anchor-based methods; held-out anchor
                          error per pair
   fig4_consistency       cycle inconsistency over all batch triplets; the worst route
@@ -22,7 +22,6 @@ Output: figs/paper/*.pdf, figs/paper/*.png, figs/paper/captions.md
 from __future__ import annotations
 
 import argparse
-import sys
 import tempfile
 from itertools import combinations, pairwise
 from pathlib import Path
@@ -37,11 +36,11 @@ from gcmsalign.data import load_batch
 from matplotlib.lines import Line2D
 from scipy.stats import spearmanr
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
 import analysis as an
-import multibatch as mb
-import synthetic as syn
+from jointalign import multibatch as mb
+from jointalign import synthetic as syn
+
+ROOT = Path(__file__).resolve().parent.parent
 
 RESULTS = ROOT / 'results'
 OUT = ROOT / 'figs' / 'paper'
