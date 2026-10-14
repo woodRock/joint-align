@@ -1,4 +1,4 @@
-# many-batch-align
+# joint-align
 
 <p align="center">
   <img src="meme.png" alt="Five batches of chromatograms with peaks at different times are matched by compound, fitted with one monotone time warp per batch, and come out aligned in a shared time frame." width="820">
@@ -246,12 +246,12 @@ per group:
 
 ## Use it as a library
 
-The joint model is the installable package `jointalign` (distribution name `many-batch-align`).
+The joint model is the installable package `jointalign` (distribution name `joint-align`).
 Pin it to a tag or commit so your results stay reproducible:
 
 ```bash
-pip install "many-batch-align @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"
-pip install "many-batch-align[neural] @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"  # + neural refinement
+pip install "joint-align @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"
+pip install "joint-align[neural] @ git+https://github.com/woodRock/joint-align@<tag-or-commit>"  # + neural refinement
 ```
 
 ```python
@@ -320,7 +320,7 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 
 ## Repository layout
 
-- `src/jointalign/`: the installable package (`import jointalign`; distribution `many-batch-align`)
+- `src/jointalign/`: the installable package (`import jointalign`; distribution `joint-align`)
   - `multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
     pairwise baselines); its public API is re-exported from `jointalign`
   - `neural_joint.py`: neural refinement of the joint model (needs torch)

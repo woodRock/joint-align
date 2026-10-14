@@ -2,7 +2,7 @@
 jointalign: joint retention-time alignment of GC-MS chromatograms across many batches.
 
 One monotone warp per batch into a shared retention-time frame, fitted jointly to spectral anchors
-from every cross-batch sample pair (the joint model). Distribution name: many-batch-align.
+from every cross-batch sample pair (the joint model). Distribution name: joint-align.
 
 Submodules: multibatch (the joint model and its baselines, re-exported here), synthetic (public
 stand-in data with known drifts), provenance (revision lines for results) and neural_joint (the
@@ -23,7 +23,7 @@ from jointalign.multibatch import (
 )
 
 try:
-    __version__ = version('many-batch-align')
+    __version__ = version('joint-align')
 except PackageNotFoundError:  # pragma: no cover - imported from a source tree that was never installed
     __version__ = 'unknown'
 

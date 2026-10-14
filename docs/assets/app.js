@@ -1,4 +1,4 @@
-/* many-batch-align — interactive figures. Every number comes from data/site.json
+/* joint-align — interactive figures. Every number comes from data/site.json
    (scripts/40_export_site_data.py). Colours are CSS tokens, so the theme toggle needs no redraw
    except for charts that compute colours (heatmaps). */
 (() => {

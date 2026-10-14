@@ -4,7 +4,7 @@ gcmsalign_revision(): gcmsalign is installed editable from ~/Desktop/alignment, 
 the data under its data/fish_oil) can change between runs. Every paper-one result file records
 this line.
 
-jointalign_revision(): the same for this package (many-batch-align), for downstream projects that
+jointalign_revision(): the same for this package (joint-align), for downstream projects that
 must record which version of the joint model produced their numbers.
 """
 from __future__ import annotations
@@ -47,19 +47,19 @@ def display_path(p) -> str:
 
 
 def jointalign_revision() -> str:
-    """e.g. 'many-batch-align 1.0.0 @ 1a2b3c4 (src clean)'. Installed non-editable (no git checkout
-    around the package): 'many-batch-align 1.0.0 (installed, no git)'."""
+    """e.g. 'joint-align 1.0.0 @ 1a2b3c4 (src clean)'. Installed non-editable (no git checkout
+    around the package): 'joint-align 1.0.0 (installed, no git)'."""
     from importlib.metadata import PackageNotFoundError, version
 
     import jointalign
     try:
-        ver = version('many-batch-align')
+        ver = version('joint-align')
     except PackageNotFoundError:
         ver = '?'
     root = Path(jointalign.__file__).resolve().parents[2]    # <root>/src/jointalign/__init__.py
     top = _git('rev-parse', '--show-toplevel', cwd=root)
     if not top or Path(top).resolve() != root:    # site-packages, possibly inside some other repo
-        return f'many-batch-align {ver} (installed, no git)'
+        return f'joint-align {ver} (installed, no git)'
     sha = _git('rev-parse', '--short', 'HEAD', cwd=root) or 'unknown commit'
     state = 'src dirty' if _git('status', '--porcelain', '--', 'src', cwd=root) else 'src clean'
-    return f'many-batch-align {ver} @ {sha} ({state})'
+    return f'joint-align {ver} @ {sha} ({state})'

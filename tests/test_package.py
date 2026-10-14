@@ -19,7 +19,7 @@ def test_public_api_reexports_multibatch():
 
 def test_jointalign_revision_in_checkout():
     rev = provenance.jointalign_revision()
-    assert re.fullmatch(rf'many-batch-align {re.escape(jointalign.__version__)} @ \w+ \(src (clean|dirty)\)', rev)
+    assert re.fullmatch(rf'joint-align {re.escape(jointalign.__version__)} @ \w+ \(src (clean|dirty)\)', rev)
 
 
 def test_jointalign_revision_installed_without_git(tmp_path, monkeypatch):
@@ -28,7 +28,7 @@ def test_jointalign_revision_installed_without_git(tmp_path, monkeypatch):
     fake.parent.mkdir(parents=True)
     shutil.copy(jointalign.__file__, fake)
     monkeypatch.setattr(jointalign, '__file__', str(fake))
-    assert provenance.jointalign_revision() == f'many-batch-align {jointalign.__version__} (installed, no git)'
+    assert provenance.jointalign_revision() == f'joint-align {jointalign.__version__} (installed, no git)'
 
 
 def test_jointalign_revision_inside_another_repo(tmp_path, monkeypatch):
