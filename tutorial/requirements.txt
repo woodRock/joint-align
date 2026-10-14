@@ -1,4 +1,5 @@
-# Notebook-only dependencies for tutorial/joint_from_scratch.ipynb, on top of the repo's own
-# (numpy, scipy, scikit-learn, matplotlib and gcmsalign, see ../requirements.txt).
+# Notebook-only dependencies for tutorial/joint_from_scratch.ipynb, on top of the package's own
+# (numpy, scipy, scikit-learn, matplotlib and gcmsalign). Same as: pip install -e ".[dev,tutorial]"
+# The notebook imports jointalign, so install the package first (see the README).
 jupyter          # or: nbconvert + ipykernel, enough to run it headless
 ipywidgets       # optional: sliders; every slider cell falls back to a static plot without it

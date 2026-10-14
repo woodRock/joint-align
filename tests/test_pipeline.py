@@ -1,5 +1,5 @@
 """
-End-to-end runs of scripts 30, 31 and 32 on the public synthetic dataset (src/synthetic.py),
+End-to-end runs of scripts 30, 31 and 32 on the public synthetic dataset (jointalign.synthetic),
 whose true drifts are known. Marked slow (well under a minute together).
 """
 from __future__ import annotations
@@ -11,8 +11,8 @@ import sys
 import numpy as np
 import pytest
 
-import synthetic as syn
 from conftest import ROOT, T, load_script
+from jointalign import synthetic as syn
 
 pytestmark = pytest.mark.slow
 
@@ -70,7 +70,7 @@ def test_script30_joint_aligns_synthetic_batches(run30):
 
 def test_script30_recovers_true_drifts(run30):
     """The joint warps between every pair of batches match the generator's true drifts."""
-    import multibatch as mb
+    from jointalign import multibatch as mb
     z = np.load(run30 / 'results' / 'multibatch_align.npz')
     names = [str(n) for n in z['names']]
     model = mb.JointWarp(z['knots'], z['drift'], np.full((5, 5), np.nan), np.ones(1))

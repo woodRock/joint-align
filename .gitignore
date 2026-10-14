@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
+/build/
+/dist/
 .venv/
 
 # Data (never commit; data/fish_oil is a symlink to the alignment repo)

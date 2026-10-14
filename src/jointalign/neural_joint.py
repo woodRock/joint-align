@@ -6,7 +6,7 @@ RT axis:
 
     g_i(τ) = g0_k(0) + c_k + c_i + Σ_{m<τ} g0_k'(m) · exp(ρ · tanh(s_k(m) + s_i(m)))
 
-  g0_k   the anchor-only joint model (src/multibatch.py), used as the backbone and the init
+  g0_k   the anchor-only joint model (jointalign.multibatch), used as the backbone and the init
   s_k    batch-level log-slope residual: an MLP of Fourier features of τ and a batch embedding
   s_i    sample-level log-slope residual: an MLP of τ, the batch and a sample embedding,
          shrunk to zero and mean-zero within each batch
@@ -38,7 +38,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from multibatch import N_BINS, Anchors, JointWarp
+from jointalign.multibatch import N_BINS, Anchors, JointWarp
 
 RHO = math.log(2.0)          # slope relative to the backbone stays in [0.5, 2]
 

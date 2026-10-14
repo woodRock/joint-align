@@ -1,4 +1,4 @@
-"""Tests for src/neural_joint.py."""
+"""Tests for jointalign.neural_joint."""
 from __future__ import annotations
 
 import numpy as np
@@ -6,9 +6,9 @@ import pytest
 import torch
 from gcmsalign.warps import warp_signal
 
-import multibatch as mb
-import neural_joint as nj
 from conftest import T, library_positions, make_chroma
+from jointalign import multibatch as mb
+from jointalign import neural_joint as nj
 
 GRID = np.arange(T, dtype=float)
 

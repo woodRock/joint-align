@@ -13,7 +13,6 @@ Output: results/wt_warps/<A>__<B>.npz with warps (n_a + n_b, T), the anchors, th
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -22,9 +21,9 @@ from gcmsalign.config import Paths
 from gcmsalign.data import load_batch
 from gcmsalign.steps.calibrate_pair import compute
 
+from jointalign.provenance import gcmsalign_revision
+
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
-from provenance import gcmsalign_revision
 
 DATA = Paths().fish_oil
 PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),

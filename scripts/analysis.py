@@ -17,7 +17,7 @@ from types import ModuleType
 import numpy as np
 from gcmsalign.config import BIN_MIN, N_BINS
 
-import multibatch as mb
+from jointalign import multibatch as mb
 
 ROOT = Path(__file__).resolve().parent.parent
 GRID = np.arange(N_BINS, dtype=float)

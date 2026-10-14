@@ -1,5 +1,10 @@
 # Local equivalents of the CI jobs. `make check` runs all three.
-.PHONY: check lint types test test-fast site figures
+.PHONY: install check lint types test test-fast site figures
+
+# Editable install next to an editable gcmsalign checkout (--no-deps keeps pip from replacing it
+# with the commit pinned in pyproject.toml). Fresh environments: pip install -e ".[dev,neural]".
+install:
+	python3.11 -m pip install --no-deps -e .
 
 check: lint types test
 

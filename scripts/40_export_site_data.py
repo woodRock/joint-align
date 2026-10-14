@@ -13,17 +13,16 @@ import argparse
 import datetime as dt
 import json
 import re
-import sys
 from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
 from gcmsalign.config import BIN_MIN, EVAL_START_BIN, N_BINS
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
 import analysis as an
-from provenance import gcmsalign_revision
+from jointalign.provenance import gcmsalign_revision
+
+ROOT = Path(__file__).resolve().parent.parent
 
 RESULTS = ROOT / 'results'
 OUT = ROOT / 'docs' / 'data' / 'site.json'

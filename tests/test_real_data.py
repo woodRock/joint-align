@@ -13,8 +13,8 @@ import numpy as np
 import pytest
 from gcmsalign.data import load_batch
 
-import multibatch as mb
 from conftest import DATA, RESULTS, ROOT, requires_data
+from jointalign import multibatch as mb
 
 pytestmark = requires_data
 

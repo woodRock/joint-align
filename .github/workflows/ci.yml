@@ -1,7 +1,7 @@
 name: CI
 
 # Every push and pull request: lint, type-check, and the whole test suite (unit + synthetic
-# end-to-end, ~1 min) against the gcmsalign commit pinned in requirements.txt. The private
+# end-to-end, ~1 min) against the gcmsalign commit pinned in pyproject.toml. The private
 # fish-oil data is not available here, so tests/test_real_data.py skips itself.
 #
 # Upstream canary: the same tests against gcmsalign's latest main (weekly, on demand, and on
@@ -51,9 +51,9 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-          cache-dependency-path: requirements.txt
+          cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -r requirements.txt mypy==$MYPY_VERSION
+      - run: pip install -e ".[dev,neural]" mypy==$MYPY_VERSION
       - run: mypy
 
   tests:
@@ -67,9 +67,9 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-          cache-dependency-path: requirements.txt
+          cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -r requirements.txt
+      - run: pip install -e ".[dev,neural]"
       - name: Record gcmsalign revision
         run: python -c "import importlib.metadata as m; print(m.distribution('gcmsalign').read_text('direct_url.json'))"
       - name: Run tests with coverage
@@ -96,8 +96,30 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-          cache-dependency-path: requirements.txt
+          cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -r requirements.txt
+      - run: pip install -e ".[dev,neural]"
       - run: pip install --force-reinstall --no-deps "gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@main"
       - run: python -m pytest
+
+  package:
+    name: Package (non-editable install)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      # A clean venv and a regular (non-editable) install, imported from outside the checkout:
+      # catches modules or data missing from the built package.
+      - run: python -m venv /tmp/venv
+      - run: /tmp/venv/bin/pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
+      - run: /tmp/venv/bin/pip install ".[neural]"
+      - name: Import from outside the repository
+        working-directory: /tmp
+        run: |
+          /tmp/venv/bin/python -c "import jointalign; print(jointalign.__version__)"
+          /tmp/venv/bin/python -c "import jointalign.neural_joint, jointalign.synthetic"
+          /tmp/venv/bin/python -c "from jointalign.provenance import jointalign_revision as r; print(r()); assert r().endswith('(installed, no git)')"
