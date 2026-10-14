@@ -10,7 +10,7 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/lint-ruff-D7FF64?logo=ruff&logoColor=black" alt="Lint: ruff"></a>
   <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/types-mypy-2A6DB2" alt="Types: mypy"></a>
   <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
-  <a href="tutorial/mba_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
+  <a href="tutorial/joint_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
   <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
   <a href="https://github.com/woodRock/cow-dcnn"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
 </p>
@@ -83,12 +83,15 @@ its warps are absent.
 
 ## Learn how it works
 
-- **[Tutorial notebook](tutorial/mba_from_scratch.ipynb).** Build the joint model from scratch
+- **[Tutorial notebook](tutorial/joint_from_scratch.ipynb).** Build the joint model from scratch
   on a toy world small enough to print every array. It has 18 short sections with plots,
   sliders and exercises, and it ends by checking that the toy code matches `src/multibatch.py`
   to about 1e-10 bins. Install `tutorial/requirements.txt`, then run
-  `jupyter lab tutorial/mba_from_scratch.ipynb`. The notebook is saved without outputs, so run
-  it to see the figures.
+  `jupyter lab tutorial/joint_from_scratch.ipynb`. It is saved with its outputs, so GitHub shows
+  the figures without running it.
+- **[Companion slides](tutorial/The%20Joint%20Model,%20Step%20by%20Step.pdf)** ([pptx](tutorial/The%20Joint%20Model,%20Step%20by%20Step.pptx)).
+  20 slides that walk through the same steps with the same small numbers, with refreshers on
+  matrices, least squares and singular systems.
 - **[Code map](tutorial/CODE_MAP.md).** Each paper concept mapped to the file, function and
   variable that implement it.
 - **[Project site](#project-site).** An interactive walk-through of the method and the real

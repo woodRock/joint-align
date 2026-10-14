@@ -1,7 +1,7 @@
 # Code map: paper concepts → implementation
 
 Where each piece of Many-Batch Alignment (MBA) lives in the code, with the names the notebook
-(`mba_from_scratch.ipynb`) uses. Paths are relative to the repository root. Everything was read from
+(`joint_from_scratch.ipynb`) uses. Paths are relative to the repository root. Everything was read from
 the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 
 ## The joint model (`src/multibatch.py`)
