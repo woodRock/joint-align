@@ -15,10 +15,10 @@ dependencies = [
     "numpy>=1.26",
     "scipy>=1.11",
     "scikit-learn>=1.3",
-    # Not on PyPI: a direct reference, pinned to a pushed commit of github.com/woodRock/cow-dcnn.
+    # Not on PyPI: a direct reference, pinned to a pushed commit of github.com/woodRock/warp-align.
     # Bump it when this package should follow a gcmsalign change. To develop against a local
     # checkout instead, install it editable and this package with --no-deps (see the README).
-    "gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@1ffaa24a44dde64dca41c958fe2fefd0725aec84",
+    "gcmsalign @ git+https://github.com/woodRock/warp-align.git@1ffaa24a44dde64dca41c958fe2fefd0725aec84",
 ]
 
 [project.optional-dependencies]

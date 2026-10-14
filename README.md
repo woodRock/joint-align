@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
   <a href="tutorial/joint_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
   <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
-  <a href="https://github.com/woodRock/cow-dcnn"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
+  <a href="https://github.com/woodRock/warp-align"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
 </p>
 
 **Line up GC-MS chromatograms from many batches at once, with one smooth time warp per batch.**
@@ -38,7 +38,7 @@ from going A → C directly. This repository aligns **all batches together**:
    gives error bands.
 
 It follows up the pairwise Test-Time Calibrated WarpTransformer
-([woodRock/cow-dcnn](https://github.com/woodRock/cow-dcnn), now the `gcmsalign` package), and
+([woodRock/warp-align](https://github.com/woodRock/warp-align), Python package `gcmsalign`), and
 reuses that package's data loading, peak detection, baselines and metrics.
 
 ## Contents
@@ -275,7 +275,7 @@ here immediately. Install this package with `--no-deps` (or `make install`), oth
 replaces the editable gcmsalign with the pinned commit:
 
 ```bash
-pip install -e path/to/alignment          # editable checkout of github.com/woodRock/cow-dcnn
+pip install -e path/to/warp-align         # editable checkout of github.com/woodRock/warp-align
 pip install --no-deps -e .                # this package, editable (= make install)
 make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs

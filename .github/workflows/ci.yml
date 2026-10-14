@@ -99,7 +99,7 @@ jobs:
           cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
       - run: pip install -e ".[dev,neural]"
-      - run: pip install --force-reinstall --no-deps "gcmsalign @ git+https://github.com/woodRock/cow-dcnn.git@main"
+      - run: pip install --force-reinstall --no-deps "gcmsalign @ git+https://github.com/woodRock/warp-align.git@main"
       - run: python -m pytest
 
   package:

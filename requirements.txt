@@ -1,5 +1,5 @@
 # The package and everything CI uses (gcmsalign is pinned in pyproject.toml):
 #   pip install -e ".[dev,neural]"
 # Developing against a local, editable gcmsalign checkout instead (keeps it from being replaced):
-#   pip install -e path/to/alignment && pip install --no-deps -e .
+#   pip install -e path/to/warp-align && pip install --no-deps -e .
 -e .[dev,neural]
