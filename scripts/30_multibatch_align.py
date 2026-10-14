@@ -46,7 +46,7 @@ from scipy.stats import spearmanr
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
 import multibatch as mb
-from provenance import gcmsalign_revision
+from provenance import display_path, gcmsalign_revision
 
 DATA    = Paths().fish_oil
 RESULTS = ROOT / 'results'
@@ -104,6 +104,14 @@ def anchor_errors(model: mb.JointWarp, anc: mb.Anchors) -> np.ndarray:
     return err
 
 
+def in_run(model: mb.JointWarp, a: int, b: int) -> np.ndarray:
+    """Bins where the map a → b is not clamped at a run end. There every bootstrap fit is pinned to
+    the same end value, so the band width is ~0 for a trivial reason; band statistics exclude them
+    (src/analysis.py uses the same rule for the site and the figures)."""
+    m = model.map(a, b, GRID)
+    return (m > 1e-6) & (m < N_BINS - 1 - 1e-6)
+
+
 def boot_weights(anc: mb.Anchors, sizes: list[int], rng: np.random.Generator) -> np.ndarray:
     cnt = [rng.multinomial(n, np.full(n, 1.0 / n)) for n in sizes]
     return np.array([cnt[a][i] * cnt[b][j] for a, b, i, j in zip(anc.ba, anc.bb, anc.sa, anc.sb)],
@@ -134,7 +142,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     chroma = [bt.chromas for bt in batches]
     tics   = [bt.tic for bt in batches]
     sizes  = [len(bt) for bt in batches]
-    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {DATA}', '']
+    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {display_path(DATA)}', '']
     say = lambda s='': (L.append(s), print(s))
     say('Batches: ' + ', '.join(f'{short(b)} (n={n})' for b, n in zip(names, sizes)))
 
@@ -352,7 +360,8 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     for a, b in permutations(range(K), 2):
         maps = np.stack([m.map(a, b, GRID) for m in boots])
         band[(a, b)] = np.percentile(maps, [5, 95], axis=0)
-    say('   90 % band width (min) vs direct anchor support (anchors of the pair within ±2.5 bins)')
+    say('   90 % band width (min) vs direct anchor support (anchors of the pair within ±2.5 bins), '
+        't ∈ [2, 43] min where the warp is not clamped at a run end')
     say(f'   {"pair":<18} {"median width":>12} {"supported":>10} {"unsupported":>12} '
         f'{"Spearman(width, support)":>25}')
     allw, alls = [], []
@@ -360,7 +369,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         p = anc.pair(a, b)
         sup = np.array([np.sum(np.abs(p.ta - t) <= 2.5) for t in GRID])
         w = (band[(a, b)][1] - band[(a, b)][0]) * BIN_MIN
-        inner = (GRID * BIN_MIN >= 2) & (GRID * BIN_MIN <= 43)
+        inner = (GRID * BIN_MIN >= 2) & (GRID * BIN_MIN <= 43) & in_run(joint, a, b)
         allw.append(w[inner]); alls.append(sup[inner])
         ws = np.median(w[inner & (sup > 0)]) if (inner & (sup > 0)).any() else np.nan
         wu = np.median(w[inner & (sup == 0)]) if (inner & (sup == 0)).any() else np.nan
@@ -383,8 +392,9 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
                          for _ in range(max(n_boot // 4, 20))])
         q = np.percentile(maps, [5, 95], axis=0)
         lopo_width[(a, b)] = q
-        w_with = np.median((band[(a, b)][1] - band[(a, b)][0])[inner]) * BIN_MIN
-        w_wo   = np.median((q[1] - q[0])[inner]) * BIN_MIN
+        ok = inner & in_run(joint, a, b)
+        w_with = np.median((band[(a, b)][1] - band[(a, b)][0])[ok]) * BIN_MIN
+        w_wo   = np.median((q[1] - q[0])[ok]) * BIN_MIN
         say(f'   {short(A_) + "×" + short(B_):<18} with {w_with:.3f} min   without {w_wo:.3f} min'
             f'   ×{w_wo / max(w_with, 1e-9):.1f}')
 

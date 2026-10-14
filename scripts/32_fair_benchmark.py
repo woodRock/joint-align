@@ -46,7 +46,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
 import multibatch as mb
 import neural_joint as nj
-from provenance import gcmsalign_revision
+from provenance import display_path, gcmsalign_revision
 
 DATA, RESULTS = Paths().fish_oil, ROOT / 'results'
 GRID = np.arange(N_BINS, dtype=float)
@@ -112,7 +112,7 @@ def main(neural_steps: int) -> None:
     tics = [bt.tic for bt in batches]
     sizes = [len(bt) for bt in batches]
     offs = np.cumsum([0] + sizes[:-1])
-    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {DATA}', '']
+    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {display_path(DATA)}', '']
     say = lambda s='': (L.append(s), print(s, flush=True))
 
     z = np.load(RESULTS / 'anchors_all_pairs.npz')

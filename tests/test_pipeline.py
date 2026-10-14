@@ -141,6 +141,23 @@ def test_script32_runs_on_script30_outputs(run30):
     shifts = [v for v in site['warps']['joint']['4-3'] if v is not None]
     assert len(shifts) > 150 and all(np.isfinite(shifts))                # clamped ends are null
 
+    # the paper figures render from the same outputs (script 50)
+    s50 = load_script('50_paper_figures.py')
+    figs = run30 / 'paper'
+    mp = pytest.MonkeyPatch()
+    for k, v in (('RESULTS', res), ('OUT', figs), ('DATA', run30 / 'data')):
+        mp.setattr(s50, k, v)
+    try:
+        s50.main(None)
+    finally:
+        mp.undo()
+    names = ['fig1_problem_method', 'fig2_recovery', 'fig3_comparison', 'fig4_consistency', 'fig5_borrowing',
+             'fig6_benchmark', 'figS1_lambda', 'figS2_uncertainty', 'figS3_rejection']
+    for n in names:
+        assert (figs / f'{n}.pdf').stat().st_size > 5_000 and (figs / f'{n}.png').exists(), n
+    captions = (figs / 'captions.md').read_text()
+    assert captions.count('## fig') == len(names) and 'nan' not in captions.lower()
+
 
 def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
     s31 = load_script('31_wt_warps.py')

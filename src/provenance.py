@@ -6,6 +6,7 @@ data/fish_oil) can change between runs. Every result file records this line.
 from __future__ import annotations
 
 import subprocess
+from pathlib import Path
 
 import gcmsalign
 from gcmsalign.config import REPO_ROOT
@@ -29,4 +30,13 @@ def gcmsalign_revision() -> str:
     sha = _git('rev-parse', '--short', 'HEAD') or 'unknown commit'
     dirty = _git('status', '--porcelain', '--', 'src')
     state = 'src dirty' if dirty else 'src clean'
-    return f'gcmsalign {ver} @ {sha} ({state}) from {gcmsalign.__file__.rsplit("/src/", 1)[0]}'
+    return f'gcmsalign {ver} @ {sha} ({state}) from {display_path(gcmsalign.__file__.rsplit("/src/", 1)[0])}'
+
+
+def display_path(p) -> str:
+    """A path for reports that are committed: home-relative (~/...), never the user's absolute path."""
+    p, home = Path(p).expanduser().resolve(), Path.home().resolve()
+    try:
+        return f'~/{p.relative_to(home)}'
+    except ValueError:
+        return str(p)

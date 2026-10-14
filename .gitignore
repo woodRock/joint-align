@@ -13,10 +13,15 @@ __pycache__/
 *.npz
 *.h5
 
-# Outputs
+# Outputs: no caches or binaries in git. Text reports and captions are tracked.
 checkpoints/
 *.pt
-results/
+*.npy
+*.pkl
+/results/*
+!/results/*.txt
+/figs/**/*.png
+/figs/**/*.pdf
 logs/
 *.log
 

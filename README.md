@@ -128,13 +128,16 @@ per group:
   the warp-only bands cover 15 %. A bootstrap of a regularised fit misses its bias, so the
   intervals need calibration (for example conformal scaling) before anyone relies on them.
 - **Bands barely track evidence.** Median band widths are 0.044–0.054 min per pair. They widen
-  only weakly where direct anchors are sparse (pooled Spearman ρ = −0.36).
+  only weakly where direct anchors are sparse (pooled Spearman ρ = −0.40, over bins where the warp
+  is not clamped at a run end).
 - **The gauge choice is not settled.** At the selected λ, the identity-on-average gauge has lower
   RT-blocked held-out error than the reference gauge (0.096 vs 0.111 min), but slightly lower
   TIC r. The selection rule fixes the reference gauge and only tunes λ.
-- **Run ends are poorly anchored.** The robust fit rejects 10.7 % of anchors before 10 min and
-  6.9 % after 40 min, against about 3 % in between. Late in the run, bleed-like peaks with similar
-  spectra produce conflicting matches. Beyond a batch's last compound, the warp is an extrapolation.
+- **Rejected anchors cluster in a few windows.** In 5-min windows, the robust fit rejects 11.1 %
+  of anchors at 5–10 min, 7.6 % at 25–30 min and 6.9 % at 40–45 min, against 0.2–5.3 % in the
+  other windows (Fig. S3, `figs/paper/`). Late in the run, bleed-like peaks with similar spectra
+  plausibly produce the conflicting matches. The 25–30 min cluster is not explained yet. Beyond a
+  batch's last compound, the warp is an extrapolation.
 - **TIC r is a proxy.** It rewards overlapping peaks, not correct compound identities. That is
   why held-out anchor error is reported alongside it.
 - **Thin testbed.** Five batches from one study, with batch confounded with species and tissue,
@@ -177,11 +180,15 @@ python scripts/30_multibatch_align.py     # joint model, ~4 min
 python scripts/31_wt_warps.py             # WarpTransformer warps, ~50 min on CPU
 python scripts/32_fair_benchmark.py       # every method, same protocols, ~5 min
 python scripts/40_export_site_data.py     # refresh the project site's data
+python scripts/50_paper_figures.py        # paper figures + captions, ~30 s
 ```
 
 Scripts 30–32 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
 Delete those caches when the data or gcmsalign changes. `tests/test_real_data.py` checks that
 the results still match the data and the README.
+
+Git holds the text reports (`results/*.txt`) and figure captions, not caches or binaries:
+regenerate the `.npz` caches and the figure PDFs/PNGs with the scripts above.
 
 Every result file records the gcmsalign version and commit, and whether its `src/` was dirty
 (`src/provenance.py`). Commit gcmsalign before a run whose results you intend to keep.
@@ -210,6 +217,9 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
 - `scripts/40_export_site_data.py`: exports the data behind the project site
+- `scripts/50_paper_figures.py`: paper figures (`figs/paper/*.pdf`) and `figs/paper/captions.md`, whose
+  numbers are computed from the results
+- `src/analysis.py`: analyses shared by the site and the figures, so the two cannot disagree
 - `tests/`: unit, synthetic end-to-end and real-data integrity tests
 - `docs/`: the project site
 
