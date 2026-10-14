@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
   <a href="tutorial/joint_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
   <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
-  <a href="https://github.com/woodRock/warp-align"><img src="https://img.shields.io/badge/built%20on-gcmsalign-6E56CF" alt="Built on gcmsalign"></a>
+  <a href="https://github.com/woodRock/warp-align"><img src="https://img.shields.io/badge/built%20on-warpalign-6E56CF" alt="Built on warpalign"></a>
 </p>
 
 **Line up GC-MS chromatograms from many batches at once, with one smooth time warp per batch.**
@@ -38,7 +38,7 @@ from going A → C directly. This repository aligns **all batches together**:
    gives error bands.
 
 It follows up the pairwise Test-Time Calibrated WarpTransformer
-([woodRock/warp-align](https://github.com/woodRock/warp-align), Python package `gcmsalign`), and
+([woodRock/warp-align](https://github.com/woodRock/warp-align), Python package `warpalign`), and
 reuses that package's data loading, peak detection, baselines and metrics.
 
 ## Contents
@@ -63,7 +63,7 @@ synthetic stand-in with the same design and *known* true drifts.
 ```bash
 git clone https://github.com/woodRock/joint-align.git
 cd joint-align
-pip install -e ".[dev,neural]"      # the package, plus the pinned gcmsalign from GitHub
+pip install -e ".[dev,neural]"      # the package, plus the pinned warpalign from GitHub
 
 python scripts/00_make_synthetic_data.py
 python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
@@ -79,7 +79,7 @@ The pipeline takes about 2.5 minutes in all. Then look at:
 
 `tests/test_pipeline.py` runs the same demo. It checks that the joint warps recover the true
 drifts to within 0.15 min wherever compounds exist in both batches. Script 31 (the
-WarpTransformer) needs gcmsalign's pretrained checkpoint, and script 32 skips that method when
+WarpTransformer) needs warpalign's pretrained checkpoint, and script 32 skips that method when
 its warps are absent.
 
 ## Learn how it works
@@ -130,7 +130,7 @@ On five fish oil batches (90 chromatograms, 25,011 anchors):
 - **Not yet solved.** Dense PCHIP wins on two pairs, and the 90 % intervals cover only 81 % of
   held-out anchors (see [Limitations](#limitations)).
 
-All numbers below come from `results/` produced at gcmsalign `1ffaa24` (clean source tree).
+All numbers below come from `results/` produced at warp-align `1ffaa24` (clean source tree), when the package was still named `gcmsalign`; its result headers say so.
 TIC r is the Pearson correlation of normalised total ion chromatograms on the common acquisition
 window (bins ≥ 22, i.e. from 5 min, when every run has started acquiring).
 
@@ -169,7 +169,7 @@ unaligned TIC r < 0.5, which gives six drifted pairs and four near-aligned pairs
 | Method | Drifted | Near-aligned |
 |---|---|---|
 | Unaligned | 0.066 | 0.755 |
-| Pooled-anchor PCHIP (gcmsalign, A[0..2] vs B[0]) | 0.531 | 0.684 |
+| Pooled-anchor PCHIP (warpalign, A[0..2] vs B[0]) | 0.531 | 0.684 |
 | Dense PCHIP (all anchors of the pair) | 0.558 | 0.575 |
 | Pairwise smooth (same fitter, one pair's anchors) | 0.572 | 0.765 |
 | **Joint** | **0.598** | **0.779** |
@@ -202,8 +202,8 @@ unaligned TIC r < 0.5, which gives six drifted pairs and four near-aligned pairs
 
 Published pairwise numbers mix protocols. Here every method is reduced to the map it estimates
 (RT in B → RT in A) and scored the same way. *B-frame* warps A into B's raw frame. *Midpoint*
-resamples both batches into the frame halfway between them. The WarpTransformer is gcmsalign's
-v2 model with its own anchor calibration (`gcmsalign.steps.calibrate_pair`, seed 0). Mean TIC r
+resamples both batches into the frame halfway between them. The WarpTransformer is warpalign's
+v2 model with its own anchor calibration (`warpalign.steps.calibrate_pair`, seed 0). Mean TIC r
 per group:
 
 | Group | Protocol | Unaligned | Pooled PCHIP | PCHIP + COW | COW-TIC | WarpTransformer | Joint | Neural joint |
@@ -266,13 +266,13 @@ Record which version produced your numbers with `jointalign.provenance.jointalig
 
 ## Development setup
 
-Everything shared with the pairwise project comes from `gcmsalign`, not from a copy: the data
+Everything shared with the pairwise project comes from `warpalign`, not from a copy: the data
 loader and data paths, peak detection and fingerprints, the pooled-anchor extraction, the
 PCHIP/COW baselines, warping, the WarpTransformer and its calibration, and the metrics.
-`pyproject.toml` pins gcmsalign to a pushed commit, and `pip install -e ".[dev,neural]"` installs
-it. To work on both repositories, use an editable gcmsalign checkout instead, so a fix there applies
+`pyproject.toml` pins warpalign to a pushed commit, and `pip install -e ".[dev,neural]"` installs
+it. To work on both repositories, use an editable warpalign checkout instead, so a fix there applies
 here immediately. Install this package with `--no-deps` (or `make install`), otherwise pip
-replaces the editable gcmsalign with the pinned commit:
+replaces the editable warpalign with the pinned commit:
 
 ```bash
 pip install -e path/to/warp-align         # editable checkout of github.com/woodRock/warp-align
@@ -292,23 +292,23 @@ python scripts/50_paper_figures.py        # paper figures + captions, ~30 s
 ```
 
 Scripts 30–32 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
-Delete those caches when the data or gcmsalign changes. `tests/test_real_data.py` checks that
+Delete those caches when the data or warpalign changes. `tests/test_real_data.py` checks that
 the results still match the data and the README.
 
 Git holds the text reports (`results/*.txt`) and figure captions, not caches or binaries:
 regenerate the `.npz` caches and the figure PDFs/PNGs with the scripts above.
 
-Every result file records the gcmsalign version and commit, and whether its `src/` was dirty
-(`jointalign.provenance.gcmsalign_revision`). Commit gcmsalign before a run whose results you
+Every result file records the warpalign version and commit, and whether its `src/` was dirty
+(`jointalign.provenance.warpalign_revision`). Commit warpalign before a run whose results you
 intend to keep. Projects that build on this package can record its revision the same way with
 `jointalign.provenance.jointalign_revision()`.
 
 CI (`.github/workflows/ci.yml`) runs ruff, mypy and the full test suite on every push and pull
-request, against the gcmsalign commit pinned in `pyproject.toml`. Coverage must stay ≥ 90 %. A
+request, against the warpalign commit pinned in `pyproject.toml`. Coverage must stay ≥ 90 %. A
 package job installs the package non-editable into a clean environment and imports it from
 outside the checkout, which catches files missing from the package.
 The fish oil data is private, so the real-data tests run only locally. A non-blocking canary job
-tests against gcmsalign's latest `main`, so a breaking upstream change shows up before the pin
+tests against warpalign's latest `main`, so a breaking upstream change shows up before the pin
 is bumped.
 
 ## Project site
@@ -326,9 +326,9 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
   - `neural_joint.py`: neural refinement of the joint model (needs torch)
   - `synthetic.py`: public synthetic data with known drifts: `make_dataset` writes it to disk
     (`scripts/00_make_synthetic_data.py`), `make_world` returns the same world in memory
-  - `provenance.py`: the gcmsalign and jointalign revision lines written into results
+  - `provenance.py`: the warpalign and jointalign revision lines written into results
 - `scripts/30_multibatch_align.py`: the full evaluation of the joint model
-- `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `gcmsalign.steps.calibrate_pair`
+- `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `warpalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
 - `scripts/40_export_site_data.py`: exports the data behind the project site
 - `scripts/50_paper_figures.py`: paper figures (`figs/paper/*.pdf`) and `figs/paper/captions.md`, whose
@@ -341,7 +341,7 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 ## Data
 
 The fish oil data and the WarpTransformer checkpoint are not tracked here. The scripts read
-them from the gcmsalign checkout through `gcmsalign.config.Paths()`.
+them from the warpalign checkout through `warpalign.config.Paths()`.
 
 ## Open questions
 

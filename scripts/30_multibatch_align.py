@@ -8,10 +8,10 @@ methods on all 10 batch pairs of the five fish oil batches.
 Hyper-parameters are chosen without TIC r: λ by blocked cross-validation over RT (whole
 RT windows held out, so the score measures interpolation between compounds), the gauge
 reference as the batch with the most anchors. TIC r is evaluation only: Pearson r of the
-normalised TIC on the common acquisition window (gcmsalign.metrics.pearson_rows, bins ≥ 22).
+normalised TIC on the common acquisition window (warpalign.metrics.pearson_rows, bins ≥ 22).
 
-Data, anchors for the pooled-anchor PCHIP baseline, warping and statistics come from gcmsalign
-(~/Desktop/alignment), so fixes there apply here; the report records the gcmsalign commit.
+Data, anchors for the pooled-anchor PCHIP baseline, warping and statistics come from warpalign
+(~/Desktop/alignment), so fixes there apply here; the report records the warpalign commit.
 
 Experiments
   1. λ selection (held-out anchor error, RT-blocked folds) and gauge ablation
@@ -35,15 +35,15 @@ from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
-from gcmsalign.anchors import extract_anchors
-from gcmsalign.config import BIN_MIN, N_BINS, Paths
-from gcmsalign.data import load_batch
-from gcmsalign.metrics import holm, paired_wilcoxon, pearson_rows
-from gcmsalign.warps import pchip_warp, src_from_fn, warp_rows
 from scipy.stats import spearmanr
+from warpalign.anchors import extract_anchors
+from warpalign.config import BIN_MIN, N_BINS, Paths
+from warpalign.data import load_batch
+from warpalign.metrics import holm, paired_wilcoxon, pearson_rows
+from warpalign.warps import pchip_warp, src_from_fn, warp_rows
 
 from jointalign import multibatch as mb
-from jointalign.provenance import display_path, gcmsalign_revision
+from jointalign.provenance import display_path, warpalign_revision
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -141,7 +141,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     chroma = [bt.chromas for bt in batches]
     tics   = [bt.tic for bt in batches]
     sizes  = [len(bt) for bt in batches]
-    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {display_path(DATA)}', '']
+    L = [__doc__.strip().splitlines()[0], '', warpalign_revision(), f'Data: {display_path(DATA)}', '']
     say = lambda s='': (L.append(s), print(s))
     say('Batches: ' + ', '.join(f'{short(b)} (n={n})' for b, n in zip(names, sizes)))
 
@@ -221,7 +221,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         a, b = idx[A_], idx[B_]
         r = {}
         r['Unaligned'] = tic_r(tics[a], tics[b])
-        # gcmsalign pooled-anchor PCHIP: A[0..2] vs B[0], pooled and filtered, PCHIP B → A
+        # warpalign pooled-anchor PCHIP: A[0..2] vs B[0], pooled and filtered, PCHIP B → A
         pooled = extract_anchors(chroma[a], chroma[b], batches[a].tic_raw, batches[b].tic_raw)
         r['Pooled PCHIP (cow-dcnn)'] = tic_r(warp_tics(tics[a], src_from_fn(pchip_warp(pooled.anchors))),
                                              tics[b])
@@ -421,7 +421,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         f'{cover_pi[~gross].mean():.3f}')
 
     np.savez(RESULTS / 'multibatch_align.npz', names=np.array(names), lam=lam, ref=ref,
-             gcmsalign=gcmsalign_revision(),
+             warpalign=warpalign_revision(),
              knots=joint.knots, drift=joint.drift, n_pair=n_pair,
              boot_drift=np.stack([m.drift for m in boots]),
              **{f'ticr_{short(A_)}_{short(B_)}_{c.replace(" ", "_")}': v
@@ -482,7 +482,7 @@ if __name__ == '__main__':
     ap.add_argument('--n-boot-cv', type=int, default=50)
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--data', type=Path, default=DATA,
-                    help='batch_* folders in gcmsalign layout (default: the fish oil data; '
+                    help='batch_* folders in warpalign layout (default: the fish oil data; '
                          'scripts/00_make_synthetic_data.py writes a public synthetic stand-in)')
     ap.add_argument('--results', type=Path, default=RESULTS, help='output folder (default: results/)')
     ap.add_argument('--figs', type=Path, default=FIGS, help='figure folder (default: figs/)')

@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import torch
-from gcmsalign.warps import warp_signal
+from warpalign.warps import warp_signal
 
 from conftest import T, library_positions, make_chroma
 from jointalign import multibatch as mb
@@ -41,7 +41,7 @@ def test_torch_interp_gradients():
     assert fp.grad[0, 2].item() == pytest.approx(0.75) and fp.grad[0, 3].item() == pytest.approx(0.25)
 
 
-def test_warp_rows_matches_gcmsalign_warp_signal_including_last_bin():
+def test_warp_rows_matches_warpalign_warp_signal_including_last_bin():
     x = np.random.default_rng(0).random((T, 6)).astype(np.float32)
     pos = np.r_[np.linspace(-3, T + 3, T)]
     out = nj.warp_rows(torch.tensor(x)[None], torch.tensor(pos, dtype=torch.float32)[None])[0]

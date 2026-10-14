@@ -1,6 +1,6 @@
 """Which code produced a result: version, git commit and whether its source tree was dirty.
 
-gcmsalign_revision(): gcmsalign is installed editable from ~/Desktop/alignment, so its code (and
+warpalign_revision(): warpalign is installed editable from ~/Desktop/alignment, so its code (and
 the data under its data/fish_oil) can change between runs. Every paper-one result file records
 this line.
 
@@ -12,8 +12,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-import gcmsalign
-from gcmsalign.config import REPO_ROOT
+import warpalign
+from warpalign.config import REPO_ROOT
 
 
 def _git(*args: str, cwd: Path | str = REPO_ROOT) -> str:
@@ -24,17 +24,17 @@ def _git(*args: str, cwd: Path | str = REPO_ROOT) -> str:
         return ''
 
 
-def gcmsalign_revision() -> str:
-    """e.g. 'gcmsalign 2.0.0 @ 5b75419 (src clean)'; 'unknown commit' outside a git checkout."""
+def warpalign_revision() -> str:
+    """e.g. 'warpalign 2.0.0 @ 5b75419 (src clean)'; 'unknown commit' outside a git checkout."""
     from importlib.metadata import PackageNotFoundError, version
     try:
-        ver = version('gcmsalign')
+        ver = version('warpalign')
     except PackageNotFoundError:
         ver = '?'
     sha = _git('rev-parse', '--short', 'HEAD') or 'unknown commit'
     dirty = _git('status', '--porcelain', '--', 'src')
     state = 'src dirty' if dirty else 'src clean'
-    return f'gcmsalign {ver} @ {sha} ({state}) from {display_path(gcmsalign.__file__.rsplit("/src/", 1)[0])}'
+    return f'warpalign {ver} @ {sha} ({state}) from {display_path(warpalign.__file__.rsplit("/src/", 1)[0])}'
 
 
 def display_path(p) -> str:

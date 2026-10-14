@@ -13,14 +13,14 @@ ways:
   Native     the WarpTransformer's own consensus frame and "PCHIP + COW refine" with both
              batches refined (as published), for reference
 
-All TIC r is Pearson r of the normalised TIC on the common acquisition window (gcmsalign
+All TIC r is Pearson r of the normalised TIC on the common acquisition window (warpalign
 EVAL_BINS, bins ≥ 22).
 
 Methods
-  Pooled PCHIP          gcmsalign anchors (A[0..2] vs B[0], pooled, filtered) + warps.pchip_warp
+  Pooled PCHIP          warpalign anchors (A[0..2] vs B[0], pooled, filtered) + warps.pchip_warp
   PCHIP + COW refine    pooled PCHIP, then per-A_i COW (8 segments, ±4 bins) onto mean B TIC
-  COW-TIC               gcmsalign.baselines.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
-  WarpTransformer       script 31 cache (gcmsalign calibrate_pair, v2 checkpoint, seed 0, CPU)
+  COW-TIC               warpalign.baselines.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
+  WarpTransformer       script 31 cache (warpalign calibrate_pair, v2 checkpoint, seed 0, CPU)
   Joint                 src/jointalign/multibatch.py, λ and reference from script 30
   Neural joint          src/jointalign/neural_joint.py on top of Joint (anchors + dense, sample level)
 
@@ -34,16 +34,16 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from gcmsalign.anchors import extract_anchors
-from gcmsalign.baselines import cow_tic_align
-from gcmsalign.config import N_BINS, Paths
-from gcmsalign.data import load_batch
-from gcmsalign.metrics import holm, paired_wilcoxon, pearson
-from gcmsalign.warps import invert_src, pchip_warp, src_from_fn, warp_signal
+from warpalign.anchors import extract_anchors
+from warpalign.baselines import cow_tic_align
+from warpalign.config import N_BINS, Paths
+from warpalign.data import load_batch
+from warpalign.metrics import holm, paired_wilcoxon, pearson
+from warpalign.warps import invert_src, pchip_warp, src_from_fn, warp_signal
 
 from jointalign import multibatch as mb
 from jointalign import neural_joint as nj
-from jointalign.provenance import display_path, gcmsalign_revision
+from jointalign.provenance import display_path, warpalign_revision
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -97,7 +97,7 @@ def strict(w: np.ndarray) -> np.ndarray:
 
 
 def cow_map(q: np.ndarray, r: np.ndarray, n_segs: int, slack: int) -> np.ndarray:
-    """COW (gcmsalign) as a map: reference (B) bin → query (A) bin."""
+    """COW (warpalign) as a map: reference (B) bin → query (A) bin."""
     return cow_tic_align(q, r, n_segs=n_segs, slack=slack).src
 
 
@@ -111,7 +111,7 @@ def main(neural_steps: int) -> None:
     tics = [bt.tic for bt in batches]
     sizes = [len(bt) for bt in batches]
     offs = np.cumsum([0] + sizes[:-1])
-    L = [__doc__.strip().splitlines()[0], '', gcmsalign_revision(), f'Data: {display_path(DATA)}', '']
+    L = [__doc__.strip().splitlines()[0], '', warpalign_revision(), f'Data: {display_path(DATA)}', '']
     say = lambda s='': (L.append(s), print(s, flush=True))
 
     z = np.load(RESULTS / 'anchors_all_pairs.npz')
@@ -228,7 +228,7 @@ def main(neural_steps: int) -> None:
 
     say(f'\nWall time {time.time() - t0:.0f} s')
     (RESULTS / 'fair_benchmark.txt').write_text('\n'.join(L) + '\n')
-    np.savez(RESULTS / 'fair_benchmark.npz', gcmsalign=gcmsalign_revision(),
+    np.savez(RESULTS / 'fair_benchmark.npz', warpalign=warpalign_revision(),
              **{f'{short(k[0])}_{short(k[1])}|{k[2]}|{k[3]}': v for k, v in R.items()})
 
 

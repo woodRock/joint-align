@@ -9,7 +9,7 @@ against the truth:
     python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
     python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
 
-(Script 31, the WarpTransformer baseline, needs the gcmsalign checkpoint; script 32 skips that
+(Script 31, the WarpTransformer baseline, needs the warpalign checkpoint; script 32 skips that
 method when its warps are absent.) See src/jointalign/synthetic.py for the generative model.
 
 Output: data/synthetic/<batch>/chroma/*.npz, data/synthetic/truth.json

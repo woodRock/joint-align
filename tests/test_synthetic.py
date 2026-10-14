@@ -6,7 +6,7 @@ import json
 import os
 
 import numpy as np
-from gcmsalign.data import load_batch
+from warpalign.data import load_batch
 
 from jointalign import synthetic as syn
 
@@ -14,7 +14,7 @@ from jointalign import synthetic as syn
 def test_dataset_layout_and_truth(tmp_path):
     truth = syn.make_dataset(tmp_path, seed=1)
     for spec in syn.DEFAULT_BATCHES:
-        b = load_batch(spec.name, tmp_path)                       # readable by gcmsalign
+        b = load_batch(spec.name, tmp_path)                       # readable by warpalign
         assert b.chromas.shape == (spec.n, syn.N_BINS, 1000) and b.tic_raw.shape == (spec.n, syn.N_BINS)
         start = int(np.ceil(spec.start / syn.BIN_MIN))
         assert np.all(b.tic_raw[:, :start] == 0) and np.all(b.chromas[:, :start] == 0)

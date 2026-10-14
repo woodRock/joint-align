@@ -1,5 +1,5 @@
 """
-Synthetic GC-MS batches with known retention-time drift, in the gcmsalign data layout.
+Synthetic GC-MS batches with known retention-time drift, in the warpalign data layout.
 
 The fish oil data is private, so this generates a public stand-in with the same design: five
 batches with the same names (including the two-sample aug2015), runs that start acquiring at
@@ -12,10 +12,10 @@ Generative model, per batch k and sample i:
   its mass spectrum is shared by every batch; its abundance varies per sample; ~8 % of
   compounds are missing from any one sample; the run has column bleed late and no signal
   before the batch's acquisition start.
-Stored like gcmsalign's preprocessing: chroma = sqrt-then-L2 per RT bin [T, M], tic_raw = the
+Stored like warpalign's preprocessing: chroma = sqrt-then-L2 per RT bin [T, M], tic_raw = the
 summed raw intensity per bin [T].
 
-make_dataset writes a world to disk in the gcmsalign layout; make_world returns the same world in
+make_dataset writes a world to disk in the warpalign layout; make_world returns the same world in
 memory (no disk writes), for experiments that draw thousands of worlds. Same arguments and seed,
 same arrays and truth.
 """

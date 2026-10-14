@@ -17,10 +17,10 @@ from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
-from gcmsalign.config import BIN_MIN, EVAL_START_BIN, N_BINS
+from warpalign.config import BIN_MIN, EVAL_START_BIN, N_BINS
 
 import analysis as an
-from jointalign.provenance import gcmsalign_revision
+from jointalign.provenance import warpalign_revision
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -30,6 +30,15 @@ GRID = an.GRID
 MAX_ANCHORS_PER_PAIR = 1200
 TIC_SAMPLES_PER_BATCH = 4
 short, shift = an.short, an.shift
+
+
+def saved_rev(z) -> str | None:
+    """The warpalign revision a results .npz recorded; results written before the package was renamed
+    (gcmsalign → warpalign) store it under the old key."""
+    for key in ('warpalign', 'gcmsalign'):
+        if key in z:
+            return str(z[key])
+    return None
 
 
 def public_rev(rev: str) -> str:
@@ -53,7 +62,7 @@ def main(data: Path | None = None) -> None:
     site: dict = {
         'meta': {
             'generated': dt.datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'gcmsalign': public_rev(z['gcmsalign'] if 'gcmsalign' in z else gcmsalign_revision()),
+            'warpalign': public_rev(saved_rev(z) or warpalign_revision()),
             'lam': run.lam, 'ref': ref, 'bin_min': BIN_MIN, 'n_bins': N_BINS,
             'eval_start_bin': EVAL_START_BIN, 'n_anchors': len(anc),
             'n_sample_pairs': int(sum(sizes[a] * sizes[b] for a, b in combinations(range(K), 2))),
@@ -128,7 +137,7 @@ def main(data: Path | None = None) -> None:
         methods = ['Unaligned', 'Pooled PCHIP', 'PCHIP + COW refine', 'COW-TIC', 'WarpTransformer',
                    'Joint', 'Neural joint']
         bench = {'methods': methods, 'protocols': ['B-frame', 'Midpoint'], 'pairs': [],
-                 'gcmsalign': public_rev(zb['gcmsalign']) if 'gcmsalign' in zb.files else None}
+                 'warpalign': public_rev(saved_rev(zb)) if saved_rev(zb) else None}
         for A_, B_ in run.pairs:
             row = {'a': run.idx[A_], 'b': run.idx[B_], 'mean': {}, 'per_a': {}}
             for proto in bench['protocols']:

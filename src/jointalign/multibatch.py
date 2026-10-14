@@ -22,12 +22,12 @@ from dataclasses import dataclass
 from itertools import combinations
 
 import numpy as np
-from gcmsalign.anchors import detect_peaks, fingerprint
-from gcmsalign.config import BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS, SIM_THRESHOLD
 from scipy.interpolate import PchipInterpolator
 from scipy.linalg import solve_triangular
 from scipy.optimize import linear_sum_assignment, lsq_linear
 from sklearn.linear_model import RANSACRegressor
+from warpalign.anchors import detect_peaks, fingerprint
+from warpalign.config import BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS, SIM_THRESHOLD
 
 MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN
 N_KNOTS        = 41      # knot spacing ≈ 5 bins ≈ 1.1 min
@@ -53,11 +53,11 @@ def match_anchors(a: np.ndarray, b: np.ndarray, tic_a: np.ndarray | None = None,
                   tic_b: np.ndarray | None = None) -> np.ndarray:
     """
     Spectral anchors between chromatograms a and b, as an (n, 2) array of sub-bin RT
-    positions (t_a, t_b). Matching follows gcmsalign.anchors.match_anchors: peaks on the raw
+    positions (t_a, t_b). Matching follows warpalign.anchors.match_anchors: peaks on the raw
     TIC (tic_a, tic_b; the chromatogram sum if not given), context fingerprints, Hungarian
     assignment under MAX_DRIFT_MIN, adaptive cosine threshold, ±REFINE_RADIUS search in b,
     RANSAC (RANSAC_RESID bins), monotone filter. Adds parabolic sub-bin refinement on both
-    sides, so anchors are fractional bins rather than gcmsalign's integer bins.
+    sides, so anchors are fractional bins rather than warpalign's integer bins.
     """
     empty = np.empty((0, 2))
     tic_a = a.sum(axis=1) if tic_a is None else np.asarray(tic_a, dtype=float)

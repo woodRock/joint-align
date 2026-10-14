@@ -362,8 +362,8 @@
   <div class="grid-2">
     <div class="card reveal relative">
       <button class="icon-btn copy" id="copy-btn">Copy</button>
-<pre class="code" id="code"><span class="c"># shared code: the gcmsalign package</span>
-pip install "gcmsalign @ git+https://github.com/woodRock/warp-align.git"
+<pre class="code" id="code"><span class="c"># shared code: the warpalign package</span>
+pip install "warpalign @ git+https://github.com/woodRock/warp-align.git"
 git clone https://github.com/woodRock/joint-align &amp;&amp; cd joint-align
 
 <span class="c"># 31 chromatograms, 5 batches, true drifts in truth.json</span>
@@ -384,19 +384,19 @@ python scripts/32_fair_benchmark.py --data data/synthetic \
         <div class="kpi"><div class="v">~2.5 min</div><div class="k">whole demo on a laptop CPU</div></div>
         <div class="kpi"><div class="v">≤ 0.15 min</div><div class="k">error vs the true drift, tested</div></div>
       </div>
-      <p class="sub" style="margin-top:12px">The WarpTransformer baseline needs gcmsalign's pretrained checkpoint, so
+      <p class="sub" style="margin-top:12px">The WarpTransformer baseline needs warpalign's pretrained checkpoint, so
         the demo benchmark leaves that column empty. <span class="mono">make check</span> runs the linters and the
         test suite, which includes this demo.</p>
     </div>
   </div>
-  <p class="sub reveal" style="margin-top:14px">Figures on this page: fish oil data, <span class="mono" data-bind="gcmsalign"></span>, exported <span data-bind="generated"></span>.</p>
+  <p class="sub reveal" style="margin-top:14px">Figures on this page: fish oil data, <span class="mono" data-bind="warpalign"></span>, exported <span data-bind="generated"></span>.</p>
 </section>
 </main>
 
 <footer>
   <div class="inner">
     <span>joint-align · Jesse Wood</span>
-    <span><a href="https://github.com/woodRock/joint-align">GitHub</a> · <a href="https://github.com/woodRock/warp-align">gcmsalign</a></span>
+    <span><a href="https://github.com/woodRock/joint-align">GitHub</a> · <a href="https://github.com/woodRock/warp-align">warpalign</a></span>
   </div>
 </footer>
 

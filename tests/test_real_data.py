@@ -11,7 +11,7 @@ from itertools import combinations
 
 import numpy as np
 import pytest
-from gcmsalign.data import load_batch
+from warpalign.data import load_batch
 
 from conftest import DATA, RESULTS, ROOT, requires_data
 from jointalign import multibatch as mb
@@ -142,7 +142,7 @@ def test_neural_and_cow_caches_shapes(names, chroma):
 
 def test_cached_tic_r_matches_current_data(names, batches):
     """Unaligned TIC r depends only on the data: a mismatch means results predate the data."""
-    from gcmsalign.metrics import pearson_rows
+    from warpalign.metrics import pearson_rows
     z = np.load(_need(RESULTS / 'multibatch_align.npz'))
     tics = {b.replace('batch_', ''): bt.tic for b, bt in zip(names, batches)}
     stale = []
@@ -157,9 +157,9 @@ def test_cached_tic_r_matches_current_data(names, batches):
     assert not stale, 'results/ were computed on different data:\n  ' + '\n  '.join(stale)
 
 
-def test_script31_calibrates_one_pair_with_gcmsalign(tmp_path, monkeypatch):
-    """Script 31 runs gcmsalign's calibrate step with its default (v2) checkpoint."""
-    from gcmsalign.config import Paths
+def test_script31_calibrates_one_pair_with_warpalign(tmp_path, monkeypatch):
+    """Script 31 runs warpalign's calibrate step with its default (v2) checkpoint."""
+    from warpalign.config import Paths
 
     from conftest import load_script
     _need(Paths().default_ckpt)
@@ -170,4 +170,4 @@ def test_script31_calibrates_one_pair_with_gcmsalign(tmp_path, monkeypatch):
     z = np.load(tmp_path / 'results' / 'wt_warps' / 'batch_aug2015__batch_apr2016.npz')
     n_a, n_b = int(z['n_a']), int(z['n_b'])
     assert z['warps'].shape == (n_a + n_b, 200) and z['r_native'].shape == (n_a * n_b,)
-    assert str(z['gcmsalign']).startswith('gcmsalign ')
+    assert str(z['warpalign']).startswith('warpalign ')

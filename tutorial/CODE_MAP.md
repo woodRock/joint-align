@@ -2,13 +2,13 @@
 
 Where each piece of Many-Batch Alignment (MBA) lives in the code, with the names the notebook
 (`joint_from_scratch.ipynb`) uses. Paths are relative to the repository root. Everything was read from
-the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
+the code (many-batch-align at the time of writing, warpalign `2ec54ea`).
 
 ## The joint model (`src/jointalign/multibatch.py`)
 
 | Paper | Code | Key names |
 |---|---|---|
-| Retention-time grid, T = 200 bins, 0.225 min per bin | `gcmsalign.config` | `N_BINS = 200`, `BIN_MIN = 0.225` (hard-coded: the fitter's knots and inverse grid span `0 … N_BINS − 1`) |
+| Retention-time grid, T = 200 bins, 0.225 min per bin | `warpalign.config` | `N_BINS = 200`, `BIN_MIN = 0.225` (hard-coded: the fitter's knots and inverse grid span `0 … N_BINS − 1`) |
 | Warp f_k(t) = t + d_k(t) | `JointWarp.latent(k, t)` | `t + np.interp(t, knots, drift[k])` |
 | Knots u_0 … u_{Q−1}, equally spaced | `fit_joint` | `knots = np.linspace(0, N_BINS - 1, n_knots)`, `M = n_knots` (Q in the paper), default `N_KNOTS = 41` |
 | Hat basis B(t) | `_hat_basis(t, knots)` | `idx` (left knot), `frac` (position inside the interval, **clipped to [0, 1]**, so t outside the knot range is clamped) |
@@ -28,12 +28,12 @@ the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 | Pairwise baseline (same fitter, one pair) | `fit_pairwise(anchors, a, b, K, **kw)` | fits a 2-batch problem; other batches left at identity |
 | Dense PCHIP baseline | `pchip_pairwise(anchors, a, b)` | per-integer-bin medians, monotone filter, PCHIP with pinned ends |
 
-## Anchor harvesting (`src/jointalign/multibatch.py`, building blocks from gcmsalign)
+## Anchor harvesting (`src/jointalign/multibatch.py`, building blocks from warpalign)
 
 | Step | Code | Key names / constants |
 |---|---|---|
-| Peak detection on the raw TIC | `gcmsalign.anchors.detect_peaks(tic)` | `scipy.signal.find_peaks`, height ≥ 80th percentile (`PEAK_HEIGHT_PCT`), `distance=5` (`PEAK_MIN_DIST`), keep the 30 tallest (`PEAK_MAX_N`) |
-| Spectral fingerprint | `gcmsalign.anchors.fingerprint(chroma, pk)` | mean spectrum of bins pk−1 … pk+1, L2-normalised, `float32` |
+| Peak detection on the raw TIC | `warpalign.anchors.detect_peaks(tic)` | `scipy.signal.find_peaks`, height ≥ 80th percentile (`PEAK_HEIGHT_PCT`), `distance=5` (`PEAK_MIN_DIST`), keep the 30 tallest (`PEAK_MAX_N`) |
+| Spectral fingerprint | `warpalign.anchors.fingerprint(chroma, pk)` | mean spectrum of bins pk−1 … pk+1, L2-normalised, `float32` |
 | Cosine similarity | `match_anchors` | `sim = fa @ fb.T` (unit vectors, so a dot product is the cosine) |
 | Drift limit | `match_anchors` | `MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN` (20 min ≈ 88.9 bins); `far` mask |
 | Hungarian matching | `match_anchors` | `scipy.optimize.linear_sum_assignment(-np.where(far, -1.0, sim))` |
@@ -43,7 +43,7 @@ the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 | Monotone filter | `match_anchors` | sort by t_a, keep anchors increasing in both t_a and t_b |
 | All cross-batch sample pairs | `harvest_anchors(chromas, tics)` | returns an `Anchors` with one row per anchor |
 
-## Experiments and metrics (`scripts/30_multibatch_align.py`, `gcmsalign.metrics`)
+## Experiments and metrics (`scripts/30_multibatch_align.py`, `warpalign.metrics`)
 
 | Paper | Code | Key names |
 |---|---|---|
@@ -55,14 +55,14 @@ the code (many-batch-align at the time of writing, gcmsalign `2ec54ea`).
 | 90 % band | script 30 | `np.percentile(maps, [5, 95], axis=0)` over 200 refits |
 | Predictive interval | script 30 | `hw_pi = sqrt(hw_ci² + (1.645·scale[a,b])²)` with `hw_ci` = half the band width, centred on the point estimate |
 | Gauge reference | script 30 | `ref = argmax(anchor count per batch)` (sep2015 on the fish data) |
-| TIC r | `gcmsalign.metrics.pearson_rows` | Pearson r on `EVAL_BINS = slice(22, 200)` (from 5 min: `EVAL_START_BIN = int(5.0 // BIN_MIN) = 22`) |
+| TIC r | `warpalign.metrics.pearson_rows` | Pearson r on `EVAL_BINS = slice(22, 200)` (from 5 min: `EVAL_START_BIN = int(5.0 // BIN_MIN) = 22`) |
 
-## From gcmsalign rather than this repository
+## From warpalign rather than this repository
 
-`gcmsalign.config` (all constants above), `gcmsalign.anchors.detect_peaks` and `fingerprint`,
-`gcmsalign.data.load_batch` / `Batch` (real data only), `gcmsalign.metrics.pearson_rows`,
-`gcmsalign.warps.warp_rows` (used by script 30's `warp_tics`), and the baselines and WarpTransformer
-used in the benchmark (`gcmsalign.baselines`, `gcmsalign.calibration`, `gcmsalign.steps.calibrate_pair`).
+`warpalign.config` (all constants above), `warpalign.anchors.detect_peaks` and `fingerprint`,
+`warpalign.data.load_batch` / `Batch` (real data only), `warpalign.metrics.pearson_rows`,
+`warpalign.warps.warp_rows` (used by script 30's `warp_tics`), and the baselines and WarpTransformer
+used in the benchmark (`warpalign.baselines`, `warpalign.calibration`, `warpalign.steps.calibrate_pair`).
 
 ## Synthetic data
 

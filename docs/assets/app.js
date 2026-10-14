@@ -115,7 +115,7 @@
       eval_start_min: `${Math.round(D.meta.eval_start_bin * BIN)}`,
       cycle_joint: fmt3(d3.mean(cyc, d => d.joint)), cycle_pairwise: fmt3(d3.mean(cyc, d => d.pairwise)),
       coverage_pct: D.coverage.predictive != null ? `${Math.round(D.coverage.predictive * 100)} %` : 'n/a',
-      gcmsalign: D.meta.gcmsalign, generated: D.meta.generated,
+      warpalign: D.meta.warpalign ?? D.meta.gcmsalign, generated: D.meta.generated,   // gcmsalign: data exported before the rename
     };
     document.querySelectorAll('[data-bind]').forEach(el => { el.textContent = binds[el.dataset.bind] ?? ''; });
     const counts = { n_samples: d3.sum(D.batches, b => b.n), n_sample_pairs: D.meta.n_sample_pairs, n_anchors: D.meta.n_anchors };
@@ -696,7 +696,7 @@
           .attr('y', d => y(d.m) + y.bandwidth() / 2).attr('dy', '0.35em').style('font-weight', d => (d.v === best ? 700 : 400)).text(d => fmt2(d.v));
       });
       document.getElementById('bench-note').textContent = `Bars: mean TIC r per group under the ${proto} protocol; blue = this project's models. `
-        + (B.gcmsalign ? `Benchmark run with ${B.gcmsalign}.` : '');
+        + ((B.warpalign ?? B.gcmsalign) ? `Benchmark run with ${B.warpalign ?? B.gcmsalign}.` : '');
     }
     segGroup('[data-proto]', 'proto', v => { proto = v; drawBench(); });
     document.getElementById('bench-table-btn').addEventListener('click', e => {

@@ -15,7 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 import numpy as np
-from gcmsalign.config import BIN_MIN, N_BINS
+from warpalign.config import BIN_MIN, N_BINS
 
 from jointalign import multibatch as mb
 
