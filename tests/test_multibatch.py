@@ -354,6 +354,115 @@ def test_fit_joint_custom_knots():
     assert m.knots.shape == (11,) and m.drift.shape == (3, 11)
 
 
+# ── solvers ───────────────────────────────────────────────────────────────────
+
+def random_box_qp(n, seed, frac_inf=0.2):
+    """A random positive definite QP whose unconstrained minimiser violates many bounds."""
+    rng = np.random.default_rng(seed)
+    A = rng.standard_normal((2 * n, n))
+    b = 3.0 * rng.standard_normal(2 * n)
+    lb, ub = -rng.uniform(0.1, 1.0, n), rng.uniform(0.1, 1.0, n)
+    lb[rng.random(n) < frac_inf] = -np.inf
+    ub[rng.random(n) < frac_inf] = np.inf
+    return A, b, lb, ub
+
+
+@pytest.mark.parametrize('seed', range(8))
+def test_active_set_matches_bvls_on_random_box_qps(seed):
+    from scipy.optimize import lsq_linear
+    A, b, lb, ub = random_box_qp(60, seed)
+    x, ok = mb._box_qp_active_set(A.T @ A, A.T @ b, lb, ub)
+    ref = lsq_linear(A, b, bounds=(lb, ub), method='bvls').x
+    assert ok
+    np.testing.assert_allclose(x, ref, atol=1e-8)
+    assert np.sum(np.isclose(ref, lb) | np.isclose(ref, ub)) > 5      # the bounds were exercised
+
+
+def test_active_set_reports_failure_when_not_converged():
+    A, b, lb, ub = random_box_qp(30, 0)
+    _, ok = mb._box_qp_active_set(A.T @ A, A.T @ b, lb, ub, max_iter=0)
+    assert not ok
+
+
+def test_default_solver_is_bvls(monkeypatch):
+    """The default path is paper one's: lsq_linear with BVLS, the same output as solver='bvls'."""
+    anc = synthetic_anchors(SMOOTH_DRIFTS, noise=0.2, seed=11)
+    methods = []
+    real = mb.lsq_linear
+    monkeypatch.setattr(mb, 'lsq_linear', lambda *a, **kw: methods.append(kw['method']) or real(*a, **kw))
+    a = mb.fit_joint(anc, 3, lam=3.0, gauge=0)
+    assert methods and set(methods) == {'bvls'}
+    b = mb.fit_joint(anc, 3, lam=3.0, gauge=0, solver='bvls')
+    np.testing.assert_array_equal(a.drift, b.drift)
+    np.testing.assert_array_equal(a.weights, b.weights)
+
+
+@pytest.mark.parametrize('case', ['outliers', 'steep', 'mean_gauge'])
+def test_active_set_fit_matches_bvls_fit(case, monkeypatch):
+    anc = synthetic_anchors(SHIFT_DRIFTS, noise=0.2, seed=3)
+    kw = dict(lam=10.0, gauge=0)
+    if case == 'outliers':
+        rng = np.random.default_rng(3)
+        bad = rng.choice(len(anc), len(anc) // 5, replace=False)
+        tb = anc.tb.copy()
+        tb[bad] += rng.choice([-1, 1], len(bad)) * rng.uniform(25, 40, len(bad))
+        anc = mb.Anchors(anc.ba, anc.bb, anc.sa, anc.sb, anc.ta, tb)
+    elif case == 'steep':                       # slope bounds active over most of the run
+        steep = [lambda t: 0.0 * t, lambda t: -0.8 * t + 80, lambda t: 0.0 * t]
+        anc, kw = synthetic_anchors(steep, n_per_pair=100, seed=2), dict(lam=0.1, gauge=0)
+    else:
+        kw = dict(lam=1.0, gauge='mean')
+    ref = mb.fit_joint(anc, 3, **kw)
+    calls = []
+    monkeypatch.setattr(mb, 'lsq_linear', lambda *a, **k: calls.append(1))     # no fallback needed
+    fast = mb.fit_joint(anc, 3, solver='active_set', **kw)
+    assert not calls
+    # 'steep' is ill-conditioned (cond(G) ≈ 5e8; small λ, knots past the last anchor): there BVLS
+    # stops ~4e-3 bins short of the optimum, which test_active_set_beats_bvls_when_ill_conditioned checks.
+    np.testing.assert_allclose(fast.drift, ref.drift, atol=1e-2 if case == 'steep' else 1e-6)
+    np.testing.assert_array_equal(fast.weights == 0, ref.weights == 0)
+    np.testing.assert_allclose(fast.scale, ref.scale, atol=1e-6)
+
+
+def test_active_set_beats_bvls_when_ill_conditioned(monkeypatch):
+    """Where the two solvers differ, the active-set solution has the lower objective."""
+    steep = [lambda t: 0.0 * t, lambda t: -0.8 * t + 80, lambda t: 0.0 * t]
+    anc = synthetic_anchors(steep, n_per_pair=100, seed=2)
+    probs = []
+    real = mb.lsq_linear
+
+    def spy(A, b, bounds, method):
+        r = real(A, b, bounds=bounds, method=method)
+        probs.append((A, b, bounds, r.x))
+        return r
+    monkeypatch.setattr(mb, 'lsq_linear', spy)
+    mb.fit_joint(anc, 3, lam=0.1, gauge=0)
+    assert probs
+    for A, b, (lb, ub), x_bvls in probs:
+        G, h = A.T @ A, A.T @ b
+        x, ok = mb._box_qp_active_set(G, h, lb, ub)
+        f = lambda z, G=G, h=h: 0.5 * z @ G @ z - h @ z
+        assert ok and f(x) <= f(x_bvls) + 1e-12 * abs(f(x_bvls))
+
+
+def test_active_set_falls_back_to_bvls(monkeypatch):
+    """Whenever the KKT check fails, the fit is BVLS's, exactly."""
+    anc = synthetic_anchors(SMOOTH_DRIFTS, noise=0.2, seed=12)
+    ref = mb.fit_joint(anc, 3, lam=3.0, gauge=0)
+    monkeypatch.setattr(mb, '_box_qp_active_set', lambda G, h, lb, ub: (np.full(len(h), np.nan), False))
+    fb = mb.fit_joint(anc, 3, lam=3.0, gauge=0, solver='active_set')
+    np.testing.assert_array_equal(fb.drift, ref.drift)
+
+
+def test_solver_reaches_fit_pairwise_and_unknown_solver_is_refused():
+    anc = synthetic_anchors(SMOOTH_DRIFTS, noise=0.2, seed=13)
+    a = mb.fit_pairwise(anc, 0, 2, 3, lam=3.0, gauge=0)
+    b = mb.fit_pairwise(anc, 0, 2, 3, lam=3.0, gauge=0, solver='active_set')
+    np.testing.assert_allclose(a.drift, b.drift, atol=1e-6)
+    with pytest.raises(ValueError, match='solver'):
+        mb.fit_joint(anc, 3, solver='cvxpy')
+
+
 # ── fit_pairwise ──────────────────────────────────────────────────────────────
 
 def test_fit_pairwise_matches_two_batch_joint_fit():

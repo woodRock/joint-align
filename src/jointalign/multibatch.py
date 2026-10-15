@@ -23,7 +23,7 @@ from itertools import combinations
 
 import numpy as np
 from scipy.interpolate import PchipInterpolator
-from scipy.linalg import solve_triangular
+from scipy.linalg import cho_factor, cho_solve, solve_triangular
 from scipy.optimize import linear_sum_assignment, lsq_linear
 from sklearn.linear_model import RANSACRegressor
 from warpalign.anchors import detect_peaks, fingerprint
@@ -33,6 +33,7 @@ MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN
 N_KNOTS        = 41      # knot spacing ≈ 5 bins ≈ 1.1 min
 S_MIN, S_MAX   = 0.5, 2.0
 GAUGE_WEIGHT   = 1e3
+SOLVERS        = ('bvls', 'active_set')
 
 
 # ── Anchors ───────────────────────────────────────────────────────────────────
@@ -180,16 +181,58 @@ def _robust_sigma(r: np.ndarray) -> float:
     return max(1.4826 * float(np.median(np.abs(r - np.median(r)))), 0.25) if len(r) else np.nan
 
 
+def _box_qp_active_set(G: np.ndarray, h: np.ndarray, lb: np.ndarray, ub: np.ndarray,
+                      max_iter: int = 100, tol: float = 1e-9) -> tuple[np.ndarray, bool]:
+    """
+    min ½ xᵀGx − hᵀx subject to lb ≤ x ≤ ub, for symmetric positive definite G, by a
+    primal-dual active-set method (Hintermüller, Ito & Kunisch 2003) started from the
+    unconstrained minimiser. Each step fixes the variables predicted to sit at a bound and solves
+    for the rest; it stops when the predicted sets repeat. Returns (x, ok): ok only if x satisfies
+    the KKT conditions to tol (feasible; zero gradient on free variables; gradient pointing out of
+    the box on bound ones), so the caller can fall back to an exact solver otherwise.
+    """
+    c = max(float(np.abs(np.diag(G)).max()), 1.0)
+    x = cho_solve(cho_factor(G), h)
+    g = np.zeros_like(h)
+    at_lb = at_ub = np.zeros(len(h), bool)
+    for it in range(max_iter + 1):
+        new_lb = np.isfinite(lb) & ((lb - x) * c + g > 0)
+        new_ub = np.isfinite(ub) & ((x - ub) * c - g > 0) & ~new_lb
+        if it > 0 and np.array_equal(new_lb, at_lb) and np.array_equal(new_ub, at_ub):
+            break
+        if it == max_iter:
+            return x, False
+        at_lb, at_ub = new_lb, new_ub
+        free = ~(at_lb | at_ub)
+        x = np.where(at_lb, lb, np.where(at_ub, ub, 0.0))
+        if free.any():
+            rhs = h[free] - G[np.ix_(free, ~free)] @ x[~free]
+            x[free] = cho_solve(cho_factor(G[np.ix_(free, free)]), rhs)
+        g = G @ x - h
+    gtol = tol * (float(np.abs(h).max()) + 1.0)
+    free = ~(at_lb | at_ub)
+    ok = bool(np.all(x >= lb - tol) and np.all(x <= ub + tol) and np.all(np.abs(g[free]) <= gtol)
+              and np.all(g[at_lb] >= -gtol) and np.all(g[at_ub] <= gtol))
+    return x, ok
+
+
 def fit_joint(anchors: Anchors, n_batches: int, lam: float = 1.0,
               base_weight: np.ndarray | None = None, gauge: str | int = 'mean',
-              n_huber: int = 3, n_tukey: int = 4, n_knots: int = N_KNOTS) -> JointWarp:
+              n_huber: int = 3, n_tukey: int = 4, n_knots: int = N_KNOTS,
+              solver: str = 'bvls') -> JointWarp:
     """
     Fit one monotone warp per batch to all anchors at once.
 
     lam          smoothness weight, relative to the anchor count (scale-free)
     base_weight  per-anchor multiplicity (bootstrap counts); default 1
     gauge        'mean' (Σ_k d_k = 0) or an int batch index whose drift is fixed at 0
+    solver       the bounded least-squares solver: 'bvls' (scipy's lsq_linear, the default and
+                 paper one's) or 'active_set' (_box_qp_active_set, falling back to BVLS whenever
+                 its KKT check fails). Both solve the same convex problem; active_set is much faster
+                 for many batches (K ≥ 10), where BVLS can take seconds per solve.
     """
+    if solver not in SOLVERS:
+        raise ValueError(f'solver must be one of {SOLVERS}, not {solver!r}')
     K, N = n_batches, len(anchors)
     knots = np.linspace(0, N_BINS - 1, n_knots)
     M     = n_knots
@@ -227,6 +270,10 @@ def fit_joint(anchors: Anchors, n_batches: int, lam: float = 1.0,
     def solve(w: np.ndarray) -> np.ndarray:
         G = X.T @ (w[:, None] * X) + P
         h = X.T @ (w * y)
+        if solver == 'active_set':
+            x, ok = _box_qp_active_set(G, h, lb, ub)
+            if ok:
+                return x
         C = np.linalg.cholesky(G)
         z = solve_triangular(C, h, lower=True)
         return lsq_linear(C.T, z, bounds=(lb, ub), method='bvls').x
