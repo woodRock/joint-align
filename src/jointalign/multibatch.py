@@ -14,7 +14,8 @@ f_a(t_a) ≈ f_b(t_b). The fit is a bounded least-squares problem:
 The warp from batch k to batch l is f_l⁻¹ ∘ f_k. It is transitive by construction, so a
 batch pair with few or no direct anchors borrows strength from paths through other batches.
 
-Times are RT bins (0 … N_BINS−1) throughout; multiply by BIN_MIN for minutes.
+Times are RT bins (0 … N_BINS−1) throughout; multiply by BIN_MIN for minutes. The data model,
+anchors and time axis come from alignbench (github.com/woodRock/align-bench).
 """
 from __future__ import annotations
 
@@ -22,128 +23,38 @@ from dataclasses import dataclass
 from itertools import combinations
 
 import numpy as np
-from scipy.interpolate import PchipInterpolator
+from alignbench.anchors import Anchors, _parabolic  # noqa: F401  (_parabolic: re-export for tests)
+from alignbench.anchors import harvest_arrays as harvest_anchors
+from alignbench.anchors import match_subbin as match_anchors
+from alignbench.axis import FISH_OIL_AXIS
+from alignbench.maps import pchip_pairwise as _pchip_pairwise
 from scipy.linalg import cho_factor, cho_solve, solve_triangular
-from scipy.optimize import linear_sum_assignment, lsq_linear
-from sklearn.linear_model import RANSACRegressor
-from warpalign.anchors import detect_peaks, fingerprint
-from warpalign.config import BIN_MIN, MAX_DRIFT_MIN, N_BINS, RANSAC_RESID, REFINE_RADIUS, SIM_THRESHOLD
+from scipy.optimize import lsq_linear
 
-MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN
+N_BINS         = FISH_OIL_AXIS.n_bins
 N_KNOTS        = 41      # knot spacing ≈ 5 bins ≈ 1.1 min
 S_MIN, S_MAX   = 0.5, 2.0
 GAUGE_WEIGHT   = 1e3
 SOLVERS        = ('bvls', 'active_set')
 
-
-# ── Anchors ───────────────────────────────────────────────────────────────────
-
-def _parabolic(ym: float, y0: float, yp: float) -> float:
-    """Sub-bin offset of the vertex of the parabola through three equally spaced points."""
-    den = ym - 2.0 * y0 + yp
-    if den >= 0:
-        return 0.0
-    return float(np.clip(0.5 * (ym - yp) / den, -0.5, 0.5))
-
-
-def _fingerprints(chroma: np.ndarray, pks: np.ndarray) -> np.ndarray:
-    return np.array([fingerprint(chroma, int(p)) for p in pks])
-
-
-def match_anchors(a: np.ndarray, b: np.ndarray, tic_a: np.ndarray | None = None,
-                  tic_b: np.ndarray | None = None) -> np.ndarray:
-    """
-    Spectral anchors between chromatograms a and b, as an (n, 2) array of sub-bin RT
-    positions (t_a, t_b). Matching follows warpalign.anchors.match_anchors: peaks on the raw
-    TIC (tic_a, tic_b; the chromatogram sum if not given), context fingerprints, Hungarian
-    assignment under MAX_DRIFT_MIN, adaptive cosine threshold, ±REFINE_RADIUS search in b,
-    RANSAC (RANSAC_RESID bins), monotone filter. Adds parabolic sub-bin refinement on both
-    sides, so anchors are fractional bins rather than warpalign's integer bins.
-    """
-    empty = np.empty((0, 2))
-    tic_a = a.sum(axis=1) if tic_a is None else np.asarray(tic_a, dtype=float)
-    tic_b = b.sum(axis=1) if tic_b is None else np.asarray(tic_b, dtype=float)
-    pa, pb = detect_peaks(tic_a), detect_peaks(tic_b)
-    if len(pa) < 2 or len(pb) < 2:
-        return empty
-    fa, fb = _fingerprints(a, pa), _fingerprints(b, pb)
-    sim  = fa @ fb.T
-    far  = np.abs(pa[:, None] - pb[None, :]) > MAX_DRIFT_BINS
-    ri, ci = linear_sum_assignment(-np.where(far, -1.0, sim))
-    avail = sim[~far]
-    thr   = max(float(np.percentile(avail, 70)), SIM_THRESHOLD) if avail.size >= 3 else SIM_THRESHOLD
-    keep  = (sim[ri, ci] >= thr) & ~far[ri, ci]
-    ri, ci = ri[keep], ci[keep]
-    if len(ri) < 2:
-        return empty
-
-    out = []
-    for i, j in zip(ri, ci):
-        p = int(pa[i])
-        ta = p + (_parabolic(tic_a[p - 1], tic_a[p], tic_a[p + 1]) if 0 < p < N_BINS - 1 else 0.0)
-        cands = np.arange(max(0, pb[j] - REFINE_RADIUS), min(N_BINS, pb[j] + REFINE_RADIUS + 1))
-        s = np.array([float(fa[i] @ fingerprint(b, int(c))) for c in cands])
-        k = int(np.argmax(s))
-        tb = cands[k] + (_parabolic(s[k - 1], s[k], s[k + 1]) if 0 < k < len(s) - 1 else 0.0)
-        out.append((ta, tb))
-    anc = np.array(out, dtype=float)
-
-    if len(anc) >= 4:
-        try:
-            rs = RANSACRegressor(residual_threshold=RANSAC_RESID, min_samples=2, random_state=0)
-            rs.fit(anc[:, :1], anc[:, 1])
-            if rs.inlier_mask_.sum() >= 2:
-                anc = anc[rs.inlier_mask_]
-        except ValueError:
-            pass
-
-    anc  = anc[np.argsort(anc[:, 0])]
-    mono = [0]
-    for i in range(1, len(anc)):
-        if anc[i, 0] > anc[mono[-1], 0] and anc[i, 1] > anc[mono[-1], 1]:
-            mono.append(i)
-    return anc[mono] if len(mono) >= 2 else empty
-
-
-@dataclass
-class Anchors:
-    """Anchor pairs pooled over every cross-batch sample pair (one row per anchor)."""
-    ba: np.ndarray   # batch index of the first chromatogram
-    bb: np.ndarray   # batch index of the second chromatogram (ba < bb)
-    sa: np.ndarray   # sample index within batch ba
-    sb: np.ndarray   # sample index within batch bb
-    ta: np.ndarray   # RT bin in batch ba
-    tb: np.ndarray   # RT bin in batch bb
-
-    def __len__(self) -> int:
-        return len(self.ta)
-
-    def subset(self, mask: np.ndarray) -> Anchors:
-        return Anchors(*(getattr(self, f)[mask] for f in ('ba', 'bb', 'sa', 'sb', 'ta', 'tb')))
-
-    def pair(self, a: int, b: int) -> Anchors:
-        """Anchors between batches a and b, oriented so that ta is in a and tb is in b."""
-        if a < b:
-            return self.subset((self.ba == a) & (self.bb == b))
-        s = self.subset((self.ba == b) & (self.bb == a))
-        return Anchors(s.bb, s.ba, s.sb, s.sa, s.tb, s.ta)
-
-
-def harvest_anchors(chromas, tics=None) -> Anchors:
-    """Run match_anchors on every cross-batch sample pair. chromas[k][i] is sample i of batch
-    k; tics[k][i] its raw TIC for peak detection (default: the chromatogram sum)."""
-    cols: list[list[np.ndarray]] = [[] for _ in range(6)]
-    tic = (lambda k, i: None) if tics is None else (lambda k, i: tics[k][i])
-    for a, b in combinations(range(len(chromas)), 2):
-        for i, ca in enumerate(chromas[a]):
-            for j, cb in enumerate(chromas[b]):
-                anc = match_anchors(ca, cb, tic(a, i), tic(b, j))
-                n = len(anc)
-                for col, v in zip(cols, (a, b, i, j)):
-                    col.append(np.full(n, v, dtype=int))
-                cols[4].append(anc[:, 0])
-                cols[5].append(anc[:, 1])
-    return Anchors(*(np.concatenate(c) for c in cols))
+# Anchors (columnar, every cross-batch sample pair), match_anchors (sub-bin anchors for one sample
+# pair) and harvest_anchors moved to alignbench in joint-align 2.0 (alignbench.anchors: Anchors,
+# match_subbin, harvest_arrays); the names here are re-exports, bit-identical to joint-align 1.1.0.
+__all__ = [
+    'GAUGE_WEIGHT',
+    'N_BINS',
+    'N_KNOTS',
+    'SOLVERS',
+    'S_MAX',
+    'S_MIN',
+    'Anchors',
+    'JointWarp',
+    'fit_joint',
+    'fit_pairwise',
+    'harvest_anchors',
+    'match_anchors',
+    'pchip_pairwise',
+]
 
 
 # ── Joint warp model ──────────────────────────────────────────────────────────
@@ -318,22 +229,6 @@ def pchip_pairwise(anchors: Anchors, a: int, b: int):
     """
     Pairwise baseline with the old interpolation: median-aggregate the pooled anchors per
     integer bin of batch a, keep a monotone subsequence, PCHIP with end points pinned.
-    Returns t_a → t_b.
+    Returns t_a → t_b. (alignbench.maps.pchip_pairwise since joint-align 2.0.)
     """
-    pa = anchors.pair(a, b)
-    if len(pa) < 2:
-        return lambda t: np.asarray(t, dtype=float)
-    ra = np.round(pa.ta).astype(int)
-    groups = np.unique(ra)
-    mx = np.array([np.median(pa.ta[ra == r]) for r in groups])
-    my = np.array([np.median(pa.tb[ra == r]) for r in groups])
-    mono = [0]
-    for i in range(1, len(mx)):
-        if my[i] > my[mono[-1]]:
-            mono.append(i)
-    xs, ys = mx[mono], my[mono]
-    keep = (xs > 0) & (xs < N_BINS - 1) & (ys > 0) & (ys < N_BINS - 1)
-    f = PchipInterpolator(np.concatenate([[0], xs[keep], [N_BINS - 1]]),
-                          np.concatenate([[0], ys[keep], [N_BINS - 1]]))
-    return lambda t: f(np.asarray(t, dtype=float))
-
+    return _pchip_pairwise(anchors, a, b)

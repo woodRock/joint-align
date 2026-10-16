@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "joint-align"
-version = "1.1.0"
+version = "2.0.0"
 description = "Joint retention-time alignment of GC-MS chromatograms across many batches"
 requires-python = ">=3.11"
 readme = "README.md"
@@ -15,16 +15,25 @@ dependencies = [
     "numpy>=1.26",
     "scipy>=1.11",
     "scikit-learn>=1.3",
-    # Not on PyPI: a direct reference, pinned to a pushed commit of github.com/woodRock/warp-align.
-    # Bump it when this package should follow a warpalign change. To develop against a local
-    # checkout instead, install it editable and this package with --no-deps (see the README).
-    "warpalign @ git+https://github.com/woodRock/warp-align.git@ea404e753a0ac02c45918fbfe1fc58b8f0b25cd9",
+    # Not on PyPI: a direct reference, pinned to a pushed commit of github.com/woodRock/align-bench
+    # (data, anchors, warps, baselines, metrics, provenance). Bump it when this package should follow
+    # an alignbench change. To develop against a local checkout instead, install it editable and
+    # this package with --no-deps (see the README).
+    "alignbench @ git+https://github.com/woodRock/align-bench.git@879510f93f055d18db35ed62f17141a0ffaea1a7",
 ]
 
 [project.optional-dependencies]
-neural = ["torch>=2.1"]                # jointalign.neural_joint, scripts 31 and 32
+neural = ["torch>=2.1"]                # jointalign.neural_joint, the neural-joint method, script 32
+# Script 31 only: the WarpTransformer baseline's warps (warpalign 3.0.0, model and checkpoint).
+wt = ["warpalign @ git+https://github.com/woodRock/warp-align.git@2411143fa4e299d7f6b68a8079e116e91668b4c9", "torch>=2.1"]
 dev = ["pytest>=8", "coverage>=7", "ruff", "mypy", "matplotlib>=3.7"]
 tutorial = ["jupyter", "ipywidgets"]
+
+[project.entry-points."alignbench.methods"]
+joint = "jointalign.alignbench_plugin:Joint"
+star = "jointalign.alignbench_plugin:Star"
+composed-pairwise = "jointalign.alignbench_plugin:ComposedPairwise"
+neural-joint = "jointalign.alignbench_plugin:NeuralJoint"
 
 [project.urls]
 Repository = "https://github.com/woodRock/joint-align"
@@ -80,7 +89,7 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["jointalign", "conftest", "analysis"]
-known-third-party = ["warpalign"]
+known-third-party = ["alignbench", "warpalign"]
 
 [tool.mypy]
 python_version = "3.11"

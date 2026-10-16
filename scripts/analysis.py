@@ -15,11 +15,12 @@ from pathlib import Path
 from types import ModuleType
 
 import numpy as np
-from warpalign.config import BIN_MIN, N_BINS
+from alignbench.axis import FISH_OIL_AXIS
 
 from jointalign import multibatch as mb
 
 ROOT = Path(__file__).resolve().parent.parent
+BIN_MIN, N_BINS = FISH_OIL_AXIS.bin_min, FISH_OIL_AXIS.n_bins
 GRID = np.arange(N_BINS, dtype=float)
 
 

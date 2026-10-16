@@ -17,10 +17,10 @@ from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
-from warpalign.config import BIN_MIN, EVAL_START_BIN, N_BINS
+from alignbench.axis import FISH_OIL_AXIS
 
 import analysis as an
-from jointalign.provenance import warpalign_revision
+from jointalign.provenance import header
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -32,9 +32,16 @@ TIC_SAMPLES_PER_BATCH = 4
 short, shift = an.short, an.shift
 
 
+BIN_MIN, EVAL_START_BIN, N_BINS = FISH_OIL_AXIS.bin_min, FISH_OIL_AXIS.eval_start_bin, FISH_OIL_AXIS.n_bins
+
+
 def saved_rev(z) -> str | None:
-    """The warpalign revision a results .npz recorded; results written before the package was renamed
-    (gcmsalign → warpalign) store it under the old key."""
+    """The code revision a results .npz recorded: joint-align ≥ 2.0 saves alignbench's provenance lines
+    ('provenance'); older results the warpalign revision ('warpalign', or 'gcmsalign' before that
+    package was renamed)."""
+    if 'provenance' in z:
+        return ' · '.join(public_rev(line) for line in np.asarray(z['provenance']).tolist()
+                          if not str(line).startswith('environment'))
     for key in ('warpalign', 'gcmsalign'):
         if key in z:
             return str(z[key])
@@ -62,7 +69,7 @@ def main(data: Path | None = None) -> None:
     site: dict = {
         'meta': {
             'generated': dt.datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'warpalign': public_rev(saved_rev(z) or warpalign_revision()),
+            'code': public_rev(saved_rev(z) or ' · '.join(header()[:-1])),
             'lam': run.lam, 'ref': ref, 'bin_min': BIN_MIN, 'n_bins': N_BINS,
             'eval_start_bin': EVAL_START_BIN, 'n_anchors': len(anc),
             'n_sample_pairs': int(sum(sizes[a] * sizes[b] for a, b in combinations(range(K), 2))),
@@ -137,7 +144,7 @@ def main(data: Path | None = None) -> None:
         methods = ['Unaligned', 'Pooled PCHIP', 'PCHIP + COW refine', 'COW-TIC', 'WarpTransformer',
                    'Joint', 'Neural joint']
         bench = {'methods': methods, 'protocols': ['B-frame', 'Midpoint'], 'pairs': [],
-                 'warpalign': public_rev(saved_rev(zb)) if saved_rev(zb) else None}
+                 'code': public_rev(saved_rev(zb)) if saved_rev(zb) else None}
         for A_, B_ in run.pairs:
             row = {'a': run.idx[A_], 'b': run.idx[B_], 'mean': {}, 'per_a': {}}
             for proto in bench['protocols']:

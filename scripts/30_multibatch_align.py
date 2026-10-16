@@ -8,10 +8,10 @@ methods on all 10 batch pairs of the five fish oil batches.
 Hyper-parameters are chosen without TIC r: λ by blocked cross-validation over RT (whole
 RT windows held out, so the score measures interpolation between compounds), the gauge
 reference as the batch with the most anchors. TIC r is evaluation only: Pearson r of the
-normalised TIC on the common acquisition window (warpalign.metrics.pearson_rows, bins ≥ 22).
+normalised TIC on the common acquisition window (alignbench.metrics.tic.pearson_rows, bins ≥ 22).
 
-Data, anchors for the pooled-anchor PCHIP baseline, warping and statistics come from warpalign
-(~/Desktop/alignment), so fixes there apply here; the report records the warpalign commit.
+Data, anchors for the pooled-anchor PCHIP baseline, warping and statistics come from alignbench
+(github.com/woodRock/align-bench, pinned in pyproject.toml); the report records its revision.
 
 Experiments
   1. λ selection (held-out anchor error, RT-blocked folds) and gauge ablation
@@ -35,19 +35,21 @@ from itertools import combinations, permutations
 from pathlib import Path
 
 import numpy as np
+from alignbench.anchors import match_pooled_arrays as extract_anchors  # = warpalign extract_anchors
+from alignbench.axis import FISH_OIL_AXIS
+from alignbench.datasets.fish_oil import load_batch
+from alignbench.metrics.stats import holm, paired_wilcoxon
+from alignbench.metrics.tic import pearson_rows
+from alignbench.warps import pchip_warp, src_from_fn, warp_rows
 from scipy.stats import spearmanr
-from warpalign.anchors import extract_anchors
-from warpalign.config import BIN_MIN, N_BINS, Paths
-from warpalign.data import load_batch
-from warpalign.metrics import holm, paired_wilcoxon, pearson_rows
-from warpalign.warps import pchip_warp, src_from_fn, warp_rows
 
 from jointalign import multibatch as mb
-from jointalign.provenance import display_path, warpalign_revision
+from jointalign.provenance import display_path, header
 
 ROOT = Path(__file__).resolve().parent.parent
 
-DATA    = Paths().fish_oil
+BIN_MIN, N_BINS = FISH_OIL_AXIS.bin_min, FISH_OIL_AXIS.n_bins
+DATA    = ROOT / 'data' / 'fish_oil'   # a symlink to the private data (README)
 RESULTS = ROOT / 'results'
 FIGS    = ROOT / 'figs'
 LAMBDAS = [0.1, 1.0, 10.0, 30.0, 100.0, 300.0, 1000.0, 3000.0, 10000.0]
@@ -141,7 +143,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     chroma = [bt.chromas for bt in batches]
     tics   = [bt.tic for bt in batches]
     sizes  = [len(bt) for bt in batches]
-    L = [__doc__.strip().splitlines()[0], '', warpalign_revision(), f'Data: {display_path(DATA)}', '']
+    L = [__doc__.strip().splitlines()[0], '', *header(), f'Data: {display_path(DATA)}', '']
     say = lambda s='': (L.append(s), print(s))
     say('Batches: ' + ', '.join(f'{short(b)} (n={n})' for b, n in zip(names, sizes)))
 
@@ -221,7 +223,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         a, b = idx[A_], idx[B_]
         r = {}
         r['Unaligned'] = tic_r(tics[a], tics[b])
-        # warpalign pooled-anchor PCHIP: A[0..2] vs B[0], pooled and filtered, PCHIP B → A
+        # pooled-anchor PCHIP (warpalign's, now alignbench's): A[0..2] vs B[0], pooled and filtered, PCHIP B → A
         pooled = extract_anchors(chroma[a], chroma[b], batches[a].tic_raw, batches[b].tic_raw)
         r['Pooled PCHIP (cow-dcnn)'] = tic_r(warp_tics(tics[a], src_from_fn(pchip_warp(pooled.anchors))),
                                              tics[b])
@@ -421,7 +423,7 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
         f'{cover_pi[~gross].mean():.3f}')
 
     np.savez(RESULTS / 'multibatch_align.npz', names=np.array(names), lam=lam, ref=ref,
-             warpalign=warpalign_revision(),
+             provenance=np.array(header()),
              knots=joint.knots, drift=joint.drift, n_pair=n_pair,
              boot_drift=np.stack([m.drift for m in boots]),
              **{f'ticr_{short(A_)}_{short(B_)}_{c.replace(" ", "_")}': v

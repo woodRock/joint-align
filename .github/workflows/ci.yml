@@ -1,10 +1,10 @@
 name: CI
 
 # Every push and pull request: lint, type-check, and the whole test suite (unit + synthetic
-# end-to-end, ~1 min) against the warpalign commit pinned in pyproject.toml. The private
+# end-to-end, ~1 min) against the alignbench commit pinned in pyproject.toml. The private
 # fish-oil data is not available here, so tests/test_real_data.py skips itself.
 #
-# Upstream canary: the same tests against warpalign's latest main (weekly, on demand, and on
+# Upstream canary: the same tests against alignbench's latest main (weekly, on demand, and on
 # every push). It is non-blocking: a failure means bumping the pin will need changes here.
 
 on:
@@ -12,7 +12,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * 1'  # Mondays 04:00 UTC: canary against warpalign main
+    - cron: '0 4 * * 1'  # Mondays 04:00 UTC: canary against alignbench main
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -23,7 +23,7 @@ permissions:
 
 env:
   PYTHON_VERSION: '3.11'
-  TORCH_VERSION: '2.7.1'  # same as warpalign's CI and the local environment
+  TORCH_VERSION: '2.7.1'  # CPU wheels for the neural joint (jointalign[neural])
   TORCH_INDEX: https://download.pytorch.org/whl/cpu  # CPU wheels: no CUDA download
   RUFF_VERSION: '0.17.0'
   MYPY_VERSION: '2.4.0'
@@ -57,7 +57,7 @@ jobs:
       - run: mypy
 
   tests:
-    name: Tests (pinned warpalign)
+    name: Tests (pinned alignbench)
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -69,9 +69,9 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -e ".[dev,neural]"
-      - name: Record warpalign revision
-        run: python -c "import importlib.metadata as m; print(m.distribution('warpalign').read_text('direct_url.json'))"
+      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 31
+      - name: Record alignbench revision
+        run: python -c "import importlib.metadata as m; print(m.distribution('alignbench').read_text('direct_url.json'))"
       - name: Run tests with coverage
         run: python -m coverage run -m pytest --junitxml=junit.xml
       - name: Coverage report (fails under the threshold in pyproject.toml)
@@ -85,8 +85,8 @@ jobs:
           name: test-results
           path: junit.xml
 
-  warpalign-main:
-    name: Canary (warpalign main)
+  alignbench-main:
+    name: Canary (alignbench main)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     continue-on-error: true
@@ -98,8 +98,8 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -e ".[dev,neural]"
-      - run: pip install --force-reinstall --no-deps "warpalign @ git+https://github.com/woodRock/warp-align.git@main"
+      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 31
+      - run: pip install --force-reinstall --no-deps "alignbench @ git+https://github.com/woodRock/align-bench.git@main"
       - run: python -m pytest
 
   package:
