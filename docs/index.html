@@ -362,9 +362,9 @@
   <div class="grid-2">
     <div class="card reveal relative">
       <button class="icon-btn copy" id="copy-btn">Copy</button>
-<pre class="code" id="code"><span class="c"># shared code: the alignbench package</span>
-pip install "alignbench @ git+https://github.com/woodRock/align-bench.git"
+<pre class="code" id="code"><span class="c"># joint-align, plus its pinned shared core (alignbench) from GitHub</span>
 git clone https://github.com/woodRock/joint-align &amp;&amp; cd joint-align
+pip install -e ".[neural]"
 
 <span class="c"># 31 chromatograms, 5 batches, true drifts in truth.json</span>
 python scripts/00_make_synthetic_data.py
@@ -373,7 +373,14 @@ python scripts/30_multibatch_align.py --data data/synthetic \
     --results results/synthetic --figs figs/synthetic
 <span class="c"># every method, same protocols, ~1 min</span>
 python scripts/32_fair_benchmark.py --data data/synthetic \
-    --results results/synthetic --neural-steps 300</pre>
+    --results results/synthetic --neural-steps 300
+
+<span class="c"># or benchmark the joint model against the baselines</span>
+<span class="c"># with alignbench (same world, generated in memory, ~30 s)</span>
+alignbench run --methods joint,pooled-pchip,cow-tic \
+    --dataset synthetic:fishlike --seeds 0 \
+    --protocols tic_bframe,tic_midpoint,map_error \
+    --out results/bench</pre>
     </div>
     <div class="card reveal">
       <h3>What to expect</h3>
@@ -384,9 +391,12 @@ python scripts/32_fair_benchmark.py --data data/synthetic \
         <div class="kpi"><div class="v">~2.5 min</div><div class="k">whole demo on a laptop CPU</div></div>
         <div class="kpi"><div class="v">≤ 0.15 min</div><div class="k">error vs the true drift, tested</div></div>
       </div>
-      <p class="sub" style="margin-top:12px">The WarpTransformer baseline needs warpalign's pretrained checkpoint, so
-        the demo benchmark leaves that column empty. <span class="mono">make check</span> runs the linters and the
-        test suite, which includes this demo.</p>
+      <p class="sub" style="margin-top:12px"><span class="mono">alignbench run</span> writes a report, a LaTeX
+        table and every score per sample pair to <span class="mono">results/bench</span>, with the code revisions at
+        the top; the map error against the true drift is only defined for methods with one map per batch pair, so
+        COW-TIC's column stays empty. The WarpTransformer baseline needs warpalign and its pretrained checkpoint
+        (<span class="mono">pip install -e ".[wt]"</span>), so the demo benchmark leaves that column empty too.
+        <span class="mono">make check</span> runs the linters and the test suite, which includes this demo.</p>
     </div>
   </div>
   <p class="sub reveal" style="margin-top:14px">Figures on this page: fish oil data, <span class="mono" data-bind="warpalign"></span>, exported <span data-bind="generated"></span>.</p>
@@ -396,7 +406,7 @@ python scripts/32_fair_benchmark.py --data data/synthetic \
 <footer>
   <div class="inner">
     <span>joint-align · Jesse Wood</span>
-    <span><a href="https://github.com/woodRock/joint-align">GitHub</a> · <a href="https://github.com/woodRock/warp-align">warpalign</a></span>
+    <span><a href="https://github.com/woodRock/joint-align">GitHub</a> · <a href="https://github.com/woodRock/align-bench">alignbench</a> · <a href="https://github.com/woodRock/warp-align">warpalign</a></span>
   </div>
 </footer>
 

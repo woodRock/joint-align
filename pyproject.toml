@@ -19,7 +19,7 @@ dependencies = [
     # (data, anchors, warps, baselines, metrics, provenance). Bump it when this package should follow
     # an alignbench change. To develop against a local checkout instead, install it editable and
     # this package with --no-deps (see the README).
-    "alignbench @ git+https://github.com/woodRock/align-bench.git@1717d9cabc29e6f130fb412a56e22ae1277380d5",
+    "alignbench @ git+https://github.com/woodRock/align-bench.git@879510f93f055d18db35ed62f17141a0ffaea1a7",
 ]
 
 [project.optional-dependencies]
