@@ -2,19 +2,21 @@
 
 Where each piece of Many-Batch Alignment (MBA) lives in the code, with the names the notebook
 (`joint_from_scratch.ipynb`) uses. Paths are relative to the repository root. Everything was read from
-the code (many-batch-align at the time of writing, warpalign `2ec54ea`).
+the code (many-batch-align at the time of writing, warpalign `2ec54ea`), and updated for joint-align 2.0,
+where the shared building blocks (time axis, anchors, synthetic data, metrics) come from alignbench
+(github.com/woodRock/align-bench) instead of warpalign. The numbers are unchanged (bit-identical).
 
 ## The joint model (`src/jointalign/multibatch.py`)
 
 | Paper | Code | Key names |
 |---|---|---|
-| Retention-time grid, T = 200 bins, 0.225 min per bin | `warpalign.config` | `N_BINS = 200`, `BIN_MIN = 0.225` (hard-coded: the fitter's knots and inverse grid span `0 … N_BINS − 1`) |
+| Retention-time grid, T = 200 bins, 0.225 min per bin | `alignbench.axis.FISH_OIL_AXIS` | `n_bins = 200`, `bin_min = 0.225`; `multibatch.N_BINS = FISH_OIL_AXIS.n_bins` (the fitter's knots and inverse grid span `0 … N_BINS − 1`) |
 | Warp f_k(t) = t + d_k(t) | `JointWarp.latent(k, t)` | `t + np.interp(t, knots, drift[k])` |
 | Knots u_0 … u_{Q−1}, equally spaced | `fit_joint` | `knots = np.linspace(0, N_BINS - 1, n_knots)`, `M = n_knots` (Q in the paper), default `N_KNOTS = 41` |
 | Hat basis B(t) | `_hat_basis(t, knots)` | `idx` (left knot), `frac` (position inside the interval, **clipped to [0, 1]**, so t outside the knot range is clamped) |
 | θ_k = (c_k, δ_k1 … δ_k,Q−1), d_k(u) = Lθ_k | `fit_joint` | `Lcum = np.tril(np.ones((M, M)))` (L), `theta[k*M:(k+1)*M]` (θ_k) |
 | Slope bounds 0.5 ≤ f_k′ ≤ 2 (Eq. 2) | `fit_joint` | `S_MIN, S_MAX = 0.5, 2.0`; `lb`, `ub` = `(S_MIN − 1)·Δu`, `(S_MAX − 1)·Δu` for each δ; c_k unbounded (`±inf`) |
-| Anchors (a_j, b_j) in batches (k_j, l_j) | `Anchors` dataclass | `ba, bb` (batch indices, `ba < bb`), `sa, sb` (sample indices), `ta, tb` (RT bins) |
+| Anchors (a_j, b_j) in batches (k_j, l_j) | `Anchors` dataclass (`alignbench.anchors`, re-exported) | `ba, bb` (batch indices, `ba < bb`), `sa, sb` (sample indices), `ta, tb` (RT bins); keyword-only `axis`, `stages` |
 | Residual r_j (Eq. 3) | `fit_joint` | row of `X` = `+B(ta)L` in block `ba`, `−B(tb)L` in block `bb`; `y = tb − ta`; `r = X @ theta − y` |
 | Smoothness λ′ Σ‖D₂Lθ_k‖² (Eq. 4) | `fit_joint` | `D2 = np.diff(np.eye(M), n=2, axis=0) @ Lcum`; `lam_eff = lam * n_eff / (K * M)`; block-diagonal `P` |
 | Gauge γ‖Gθ‖² | `fit_joint` | `G_rows` = `Lcum` in every block (`gauge='mean'`) or in one block (`gauge=<int>`); weight `GAUGE_WEIGHT * n_eff / M`, `GAUGE_WEIGHT = 1e3`. **A penalty, not an exact constraint** |
@@ -26,24 +28,27 @@ the code (many-batch-align at the time of writing, warpalign `2ec54ea`).
 | Per-pair robust scale σ_kl | `fit_joint` | `scale[a, b]` = `_robust_sigma` of the pair's residuals with `w0 > 0` and `w_rob > 0` |
 | Inverse f_l⁻¹ and map g_k→l = f_l⁻¹ ∘ f_k | `JointWarp.inverse`, `JointWarp.map` | `_grid = np.linspace(0, N_BINS - 1, 4 * N_BINS)`; `np.interp(tau, latent(l, _grid), _grid)` (clamps at the run ends) |
 | Pairwise baseline (same fitter, one pair) | `fit_pairwise(anchors, a, b, K, **kw)` | fits a 2-batch problem; other batches left at identity |
-| Dense PCHIP baseline | `pchip_pairwise(anchors, a, b)` | per-integer-bin medians, monotone filter, PCHIP with pinned ends |
+| Dense PCHIP baseline | `pchip_pairwise(anchors, a, b)` (`alignbench.maps.pchip_pairwise`) | per-integer-bin medians, monotone filter, PCHIP with pinned ends |
 
-## Anchor harvesting (`src/jointalign/multibatch.py`, building blocks from warpalign)
+## Anchor harvesting (`alignbench.anchors`, re-exported by `src/jointalign/multibatch.py`)
+
+`multibatch.match_anchors` is `alignbench.anchors.match_subbin`, `harvest_anchors` is `harvest_arrays`; the
+constants are the defaults of the frozen `alignbench.anchors.MatchConfig`.
 
 | Step | Code | Key names / constants |
 |---|---|---|
-| Peak detection on the raw TIC | `warpalign.anchors.detect_peaks(tic)` | `scipy.signal.find_peaks`, height ≥ 80th percentile (`PEAK_HEIGHT_PCT`), `distance=5` (`PEAK_MIN_DIST`), keep the 30 tallest (`PEAK_MAX_N`) |
-| Spectral fingerprint | `warpalign.anchors.fingerprint(chroma, pk)` | mean spectrum of bins pk−1 … pk+1, L2-normalised, `float32` |
+| Peak detection on the raw TIC | `alignbench.anchors.detect_peaks(tic)` | `scipy.signal.find_peaks`, height ≥ 80th percentile (`peak_height_pct`), `distance=5` (`peak_min_dist`), keep the 30 tallest (`peak_max_n`) |
+| Spectral fingerprint | `alignbench.anchors.fingerprint(chroma, pk)` | mean spectrum of bins pk−1 … pk+1, L2-normalised, `float32` |
 | Cosine similarity | `match_anchors` | `sim = fa @ fb.T` (unit vectors, so a dot product is the cosine) |
-| Drift limit | `match_anchors` | `MAX_DRIFT_BINS = MAX_DRIFT_MIN / BIN_MIN` (20 min ≈ 88.9 bins); `far` mask |
+| Drift limit | `match_anchors` | `cfg.max_drift_min / axis.bin_min` (20 min ≈ 88.9 bins); `far` mask |
 | Hungarian matching | `match_anchors` | `scipy.optimize.linear_sum_assignment(-np.where(far, -1.0, sim))` |
-| q70 threshold | `match_anchors` | `thr = max(percentile(sim[~far], 70), SIM_THRESHOLD)` with `SIM_THRESHOLD = 0.30` (only if ≥ 3 candidates) |
-| Refinement | `match_anchors`, `_parabolic` | t_a: parabola through the TIC around the peak; t_b: best fingerprint match within ±`REFINE_RADIUS` = 3 bins, then a parabola through those similarities; offsets clipped to ±0.5 bin |
-| RANSAC | `match_anchors` | `sklearn.linear_model.RANSACRegressor(residual_threshold=RANSAC_RESID (3.0 bins), min_samples=2, random_state=0)`, only with ≥ 4 anchors |
+| q70 threshold | `match_anchors` | `thr = max(percentile(sim[~far], 70), sim_threshold)` with `sim_threshold = 0.30` (only if ≥ 3 candidates) |
+| Refinement | `match_anchors`, `_parabolic` | t_a: parabola through the TIC around the peak; t_b: best fingerprint match within ±`refine_radius` = 3 bins, then a parabola through those similarities; offsets clipped to ±0.5 bin |
+| RANSAC | `match_anchors` | `sklearn.linear_model.RANSACRegressor(residual_threshold=ransac_resid (3.0 bins), min_samples=2, random_state=0)`, only with ≥ 4 anchors |
 | Monotone filter | `match_anchors` | sort by t_a, keep anchors increasing in both t_a and t_b |
 | All cross-batch sample pairs | `harvest_anchors(chromas, tics)` | returns an `Anchors` with one row per anchor |
 
-## Experiments and metrics (`scripts/30_multibatch_align.py`, `warpalign.metrics`)
+## Experiments and metrics (`scripts/30_multibatch_align.py`, `alignbench.metrics`)
 
 | Paper | Code | Key names |
 |---|---|---|
@@ -55,18 +60,20 @@ the code (many-batch-align at the time of writing, warpalign `2ec54ea`).
 | 90 % band | script 30 | `np.percentile(maps, [5, 95], axis=0)` over 200 refits |
 | Predictive interval | script 30 | `hw_pi = sqrt(hw_ci² + (1.645·scale[a,b])²)` with `hw_ci` = half the band width, centred on the point estimate |
 | Gauge reference | script 30 | `ref = argmax(anchor count per batch)` (sep2015 on the fish data) |
-| TIC r | `warpalign.metrics.pearson_rows` | Pearson r on `EVAL_BINS = slice(22, 200)` (from 5 min: `EVAL_START_BIN = int(5.0 // BIN_MIN) = 22`) |
+| TIC r | `alignbench.metrics.tic.pearson_rows` | Pearson r on `FISH_OIL_AXIS.eval_bins = slice(22, 200)` (from 5 min: `eval_start_bin = 22`) |
 
-## From warpalign rather than this repository
+## From alignbench (and warpalign) rather than this repository
 
-`warpalign.config` (all constants above), `warpalign.anchors.detect_peaks` and `fingerprint`,
-`warpalign.data.load_batch` / `Batch` (real data only), `warpalign.metrics.pearson_rows`,
-`warpalign.warps.warp_rows` (used by script 30's `warp_tics`), and the baselines and WarpTransformer
-used in the benchmark (`warpalign.baselines`, `warpalign.calibration`, `warpalign.steps.calibrate_pair`).
+alignbench: the time axis (`alignbench.axis.FISH_OIL_AXIS`), the anchor matchers and `Anchors`
+(`alignbench.anchors`), `alignbench.datasets.fish_oil.load_batch` / `alignbench.data.Batch` (real data
+only), `alignbench.metrics.tic.pearson_rows`, `alignbench.warps.warp_rows` (used by script 30's
+`warp_tics`), the pooled-anchor PCHIP and COW-TIC baselines (`alignbench.anchors.match_pooled_arrays`,
+`alignbench.warps.pchip_warp`, `alignbench.methods.tic.cow_tic_align`) and the synthetic data. warpalign
+(the `[wt]` extra): only the WarpTransformer (`warpalign.calibration`, `warpalign.steps.calibrate_pair`).
 
 ## Synthetic data
 
-`src/jointalign/synthetic.py` (`make_dataset`, `BatchSpec`, `true_map`) writes the public stand-in for the fish
+`src/jointalign/synthetic.py` (`make_dataset`, `BatchSpec`, `true_map`; re-exports of `alignbench.datasets.synthetic`) writes the public stand-in for the fish
 oil data (T = 200, M = 1000, 60 compounds, 31 samples). The notebook builds its own, smaller toy
 world from scratch so every array can be printed. `make_world` returns the same synthetic data
 in memory instead of writing it, for experiments that draw many worlds.

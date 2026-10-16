@@ -16,9 +16,9 @@ import argparse
 from pathlib import Path
 
 import numpy as np
+from alignbench.datasets.fish_oil import load_batch
 from warpalign.calibration import pick_device
 from warpalign.config import Paths
-from warpalign.data import load_batch
 from warpalign.steps.calibrate_pair import compute
 
 from jointalign.provenance import warpalign_revision
