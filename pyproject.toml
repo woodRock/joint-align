@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "joint-align"
-version = "2.0.0"
+version = "2.0.1"
 description = "Joint retention-time alignment of GC-MS chromatograms across many batches"
 requires-python = ">=3.11"
 readme = "README.md"
