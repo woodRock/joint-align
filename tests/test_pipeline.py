@@ -160,6 +160,7 @@ def test_script32_runs_on_script30_outputs(run30):
 
 
 def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
+    pytest.importorskip('warpalign')                  # script 31 only: pip install -e ".[wt]"
     s31 = load_script('31_wt_warps.py')
     out = tmp_path / 'results' / 'wt_warps'
     out.mkdir(parents=True)
