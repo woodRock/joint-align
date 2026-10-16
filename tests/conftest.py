@@ -7,14 +7,13 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from warpalign.config import Paths
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))  # scripts/analysis.py, imported by scripts 40 and 50
 
-DATA = Paths().fish_oil    # the fish oil data lives in the warpalign (alignment) repo
+DATA = ROOT / 'data' / 'fish_oil'    # a symlink to the private fish oil data (README)
 RESULTS = ROOT / 'results'
-T = 200          # RT bins, matches warpalign.config.N_BINS
+T = 200          # RT bins, matches alignbench.axis.FISH_OIL_AXIS.n_bins
 M = 120          # m/z channels for synthetic data (the code is agnostic to M)
 
 _scripts: dict[str, object] = {}

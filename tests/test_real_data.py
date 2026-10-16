@@ -11,7 +11,7 @@ from itertools import combinations
 
 import numpy as np
 import pytest
-from warpalign.data import load_batch
+from alignbench.datasets.fish_oil import load_batch
 
 from conftest import DATA, RESULTS, ROOT, requires_data
 from jointalign import multibatch as mb
@@ -142,7 +142,7 @@ def test_neural_and_cow_caches_shapes(names, chroma):
 
 def test_cached_tic_r_matches_current_data(names, batches):
     """Unaligned TIC r depends only on the data: a mismatch means results predate the data."""
-    from warpalign.metrics import pearson_rows
+    from alignbench.metrics.tic import pearson_rows
     z = np.load(_need(RESULTS / 'multibatch_align.npz'))
     tics = {b.replace('batch_', ''): bt.tic for b, bt in zip(names, batches)}
     stale = []
@@ -158,7 +158,8 @@ def test_cached_tic_r_matches_current_data(names, batches):
 
 
 def test_script31_calibrates_one_pair_with_warpalign(tmp_path, monkeypatch):
-    """Script 31 runs warpalign's calibrate step with its default (v2) checkpoint."""
+    """Script 31 runs warpalign's calibrate step with its default (v2) checkpoint (joint-align[wt])."""
+    pytest.importorskip('warpalign')
     from warpalign.config import Paths
 
     from conftest import load_script

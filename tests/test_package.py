@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import re
-import shutil
 
 import jointalign
 from jointalign import multibatch as mb
@@ -18,28 +17,22 @@ def test_public_api_reexports_multibatch():
 
 
 def test_jointalign_revision_in_checkout():
+    # Editable install of this checkout (as in development and CI): commit, src state, home-relative path.
     rev = provenance.jointalign_revision()
-    assert re.fullmatch(rf'joint-align {re.escape(jointalign.__version__)} @ \w+ \(src (clean|dirty)\)', rev)
+    ver = re.escape(jointalign.__version__)
+    assert re.fullmatch(rf'joint-align {ver} @ \w+ \(src (clean|dirty)\) from .+', rev)
 
 
-def test_jointalign_revision_installed_without_git(tmp_path, monkeypatch):
-    # A copy of the package outside any git checkout, as in site-packages.
-    fake = tmp_path / 'lib' / 'site-packages' / 'jointalign' / '__init__.py'
-    fake.parent.mkdir(parents=True)
-    shutil.copy(jointalign.__file__, fake)
-    monkeypatch.setattr(jointalign, '__file__', str(fake))
-    assert provenance.jointalign_revision() == f'joint-align {jointalign.__version__} (installed, no git)'
+def test_provenance_is_alignbench_s(monkeypatch):
+    # One implementation for every package (alignbench.provenance, which tests pinned, editable and
+    # plain installs); these names stay for downstream projects.
+    from alignbench import provenance as ab
 
-
-def test_jointalign_revision_inside_another_repo(tmp_path, monkeypatch):
-    # site-packages of a venv inside some other git repository must not report that repository.
-    other = tmp_path / 'paper-two'
-    fake = other / '.venv' / 'lib' / 'jointalign' / '__init__.py'
-    fake.parent.mkdir(parents=True)
-    fake.touch()
-    provenance._git('init', '-q', cwd=other)
-    monkeypatch.setattr(jointalign, '__file__', str(fake))
-    assert provenance.jointalign_revision().endswith('(installed, no git)')
+    assert provenance.jointalign_revision() == ab.revision('joint-align')
+    assert provenance.warpalign_revision() == ab.revision('warpalign')
+    lines = provenance.header()
+    assert lines[0].startswith('alignbench ') and any(line.startswith('joint-align ') for line in lines)
+    assert lines[-1].startswith('environment: ')
 
 
 def test_display_path_is_home_relative(tmp_path):

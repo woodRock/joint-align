@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import torch
-from warpalign.warps import warp_signal
+from alignbench.warps import warp_signal
 
 from conftest import T, library_positions, make_chroma
 from jointalign import multibatch as mb

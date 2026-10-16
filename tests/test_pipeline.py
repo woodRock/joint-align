@@ -46,7 +46,7 @@ def run30(workspace):
 def test_script30_outputs(run30):
     res = run30 / 'results'
     txt = (res / 'multibatch_align.txt').read_text()
-    assert 'warpalign 2' in txt and '@' in txt                     # provenance line
+    assert 'alignbench ' in txt and 'joint-align 2' in txt         # provenance lines
     for section in ('1. Hyper-parameters', '2. Mean between-batch TIC r', '3. Cross-fitted',
                     '4. Missing correspondences', '5. Cycle inconsistency', '6. Uncertainty',
                     'Wall time'):
@@ -111,7 +111,7 @@ def test_script32_runs_on_script30_outputs(run30):
         mp.undo()
     txt = (res / 'fair_benchmark.txt').read_text()
     assert 'B-frame' in txt and 'Midpoint' in txt and 'Native protocols' in txt
-    assert txt.splitlines()[2].startswith('warpalign ')
+    assert txt.splitlines()[2].startswith('alignbench ')
     assert (res / 'neural_joint_G_3.npz').exists()
     assert len(list((res / 'cow_tic_maps').glob('*.npy'))) == 10
     z = np.load(res / 'fair_benchmark.npz')
@@ -137,7 +137,7 @@ def test_script32_runs_on_script30_outputs(run30):
             'ticr30', 'coverage', 'benchmark'} <= site.keys()
     assert len(site['batches']) == 5 and len(site['cycle']) == 60 and len(site['lopo']) == 10
     assert site['meta']['n_anchors'] == len(np.load(res / 'anchors_all_pairs.npz')['ta'])
-    assert str(ROOT.parent) not in out.read_text() and '/Users/' not in site['meta']['warpalign']   # public
+    assert str(ROOT.parent) not in out.read_text() and '/Users/' not in site['meta']['code']   # public
     shifts = [v for v in site['warps']['joint']['4-3'] if v is not None]
     assert len(shifts) > 150 and all(np.isfinite(shifts))                # clamped ends are null
 

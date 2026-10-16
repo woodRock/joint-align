@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/coverage-%E2%89%A590%25%20enforced-brightgreen" alt="Coverage ≥ 90% enforced in CI">
   <a href="tutorial/joint_from_scratch.ipynb"><img src="https://img.shields.io/badge/tutorial-notebook-F37626?logo=jupyter&logoColor=white" alt="Tutorial notebook"></a>
   <a href="docs/"><img src="https://img.shields.io/badge/docs-project%20site-0A7BBB" alt="Project site"></a>
-  <a href="https://github.com/woodRock/warp-align"><img src="https://img.shields.io/badge/built%20on-warpalign-6E56CF" alt="Built on warpalign"></a>
+  <a href="https://github.com/woodRock/align-bench"><img src="https://img.shields.io/badge/built%20on-alignbench-6E56CF" alt="Built on alignbench"></a>
 </p>
 
 **Line up GC-MS chromatograms from many batches at once, with one smooth time warp per batch.**
@@ -37,9 +37,11 @@ from going A → C directly. This repository aligns **all batches together**:
    through the shared frame, so the pairwise maps are consistent by construction. A bootstrap
    gives error bands.
 
-It follows up the pairwise Test-Time Calibrated WarpTransformer
-([woodRock/warp-align](https://github.com/woodRock/warp-align), Python package `warpalign`), and
-reuses that package's data loading, peak detection, baselines and metrics.
+It builds on [alignbench](https://github.com/woodRock/align-bench), the shared core of this line
+of work (data loading, anchors, warps, baselines, scoring protocols, provenance), and registers its
+methods there as plugins, so `alignbench run --methods joint,…` benchmarks them against every
+baseline under the same protocols. The pairwise WarpTransformer
+([woodRock/warp-align](https://github.com/woodRock/warp-align)) is one of the baselines.
 
 ## Contents
 
@@ -63,7 +65,7 @@ synthetic stand-in with the same design and *known* true drifts.
 ```bash
 git clone https://github.com/woodRock/joint-align.git
 cd joint-align
-pip install -e ".[dev,neural]"      # the package, plus the pinned warpalign from GitHub
+pip install -e ".[dev,neural]"      # the package, plus the pinned alignbench from GitHub
 
 python scripts/00_make_synthetic_data.py
 python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
@@ -79,8 +81,8 @@ The pipeline takes about 2.5 minutes in all. Then look at:
 
 `tests/test_pipeline.py` runs the same demo. It checks that the joint warps recover the true
 drifts to within 0.15 min wherever compounds exist in both batches. Script 31 (the
-WarpTransformer) needs warpalign's pretrained checkpoint, and script 32 skips that method when
-its warps are absent.
+WarpTransformer) needs warpalign and its pretrained checkpoint (`pip install -e ".[wt]"`), and
+script 32 skips that method when its warps are absent.
 
 ## Learn how it works
 
@@ -262,20 +264,32 @@ model = ja.fit_joint(anchors, len(chromas), lam=10.0)
 t_in_l = model.map(k, l, t)                      # retention times of batch k, mapped into batch l
 ```
 
-Record which version produced your numbers with `jointalign.provenance.jointalign_revision()`.
+Record which version produced your numbers with `jointalign.provenance.header()`.
+
+As alignbench methods (`joint`, `star`, `composed-pairwise`, `neural-joint`; λ chosen by RT-blocked
+held-out anchor error and the gauge on the batch with the most anchors, as script 30):
+
+```bash
+alignbench run --methods joint,composed-pairwise,pooled-pchip,cow-tic --dataset synthetic:k5 --seeds 0-4 \
+               --protocols tic_bframe,map_error --out results/bench_k5/
+```
 
 ## Development setup
 
-Everything shared with the pairwise project comes from `warpalign`, not from a copy: the data
-loader and data paths, peak detection and fingerprints, the pooled-anchor extraction, the
-PCHIP/COW baselines, warping, the WarpTransformer and its calibration, and the metrics.
-`pyproject.toml` pins warpalign to a pushed commit, and `pip install -e ".[dev,neural]"` installs
-it. To work on both repositories, use an editable warpalign checkout instead, so a fix there applies
-here immediately. Install this package with `--no-deps` (or `make install`), otherwise pip
-replaces the editable warpalign with the pinned commit:
+Everything shared with the other projects comes from `alignbench`, not from a copy: the data
+loader, peak detection and fingerprints, both anchor matchers, the synthetic data, the
+PCHIP/COW baselines, warping, the scoring protocols, the metrics and provenance (joint-align 2.0;
+1.x used warpalign). The old names (`jointalign.Anchors`, `harvest_anchors`, `match_anchors`,
+`pchip_pairwise`, `jointalign.synthetic`, `jointalign.provenance`) are re-exports, and scripts 30
+and 32 reproduce 1.1.0's numbers bit for bit (the neural joint's CPU training is not bit-for-bit
+reproducible from run to run, in 1.1.0 either: its warps differ by ≤ 3e-5 bins between reruns).
+`pyproject.toml` pins alignbench to a pushed commit, and `pip install -e ".[dev,neural]"` installs
+it. To work on both repositories, use an editable alignbench checkout instead, so a fix there
+applies here immediately. Install this package with `--no-deps` (or `make install`), otherwise pip
+replaces the editable alignbench with the pinned commit:
 
 ```bash
-pip install -e path/to/warp-align         # editable checkout of github.com/woodRock/warp-align
+pip install -e path/to/align-bench        # editable checkout of github.com/woodRock/align-bench
 pip install --no-deps -e .                # this package, editable (= make install)
 make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs
@@ -285,30 +299,30 @@ Running on the fish oil data (needs access to the private data):
 
 ```bash
 python scripts/30_multibatch_align.py     # joint model, ~4 min
-python scripts/31_wt_warps.py             # WarpTransformer warps, ~50 min on CPU
+python scripts/31_wt_warps.py             # WarpTransformer warps, ~50 min on CPU (needs .[wt])
 python scripts/32_fair_benchmark.py       # every method, same protocols, ~5 min
 python scripts/40_export_site_data.py     # refresh the project site's data
 python scripts/50_paper_figures.py        # paper figures + captions, ~30 s
 ```
 
 Scripts 30–32 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
-Delete those caches when the data or warpalign changes. `tests/test_real_data.py` checks that
+Delete those caches when the data or alignbench changes. `tests/test_real_data.py` checks that
 the results still match the data and the README.
 
 Git holds the text reports (`results/*.txt`) and figure captions, not caches or binaries:
 regenerate the `.npz` caches and the figure PDFs/PNGs with the scripts above.
 
-Every result file records the warpalign version and commit, and whether its `src/` was dirty
-(`jointalign.provenance.warpalign_revision`). Commit warpalign before a run whose results you
-intend to keep. Projects that build on this package can record its revision the same way with
+Every result file starts with alignbench's provenance lines (`jointalign.provenance.header()`):
+the alignbench and joint-align versions and commits, whether an editable checkout's `src/` was
+dirty, and the numeric environment. Commit both before a run whose results you intend to keep. Projects that build on this package can record its revision the same way with
 `jointalign.provenance.jointalign_revision()`.
 
 CI (`.github/workflows/ci.yml`) runs ruff, mypy and the full test suite on every push and pull
-request, against the warpalign commit pinned in `pyproject.toml`. Coverage must stay ≥ 90 %. A
+request, against the alignbench commit pinned in `pyproject.toml`. Coverage must stay ≥ 90 %. A
 package job installs the package non-editable into a clean environment and imports it from
 outside the checkout, which catches files missing from the package.
 The fish oil data is private, so the real-data tests run only locally. A non-blocking canary job
-tests against warpalign's latest `main`, so a breaking upstream change shows up before the pin
+tests against alignbench's latest `main`, so a breaking upstream change shows up before the pin
 is bumped.
 
 ## Project site
@@ -321,12 +335,14 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 ## Repository layout
 
 - `src/jointalign/`: the installable package (`import jointalign`; distribution `joint-align`)
-  - `multibatch.py`: joint K-batch alignment (anchor harvesting on every sample pair, joint fit,
-    pairwise baselines); its public API is re-exported from `jointalign`
+  - `multibatch.py`: the joint K-batch model (joint fit, pairwise fit); anchors and harvesting are
+    alignbench's, re-exported here; its public API is re-exported from `jointalign`
+  - `alignbench_plugin.py`: the methods as alignbench plugins (joint, star, composed-pairwise,
+    neural-joint)
   - `neural_joint.py`: neural refinement of the joint model (needs torch)
-  - `synthetic.py`: public synthetic data with known drifts: `make_dataset` writes it to disk
-    (`scripts/00_make_synthetic_data.py`), `make_world` returns the same world in memory
-  - `provenance.py`: the warpalign and jointalign revision lines written into results
+  - `synthetic.py`: re-exports alignbench's synthetic data with known drifts (`make_dataset`,
+    `make_world`; alignbench dataset 'synthetic:fishlike')
+  - `provenance.py`: the provenance lines written into results (alignbench.provenance)
 - `scripts/30_multibatch_align.py`: the full evaluation of the joint model
 - `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `warpalign.steps.calibrate_pair`
 - `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
@@ -340,8 +356,9 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 
 ## Data
 
-The fish oil data and the WarpTransformer checkpoint are not tracked here. The scripts read
-them from the warpalign checkout through `warpalign.config.Paths()`.
+The fish oil data and the WarpTransformer checkpoint are not tracked here. The scripts read the
+data from `data/fish_oil` (a symlink to the private data, git-ignored) or `--data PATH`; script 31
+reads the checkpoint through warpalign.
 
 ## Open questions
 
