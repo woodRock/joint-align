@@ -24,8 +24,8 @@ dependencies = [
 
 [project.optional-dependencies]
 neural = ["torch>=2.1"]                # jointalign.neural_joint, the neural-joint method, script 32
-# Script 31 only: the WarpTransformer baseline's warps (warpalign's model and checkpoint).
-wt = ["warpalign @ git+https://github.com/woodRock/warp-align.git@ea404e753a0ac02c45918fbfe1fc58b8f0b25cd9", "torch>=2.1"]
+# Script 31 only: the WarpTransformer baseline's warps (warpalign 3.0.0, model and checkpoint).
+wt = ["warpalign @ git+https://github.com/woodRock/warp-align.git@2411143fa4e299d7f6b68a8079e116e91668b4c9", "torch>=2.1"]
 dev = ["pytest>=8", "coverage>=7", "ruff", "mypy", "matplotlib>=3.7"]
 tutorial = ["jupyter", "ipywidgets"]
 
