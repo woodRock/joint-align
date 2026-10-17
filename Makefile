@@ -21,9 +21,9 @@ test-fast:
 	python3.11 -m pytest -m "not slow"
 
 site:
-	python3.11 scripts/40_export_site_data.py
+	python3.11 scripts/export_site_data.py
 	@echo "Serving docs/ at http://localhost:8000"
 	cd docs && python3.11 -m http.server 8000
 
 figures:
-	python3.11 scripts/50_paper_figures.py
+	python3.11 scripts/04_paper_figures.py

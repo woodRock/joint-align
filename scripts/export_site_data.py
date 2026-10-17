@@ -1,7 +1,7 @@
 """
-40_export_site_data.py — Export everything the project website (docs/) plots into one JSON file.
+export_site_data.py — Export everything the project website (docs/) plots into one JSON file.
 
-Reads the outputs of scripts 30–32 and the data, refits the few small models the site needs
+Reads the outputs of scripts 01–03 and the data, refits the few small models the site needs
 (pairwise fits, leave-one-pair-out fits, the λ sweep) and writes docs/data/site.json. Nothing
 on the site is hand-entered: rerun this after rerunning the experiments.
 
@@ -124,7 +124,7 @@ def main(data: Path | None = None) -> None:
                              'ticr_drifted': r(s['ticr_drifted']), 'ticr_near': r(s['ticr_near'])}
                             for s in an.lambda_sweep(run)]
 
-    # ── TIC r table from script 30 ──
+    # ── TIC r table from script 01 ──
     methods30 = ['Unaligned', 'Pooled PCHIP (cow-dcnn)', 'Dense PCHIP', 'Pairwise smooth', 'Joint', 'Joint CF']
     site['ticr30'] = {'methods': methods30, 'pairs': []}
     for pair in run.pairs:
@@ -137,7 +137,7 @@ def main(data: Path | None = None) -> None:
         site['ticr30']['pairs'].append(row)
     site['coverage'] = an.coverage(run)
 
-    # ── Fair benchmark (script 32), if present ──
+    # ── Fair benchmark (script 03), if present ──
     fb = RESULTS / 'fair_benchmark.npz'
     if fb.exists():
         zb = np.load(fb)
@@ -168,8 +168,8 @@ def main(data: Path | None = None) -> None:
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--data', type=Path, default=None, help="batch_* folders (default: script 30's default)")
-    ap.add_argument('--results', type=Path, default=RESULTS, help='outputs of scripts 30–32 (default: results/)')
+    ap.add_argument('--data', type=Path, default=None, help="batch_* folders (default: script 01's default)")
+    ap.add_argument('--results', type=Path, default=RESULTS, help='outputs of scripts 01–03 (default: results/)')
     ap.add_argument('--out', type=Path, default=OUT, help='JSON to write (default: docs/data/site.json)')
     a = ap.parse_args()
     RESULTS, OUT = a.results, a.out

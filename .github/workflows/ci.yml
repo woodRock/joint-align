@@ -69,7 +69,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 31
+      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 02
       - name: Record alignbench revision
         run: python -c "import importlib.metadata as m; print(m.distribution('alignbench').read_text('direct_url.json'))"
       - name: Run tests with coverage
@@ -98,7 +98,7 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
       - run: pip install torch==$TORCH_VERSION --index-url $TORCH_INDEX
-      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 31
+      - run: pip install -e ".[dev,neural,wt]"  # wt: warpalign, for script 02
       - run: pip install --force-reinstall --no-deps "alignbench @ git+https://github.com/woodRock/align-bench.git@main"
       - run: python -m pytest
 

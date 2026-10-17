@@ -67,9 +67,9 @@ git clone https://github.com/woodRock/joint-align.git
 cd joint-align
 pip install -e ".[dev,neural]"      # the package, plus the pinned alignbench from GitHub
 
-python scripts/00_make_synthetic_data.py
-python scripts/30_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
-python scripts/32_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
+python scripts/make_synthetic_data.py
+python scripts/01_multibatch_align.py --data data/synthetic --results results/synthetic --figs figs/synthetic
+python scripts/03_fair_benchmark.py   --data data/synthetic --results results/synthetic --neural-steps 300
 ```
 
 The pipeline takes about 2.5 minutes in all. Then look at:
@@ -80,9 +80,9 @@ The pipeline takes about 2.5 minutes in all. Then look at:
 - `data/synthetic/truth.json`: the true drifts, so you can check the fit yourself.
 
 `tests/test_pipeline.py` runs the same demo. It checks that the joint warps recover the true
-drifts to within 0.15 min wherever compounds exist in both batches. Script 31 (the
+drifts to within 0.15 min wherever compounds exist in both batches. Script 02 (the
 WarpTransformer) needs warpalign and its pretrained checkpoint (`pip install -e ".[wt]"`), and
-script 32 skips that method when its warps are absent.
+script 03 skips that method when its warps are absent.
 
 ## Learn how it works
 
@@ -163,7 +163,7 @@ joint model and are trained on the anchors plus a groupwise m/z-resolved similar
 
 ## Results on fish oil
 
-### The joint model (`scripts/30_multibatch_align.py` → `results/multibatch_align.txt`)
+### The joint model (`scripts/01_multibatch_align.py` → `results/multibatch_align.txt`)
 
 Mean TIC r between batches, with A warped into B's frame, over all A_i × B_j. "Drifted" means
 unaligned TIC r < 0.5, which gives six drifted pairs and four near-aligned pairs.
@@ -200,7 +200,7 @@ unaligned TIC r < 0.5, which gives six drifted pairs and four near-aligned pairs
   0.600. Only λ = 0.1 trades the pair types off: drifted pairs reach 0.622, and near-aligned
   pairs fall to 0.766.
 
-### Fair benchmark (`scripts/31_wt_warps.py`, `scripts/32_fair_benchmark.py` → `results/fair_benchmark.txt`)
+### Fair benchmark (`scripts/02_wt_warps.py`, `scripts/03_fair_benchmark.py` → `results/fair_benchmark.txt`)
 
 Published pairwise numbers mix protocols. Here every method is reduced to the map it estimates
 (RT in B → RT in A) and scored the same way. *B-frame* warps A into B's raw frame. *Midpoint*
@@ -267,7 +267,7 @@ t_in_l = model.map(k, l, t)                      # retention times of batch k, m
 Record which version produced your numbers with `jointalign.provenance.header()`.
 
 As alignbench methods (`joint`, `star`, `composed-pairwise`, `neural-joint`; λ chosen by RT-blocked
-held-out anchor error and the gauge on the batch with the most anchors, as script 30):
+held-out anchor error and the gauge on the batch with the most anchors, as script 01):
 
 ```bash
 alignbench run --methods joint,composed-pairwise,pooled-pchip,cow-tic --dataset synthetic:k5 --seeds 0-4 \
@@ -280,8 +280,8 @@ Everything shared with the other projects comes from `alignbench`, not from a co
 loader, peak detection and fingerprints, both anchor matchers, the synthetic data, the
 PCHIP/COW baselines, warping, the scoring protocols, the metrics and provenance (joint-align 2.0;
 1.x used warpalign). The old names (`jointalign.Anchors`, `harvest_anchors`, `match_anchors`,
-`pchip_pairwise`, `jointalign.synthetic`, `jointalign.provenance`) are re-exports, and scripts 30
-and 32 reproduce 1.1.0's numbers bit for bit (the neural joint's CPU training is not bit-for-bit
+`pchip_pairwise`, `jointalign.synthetic`, `jointalign.provenance`) are re-exports, and scripts 01
+and 03 reproduce 1.1.0's numbers bit for bit (the neural joint's CPU training is not bit-for-bit
 reproducible from run to run, in 1.1.0 either: its warps differ by ≤ 3e-5 bins between reruns).
 `pyproject.toml` pins alignbench to a pushed commit, and `pip install -e ".[dev,neural]"` installs
 it. To work on both repositories, use an editable alignbench checkout instead, so a fix there
@@ -295,17 +295,22 @@ make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs
 ```
 
-Running on the fish oil data (needs access to the private data):
+Reproducing the paper on the fish oil data (needs access to the private data). The numbered
+scripts run in this order; each reads only what the earlier ones wrote to `results/`:
 
 ```bash
-python scripts/30_multibatch_align.py     # joint model, ~4 min
-python scripts/31_wt_warps.py             # WarpTransformer warps, ~50 min on CPU (needs .[wt])
-python scripts/32_fair_benchmark.py       # every method, same protocols, ~5 min
-python scripts/40_export_site_data.py     # refresh the project site's data
-python scripts/50_paper_figures.py        # paper figures + captions, ~30 s
+python scripts/01_multibatch_align.py     # joint model, ~7 min
+python scripts/02_wt_warps.py             # WarpTransformer warps, ~50 min on CPU (needs .[wt], torch 2.7.1)
+python scripts/03_fair_benchmark.py       # every method, same protocols, ~5 min
+python scripts/04_paper_figures.py        # paper figures + captions, ~30 s
+python scripts/export_site_data.py        # (not part of the paper) refresh the project site's data
 ```
 
-Scripts 30–32 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
+A full rerun on 2026-10-17 reproduced every committed number bit for bit, except the neural joint's,
+whose CPU training is not run-to-run reproducible (its TIC r moved by ≤ 0.002 per pair; no ranking or
+test verdict changed). `scripts/make_synthetic_data.py` writes the public synthetic stand-in.
+
+Scripts 01–03 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
 Delete those caches when the data or alignbench changes. `tests/test_real_data.py` checks that
 the results still match the data and the README.
 
@@ -328,7 +333,7 @@ is bumped.
 ## Project site
 
 `docs/` is an interactive website explaining the project. Every chart is drawn from the real
-results (`docs/data/site.json` and `site.js`, written by `scripts/40_export_site_data.py`). Open
+results (`docs/data/site.json` and `site.js`, written by `scripts/export_site_data.py`). Open
 `docs/index.html` directly or run `make site`. To publish it with GitHub Pages, go to Settings →
 Pages → Deploy from branch, and choose `main` and `/docs`.
 
@@ -343,11 +348,11 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
   - `synthetic.py`: re-exports alignbench's synthetic data with known drifts (`make_dataset`,
     `make_world`; alignbench dataset 'synthetic:fishlike')
   - `provenance.py`: the provenance lines written into results (alignbench.provenance)
-- `scripts/30_multibatch_align.py`: the full evaluation of the joint model
-- `scripts/31_wt_warps.py`: WarpTransformer warps for every pair via `warpalign.steps.calibrate_pair`
-- `scripts/32_fair_benchmark.py`: every method under the same scoring protocols
-- `scripts/40_export_site_data.py`: exports the data behind the project site
-- `scripts/50_paper_figures.py`: paper figures (`figs/paper/*.pdf`) and `figs/paper/captions.md`, whose
+- `scripts/01_multibatch_align.py`: the full evaluation of the joint model
+- `scripts/02_wt_warps.py`: WarpTransformer warps for every pair via `warpalign.steps.calibrate_pair`
+- `scripts/03_fair_benchmark.py`: every method under the same scoring protocols
+- `scripts/export_site_data.py`: exports the data behind the project site
+- `scripts/04_paper_figures.py`: paper figures (`figs/paper/*.pdf`) and `figs/paper/captions.md`, whose
   numbers are computed from the results
 - `scripts/analysis.py`: analyses shared by the site and the figures, so the two cannot disagree
   (paper-specific: it reads `results/`, so it is not part of the package)
@@ -357,7 +362,7 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 ## Data
 
 The fish oil data and the WarpTransformer checkpoint are not tracked here. The scripts read the
-data from `data/fish_oil` (a symlink to the private data, git-ignored) or `--data PATH`; script 31
+data from `data/fish_oil` (a symlink to the private data, git-ignored) or `--data PATH`; script 02
 reads the checkpoint through warpalign.
 
 ## Open questions

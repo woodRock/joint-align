@@ -1,5 +1,5 @@
 """
-30_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
+01_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
 
 Fits one monotone warp per batch into a shared latent RT frame (src/jointalign/multibatch.py) from
 spectral anchors pooled over every cross-batch sample pair, and compares it with pairwise
@@ -485,7 +485,7 @@ if __name__ == '__main__':
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--data', type=Path, default=DATA,
                     help='batch_* folders in warpalign layout (default: the fish oil data; '
-                         'scripts/00_make_synthetic_data.py writes a public synthetic stand-in)')
+                         'scripts/make_synthetic_data.py writes a public synthetic stand-in)')
     ap.add_argument('--results', type=Path, default=RESULTS, help='output folder (default: results/)')
     ap.add_argument('--figs', type=Path, default=FIGS, help='figure folder (default: figs/)')
     a = ap.parse_args()

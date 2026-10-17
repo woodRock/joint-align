@@ -48,25 +48,25 @@ constants are the defaults of the frozen `alignbench.anchors.MatchConfig`.
 | Monotone filter | `match_anchors` | sort by t_a, keep anchors increasing in both t_a and t_b |
 | All cross-batch sample pairs | `harvest_anchors(chromas, tics)` | returns an `Anchors` with one row per anchor |
 
-## Experiments and metrics (`scripts/30_multibatch_align.py`, `alignbench.metrics`)
+## Experiments and metrics (`scripts/01_multibatch_align.py`, `alignbench.metrics`)
 
 | Paper | Code | Key names |
 |---|---|---|
-| λ grid | script 30 | `LAMBDAS = [0.1, 1, 10, 30, 100, 300, 1000, 3000, 10000]` |
-| RT-blocked CV (12-bin blocks, block b → fold b mod 5) | script 30 | `RT_BLOCK = 12`, `N_FOLDS = 5`, `blk(t) = floor(t / RT_BLOCK) % N_FOLDS`; test = **either** end in the fold, train = **neither** end in the fold; score = median `|anchor_errors|` |
+| λ grid | script 01 | `LAMBDAS = [0.1, 1, 10, 30, 100, 300, 1000, 3000, 10000]` |
+| RT-blocked CV (12-bin blocks, block b → fold b mod 5) | script 01 | `RT_BLOCK = 12`, `N_FOLDS = 5`, `blk(t) = floor(t / RT_BLOCK) % N_FOLDS`; test = **either** end in the fold, train = **neither** end in the fold; score = median `|anchor_errors|` |
 | Sample-fold CV (for comparison) | `assign_folds`, `anchor_fold_masks` | samples assigned to folds within each batch |
 | Held-out anchor error | `anchor_errors(model, anc)` | `model.map(a, b, ta) − tb` for every anchor |
 | Bootstrap over samples | `boot_weights(anc, sizes, rng)` | multinomial counts per batch; an anchor's weight = count(sample a) × count(sample b); passed as `base_weight` |
-| 90 % band | script 30 | `np.percentile(maps, [5, 95], axis=0)` over 200 refits |
-| Predictive interval | script 30 | `hw_pi = sqrt(hw_ci² + (1.645·scale[a,b])²)` with `hw_ci` = half the band width, centred on the point estimate |
-| Gauge reference | script 30 | `ref = argmax(anchor count per batch)` (sep2015 on the fish data) |
+| 90 % band | script 01 | `np.percentile(maps, [5, 95], axis=0)` over 200 refits |
+| Predictive interval | script 01 | `hw_pi = sqrt(hw_ci² + (1.645·scale[a,b])²)` with `hw_ci` = half the band width, centred on the point estimate |
+| Gauge reference | script 01 | `ref = argmax(anchor count per batch)` (sep2015 on the fish data) |
 | TIC r | `alignbench.metrics.tic.pearson_rows` | Pearson r on `FISH_OIL_AXIS.eval_bins = slice(22, 200)` (from 5 min: `eval_start_bin = 22`) |
 
 ## From alignbench (and warpalign) rather than this repository
 
 alignbench: the time axis (`alignbench.axis.FISH_OIL_AXIS`), the anchor matchers and `Anchors`
 (`alignbench.anchors`), `alignbench.datasets.fish_oil.load_batch` / `alignbench.data.Batch` (real data
-only), `alignbench.metrics.tic.pearson_rows`, `alignbench.warps.warp_rows` (used by script 30's
+only), `alignbench.metrics.tic.pearson_rows`, `alignbench.warps.warp_rows` (used by script 01's
 `warp_tics`), the pooled-anchor PCHIP and COW-TIC baselines (`alignbench.anchors.match_pooled_arrays`,
 `alignbench.warps.pchip_warp`, `alignbench.methods.tic.cow_tic_align`) and the synthetic data. warpalign
 (the `[wt]` extra): only the WarpTransformer (`warpalign.calibration`, `warpalign.steps.calibrate_pair`).

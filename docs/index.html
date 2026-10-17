@@ -367,12 +367,12 @@ git clone https://github.com/woodRock/joint-align &amp;&amp; cd joint-align
 pip install -e ".[neural]"
 
 <span class="c"># 31 chromatograms, 5 batches, true drifts in truth.json</span>
-python scripts/00_make_synthetic_data.py
+python scripts/make_synthetic_data.py
 <span class="c"># joint model on it, ~1.5 min</span>
-python scripts/30_multibatch_align.py --data data/synthetic \
+python scripts/01_multibatch_align.py --data data/synthetic \
     --results results/synthetic --figs figs/synthetic
 <span class="c"># every method, same protocols, ~1 min</span>
-python scripts/32_fair_benchmark.py --data data/synthetic \
+python scripts/03_fair_benchmark.py --data data/synthetic \
     --results results/synthetic --neural-steps 300
 
 <span class="c"># or benchmark the joint model against the baselines</span>
