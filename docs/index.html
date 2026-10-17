@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Joint Align</title>
 <meta name="description" content="Aligning GC-MS retention times across many batches at once: one monotone warp per batch into a shared clock, fitted to every spectral anchor jointly.">
+<meta property="og:title" content="joint-align — five batches, one shared clock">
+<meta property="og:description" content="One monotone retention-time warp per GC-MS batch, fitted jointly to 25,011 spectral anchors. Interactive results, cycle consistency, uncertainty and a fair benchmark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 24 C8 24 9 6 12 6 S15 24 18 24 21 12 23 12 26 24 30 24' fill='none' stroke='%232a78d6' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 <script>
@@ -66,6 +71,7 @@
         </div>
       </div>
       <div class="chart" id="hero-chart" aria-label="Total ion chromatograms of five batches, morphing between their own retention times and the shared frame"></div>
+      <div class="slider hero-slider"><span>own clocks</span><input type="range" id="hero-alpha" min="0" max="100" value="0" aria-label="Degree of alignment, 0 to 100 percent"><span>shared clock</span></div>
       <figcaption class="legend" id="hero-legend"></figcaption>
     </figure>
   </div>
@@ -75,6 +81,19 @@
     <div class="stat reveal"><div class="v" data-count="n_anchors">0</div><div class="k">spectral anchors, fitted jointly</div></div>
     <div class="stat reveal"><div class="v"><span data-bind="cycle_joint"></span><small>min</small></div><div class="k">cycle error, vs <span data-bind="cycle_pairwise"></span> min pairwise</div></div>
   </div>
+  <div class="glossary reveal" id="glossary" aria-label="Glossary">
+    <span class="glossary-k">Glossary</span>
+    <button class="chip" type="button" data-term="rt" aria-pressed="false">retention time</button>
+    <button class="chip" type="button" data-term="batch" aria-pressed="false">batch</button>
+    <button class="chip" type="button" data-term="tic" aria-pressed="false">TIC</button>
+    <button class="chip" type="button" data-term="anchor" aria-pressed="false">anchor</button>
+    <button class="chip" type="button" data-term="warp" aria-pressed="false">warp</button>
+    <button class="chip" type="button" data-term="joint" aria-pressed="false">joint model</button>
+    <button class="chip" type="button" data-term="lambda" aria-pressed="false">λ</button>
+    <button class="chip" type="button" data-term="ticr" aria-pressed="false">TIC r</button>
+    <button class="chip" type="button" data-term="drifted" aria-pressed="false">drifted pair</button>
+  </div>
+  <div class="glossary-panel" id="glossary-panel" hidden></div>
 </header>
 
 <main>

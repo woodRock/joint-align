@@ -130,7 +130,26 @@
     const batchLegend = id => legend(id, names.map((n, k) => ({ label: `${n} (n=${D.batches[k].n})${k === REF ? ', reference' : ''}`, color: series(k) })));
 
     // ══ Ridgeline (hero + chapter 01) ══════════════════════════════════════
-    function ridge(id, { height, interactive, getFrame, getOverlay }) {
+    // A trace at alignment a ∈ [0, 1] is the raw TIC resampled through a fraction a of its batch's joint warp,
+    // so the morph slides peaks along the time axis instead of cross-fading two pictures.
+    function morph(k, si, a) {
+      const raw = D.tic[k].raw[si], al = D.tic[k].aligned[si];
+      if (a <= 0 || k === REF) return raw; if (a >= 1) return al;
+      const s = shiftArr(D.warps.joint, REF, k); const out = new Array(T);
+      for (let t = 0; t < T; t++) {
+        const sh = s[t]; const v = sh == null ? null : interp(raw, t + a * sh);
+        out[t] = v == null ? raw[t] * (1 - a) + al[t] * a : v;
+      }
+      return out;
+    }
+    function tween(from, to, dur, step, done) {
+      if (reduceMotion || dur <= 0) { step(to); if (done) done(); return { stop() {} }; }
+      const i = d3.interpolateNumber(from, to);
+      const t = d3.timer(el => { const p = Math.min(1, el / dur); step(i(d3.easeCubicInOut(p))); if (p >= 1) { t.stop(); if (done) done(); } });
+      return t;
+    }
+    function ridge(id, { height, interactive, getAlpha, getOverlay }) {
+      const getFrame = () => (getAlpha() >= 0.5 ? 'aligned' : 'raw');
       const ampF = interactive ? 1.45 : 1.6;
       const inner = height - (interactive ? 44 : 28);                    // plot height before headroom
       const head = (inner / K) * (ampF - 1) + 6;                         // room for the top row's peaks
@@ -149,18 +168,16 @@
       const rows = f.g.selectAll('g.row').data(D.tic).join('g').attr('class', 'row')
         .attr('transform', (d, k) => `translate(0,${rowY(k, getOverlay())})`);
       rows.append('line').attr('x1', 0).attr('x2', f.w).style('stroke', 'var(--grid)');
-      rows.selectAll('path').data((d, k) => d[getFrame()].map(s => ({ s, k })))
-        .join('path').attr('d', d => line(d.s)).style('fill', 'none').style('stroke', d => series(d.k))
+      rows.selectAll('path').data((d, k) => d.raw.map((s, si) => ({ k, si })))
+        .join('path').attr('d', p => line(morph(p.k, p.si, getAlpha()))).style('fill', 'none').style('stroke', p => series(p.k))
         .style('stroke-width', interactive ? 1.5 : 1.3).style('stroke-opacity', 0.85).style('stroke-linejoin', 'round');
       const labels = rows.append('text').attr('class', 'direct-label').attr('x', f.w + 8).attr('y', -4)
         .text((d, k) => names[k]).style('fill', (d, k) => series(k)).style('opacity', getOverlay() ? 0 : 1);
       const api = {
+        render(a) { rows.each(function (d, k) { d3.select(this).selectAll('path').attr('d', p => line(morph(k, p.si, a))); }); },
         update(dur = DUR) {
-          const fr = getFrame(), ov = getOverlay();
+          const ov = getOverlay();
           rows.transition().duration(dur).ease(d3.easeCubicInOut).attr('transform', (d, k) => `translate(0,${rowY(k, ov)})`);
-          rows.each(function (d) {
-            d3.select(this).selectAll('path').data(d[fr]).transition().duration(dur).ease(d3.easeCubicInOut).attr('d', s => line(s));
-          });
           labels.transition().duration(dur).style('opacity', ov ? 0 : 1);
         },
       };
@@ -187,36 +204,40 @@
       return api;
     }
 
-    // Hero
-    let heroFrame = 'raw', heroPlay = !reduceMotion, heroTimer = null, hero;
-    const heroLabel = document.getElementById('hero-state');
+    // Hero: auto-play eases between the two ends; the slider scrubs anywhere in between.
+    let heroAlpha = 0, heroPlay = !reduceMotion, heroTimer = null, heroTween = null, hero;
+    const heroLabel = document.getElementById('hero-state'), heroSlider = document.getElementById('hero-alpha');
+    const heroBtns = { raw: document.getElementById('hero-raw'), al: document.getElementById('hero-al'), play: document.getElementById('hero-play') };
     const setHeroLabel = () => {
-      heroLabel.classList.toggle('aligned', heroFrame === 'aligned');
-      heroLabel.lastElementChild.textContent = heroFrame === 'aligned'
-        ? `Aligned: every batch warped into ${names[REF]}'s clock` : 'Unaligned: each batch on its own clock';
+      const a = heroAlpha;
+      heroLabel.classList.toggle('aligned', a >= 0.5);
+      heroLabel.lastElementChild.textContent = a <= 0.01 ? 'Unaligned: each batch on its own clock'
+        : a >= 0.99 ? `Aligned: every batch warped into ${names[REF]}'s clock`
+        : `Warping: ${Math.round(a * 100)} % of the way into ${names[REF]}'s clock`;
     };
-    function drawHero() { hero = ridge('hero-chart', { height: 330, interactive: false, getFrame: () => heroFrame, getOverlay: () => false }); }
-    function heroTick() { heroFrame = heroFrame === 'raw' ? 'aligned' : 'raw'; setHeroLabel(); hero.update(1400); }
+    function heroRender(a) { heroAlpha = a; hero.render(a); heroSlider.value = String(Math.round(a * 100)); setHeroLabel(); }
+    function heroGo(target, dur) { if (heroTween) heroTween.stop(); heroTween = tween(heroAlpha, target, dur, heroRender); }
+    function drawHero() { hero = ridge('hero-chart', { height: 330, interactive: false, getAlpha: () => heroAlpha, getOverlay: () => false }); }
+    function heroTick() { heroGo(heroAlpha < 0.5 ? 1 : 0, 1600); }
+    const pressEnds = (raw, al) => { heroBtns.raw.setAttribute('aria-pressed', String(raw)); heroBtns.al.setAttribute('aria-pressed', String(al)); };
     function setPlay(on) {
       heroPlay = on; clearInterval(heroTimer);
-      if (on) heroTimer = setInterval(heroTick, 3400);
-      document.getElementById('hero-play').setAttribute('aria-pressed', String(on));
+      if (on) { heroTimer = setInterval(heroTick, 3600); pressEnds(false, false); }
+      heroBtns.play.setAttribute('aria-pressed', String(on));
     }
-    document.getElementById('hero-play').addEventListener('click', () => { setPlay(!heroPlay); document.getElementById('hero-raw').setAttribute('aria-pressed', 'false'); document.getElementById('hero-al').setAttribute('aria-pressed', 'false'); });
-    for (const [id, fr] of [['hero-raw', 'raw'], ['hero-al', 'aligned']]) {
-      document.getElementById(id).addEventListener('click', () => {
-        setPlay(false); heroFrame = fr; setHeroLabel(); hero.update(1100);
-        document.getElementById('hero-raw').setAttribute('aria-pressed', String(fr === 'raw'));
-        document.getElementById('hero-al').setAttribute('aria-pressed', String(fr === 'aligned'));
-      });
+    heroBtns.play.addEventListener('click', () => setPlay(!heroPlay));
+    for (const [key, target] of [['raw', 0], ['al', 1]]) {
+      heroBtns[key].addEventListener('click', () => { setPlay(false); heroGo(target, 1100); pressEnds(target === 0, target === 1); });
     }
+    heroSlider.addEventListener('input', () => { setPlay(false); if (heroTween) heroTween.stop(); heroRender(+heroSlider.value / 100); pressEnds(false, false); });
     drawHero(); renderers.push(drawHero); setHeroLabel(); batchLegend('hero-legend'); setPlay(heroPlay);
+    if (heroPlay) setTimeout(heroTick, 1200);
 
-    // Chapter 01
-    let rFrame = 'raw', rOverlay = false, rApi;
-    const drawRidge = () => { rApi = ridge('ridge-chart', { height: 470, interactive: true, getFrame: () => rFrame, getOverlay: () => rOverlay }); };
+    // Chapter 01: the frame toggle runs the same morph, so peaks visibly slide into place.
+    let rAlpha = 0, rOverlay = false, rApi, rTween = null;
+    const drawRidge = () => { rApi = ridge('ridge-chart', { height: 470, interactive: true, getAlpha: () => rAlpha, getOverlay: () => rOverlay }); };
     drawRidge(); renderers.push(drawRidge); batchLegend('ridge-legend');
-    segGroup('[data-frame]', 'frame', v => { rFrame = v; rApi.update(); });
+    segGroup('[data-frame]', 'frame', v => { if (rTween) rTween.stop(); rTween = tween(rAlpha, v === 'aligned' ? 1 : 0, DUR * 1.8, a => { rAlpha = a; rApi.render(a); }); });
     document.getElementById('ridge-overlay').addEventListener('change', e => { rOverlay = e.target.checked; rApi.update(); });
 
     // ══ 02 Cycle consistency ════════════════════════════════════════════════
@@ -287,6 +308,13 @@
         drawCycGraph();
       };
       node.on('click', (evt, d) => pick(names.indexOf(d))).on('keydown', (evt, d) => { if (evt.key === 'Enter' || evt.key === ' ') { evt.preventDefault(); pick(names.indexOf(d)); } });
+      if (!reduceMotion && !pending.length) {                           // a marker walks A → B → C once the route is set
+        const dot = f.g.append('circle').attr('r', 5).style('fill', 'var(--ink)').style('pointer-events', 'none')
+          .attr('cx', pos[route[0]][0]).attr('cy', pos[route[0]][1]);
+        dot.transition().delay(150).duration(650).ease(d3.easeCubicInOut).attr('cx', pos[route[1]][0]).attr('cy', pos[route[1]][1])
+          .transition().duration(650).ease(d3.easeCubicInOut).attr('cx', pos[route[2]][0]).attr('cy', pos[route[2]][1])
+          .transition().duration(350).style('opacity', 0).remove();
+      }
     }
     function drawCycBars() {
       const f = frame('cyc-bars', 190, { top: 8, right: 8, bottom: 22, left: 42 });
@@ -449,11 +477,18 @@
     const dr = R.pairs.filter(p => p.drifted), na = R.pairs.filter(p => !p.drifted);
     const others = R.methods.filter(m => !m.startsWith('Joint') && m !== 'Unaligned');
     const bestOther = others.reduce((p, q) => (groupMean(dr, q) > groupMean(dr, p) ? q : p));
-    document.getElementById('res-joint-dr').textContent = fmt3(groupMean(dr, 'Joint'));
-    document.getElementById('res-best-other').textContent = fmt3(groupMean(dr, bestOther));
+    const statObs = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; statObs.unobserve(e.target);
+      const v = +e.target.dataset.target;
+      d3.select(e.target).transition().duration(reduceMotion ? 0 : 1400).ease(d3.easeCubicOut)
+        .tween('text', function () { const i = d3.interpolateNumber(0, v); return t => { this.textContent = fmt3(i(t)); }; });
+    }), { threshold: 0.5 });
+    const statTween = (id, v) => { const el = document.getElementById(id); el.dataset.target = String(v); el.textContent = fmt3(0); statObs.observe(el); };
+    statTween('res-joint-dr', groupMean(dr, 'Joint'));
+    statTween('res-best-other', groupMean(dr, bestOther));
     document.getElementById('res-best-other-k').textContent = `${bestOther}, drifted pairs`;
-    document.getElementById('res-joint-na').textContent = fmt3(groupMean(na, 'Joint'));
-    document.getElementById('res-unal-na').textContent = fmt3(groupMean(na, 'Unaligned'));
+    statTween('res-joint-na', groupMean(na, 'Joint'));
+    statTween('res-unal-na', groupMean(na, 'Unaligned'));
 
     function heatmap(containerId, rows, methods, getVal, asTable, groupOf) {
       const el = document.getElementById(containerId); el.replaceChildren();
@@ -732,6 +767,26 @@
     const h = document.documentElement; prog.style.width = `${(h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100}%`;
   }, { passive: true });
   let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => renderers.forEach(r => r()), 180); });
+  const GLOSSARY = {
+    rt: ['Retention time (RT)', 'When a compound leaves the GC column. Time is binned into 200 bins of 0.225 min.'],
+    batch: ['Batch', 'A set of samples run together. Drift is mostly shared within a batch and differs between batches.'],
+    tic: ['TIC', 'Total ion chromatogram: the summed intensity over all m/z at each time bin.'],
+    anchor: ['Anchor', 'A pair of peaks in two samples from different batches, matched by mass spectrum as the same compound.'],
+    warp: ['Warp', "A monotone (always-increasing) map from one batch's time axis to another's, or to the shared frame."],
+    joint: ['Joint model', "One warp per batch into a shared frame, fitted to all anchors at once. This repository's method."],
+    lambda: ['λ (lambda)', 'Smoothness strength. Chosen by cross-validation on held-out anchors, never on TIC r.'],
+    ticr: ['TIC r', 'Pearson correlation of two normalised TICs after alignment. Higher is better; it is a proxy, not ground truth.'],
+    drifted: ['Drifted / near-aligned pair', 'A batch pair with unaligned TIC r below / above 0.5.'],
+  };
+  const gpanel = document.getElementById('glossary-panel'), gchips = [...document.querySelectorAll('#glossary .chip')];
+  gchips.forEach(b => b.addEventListener('click', () => {
+    const wasOpen = b.getAttribute('aria-pressed') === 'true';
+    gchips.forEach(o => o.setAttribute('aria-pressed', 'false'));
+    if (wasOpen) { gpanel.hidden = true; return; }
+    b.setAttribute('aria-pressed', 'true'); const [term, def] = GLOSSARY[b.dataset.term];
+    gpanel.replaceChildren(Object.assign(document.createElement('b'), { textContent: `${term}. ` }), document.createTextNode(def));
+    gpanel.hidden = false;
+  }));
   document.getElementById('copy-btn').addEventListener('click', e => {
     navigator.clipboard?.writeText(document.getElementById('code').textContent).then(() => {
       e.target.textContent = 'Copied'; setTimeout(() => { e.target.textContent = 'Copy'; }, 1400);
