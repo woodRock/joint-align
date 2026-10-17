@@ -1,6 +1,6 @@
 """
-Derived analyses of a script-30 run, shared by the project site (script 40) and the paper
-figures (script 50), so the two can never disagree: loading and checking a run, pairwise and
+Derived analyses of a script-01 run, shared by the project site (export_site_data.py) and the paper
+figures (script 04), so the two can never disagree: loading and checking a run, pairwise and
 leave-one-pair-out refits, cycle consistency, the λ sweep, bootstrap bands, and the tables parsed
 from results/multibatch_align.txt.
 """
@@ -48,9 +48,9 @@ def shift(m: np.ndarray) -> np.ndarray:
 
 @dataclass
 class Run:
-    """One script-30 run: its results, the data it used and the refitted joint model."""
+    """One script-01 run: its results, the data it used and the refitted joint model."""
     results: Path
-    s30: ModuleType                   # the script-30 module (helpers and constants)
+    s30: ModuleType                   # the script-01 module (helpers and constants)
     z: dict
     names: list[str]
     batches: list
@@ -81,7 +81,7 @@ class Run:
         return [p for p in self.pairs if self.ticr(p, 'Unaligned').mean() < 0.5]
 
     def ticr(self, pair: tuple[str, str], method: str) -> np.ndarray:
-        """Script 30's (n_a, n_b) TIC r array for a pair and method."""
+        """Script 01's (n_a, n_b) TIC r array for a pair and method."""
         return self.z[f'ticr_{short(pair[0])}_{short(pair[1])}_{method.replace(" ", "_")}']
 
     def tic_r_of_map(self, a: int, b: int, model) -> float:
@@ -95,7 +95,7 @@ class Run:
 
 
 def load_run(results: Path, data: Path | None = None) -> Run:
-    s30 = load_script('30_multibatch_align.py', 's30_analysis')
+    s30 = load_script('01_multibatch_align.py', 's30_analysis')
     if data is not None:
         setattr(s30, 'DATA', data)          # noqa: B010  (module attribute, for mypy)
     z = np.load(results / 'multibatch_align.npz')
@@ -105,7 +105,7 @@ def load_run(results: Path, data: Path | None = None) -> Run:
     lam, ref = float(z['lam']), int(z['ref'])
     joint = mb.fit_joint(anc, len(names), lam=lam, gauge=ref)
     if not np.allclose(joint.drift, z['drift'], atol=1e-6):
-        raise SystemExit(f'{results}/multibatch_align.npz does not match the anchor cache; rerun script 30')
+        raise SystemExit(f'{results}/multibatch_align.npz does not match the anchor cache; rerun script 01')
     batches = [s30.load_batch(n, s30.DATA) for n in names]
     return Run(results, s30, dict(z), names, batches, anc, joint, lam, ref)
 
@@ -160,7 +160,7 @@ def star(run: Run) -> mb.JointWarp:
 
 
 def lambda_sweep(run: Run, gauges=None) -> list[dict]:
-    """For every λ of script 30 (and gauge): RT-blocked CV error, drift curves, post-hoc TIC r."""
+    """For every λ of script 01 (and gauge): RT-blocked CV error, drift curves, post-hoc TIC r."""
     s30, anc, K = run.s30, run.anc, run.K
     gauges = [run.ref] if gauges is None else gauges
     blk = lambda t: (np.floor(t / s30.RT_BLOCK).astype(int)) % s30.N_FOLDS

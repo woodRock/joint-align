@@ -6,7 +6,7 @@ joint-align's methods as alignbench plugins (entry point group `alignbench.metho
   composed-pairwise  fit_pairwise per batch pair with anchors, composed along shortest anchor paths
   neural-joint       the neural refinement on top of the joint model (needs torch; per sample)
 
-Defaults follow script 30: λ = 'cv' picks the smoothness by RT-blocked held-out anchor error over
+Defaults follow script 01: λ = 'cv' picks the smoothness by RT-blocked held-out anchor error over
 alignbench.metrics.anchors.LAMBDAS (TIC r is never used), and gauge = 'most_anchors' fixes the
 batch with the most anchors. Every method takes lam= and gauge= to override.
 
@@ -29,7 +29,7 @@ from jointalign.multibatch import JointWarp, fit_joint, fit_pairwise
 
 
 def most_anchors(anchors: Anchors, K: int) -> int:
-    """The batch with the most anchors to all others (script 30's gauge reference)."""
+    """The batch with the most anchors to all others (script 01's gauge reference)."""
     n_pair = np.zeros((K, K), int)
     for a, b in combinations(range(K), 2):
         n_pair[a, b] = n_pair[b, a] = len(anchors.pair(a, b))
@@ -92,7 +92,7 @@ def _edge_map(m: JointWarp, k: int, l: int) -> Callable[[np.ndarray], np.ndarray
 
 
 class ComposedPairwise:
-    """fit_pairwise per batch pair with anchors (gauge 0, as script 30 and trustalign), composed
+    """fit_pairwise per batch pair with anchors (gauge 0, as script 01 and trustalign), composed
     along the shortest anchor paths (ties: most anchors). edges: the batch pairs to use."""
 
     name = 'composed-pairwise'
@@ -121,12 +121,12 @@ class ComposedPairwise:
 
 
 def _strict(w: np.ndarray) -> np.ndarray:
-    """script 32's guard on the neural warps: non-decreasing, then strictly increasing."""
+    """script 03's guard on the neural warps: non-decreasing, then strictly increasing."""
     return np.maximum.accumulate(w) + 1e-6 * np.arange(len(w))
 
 
 class NeuralJoint:
-    """The neural joint warp on top of Joint (script 32): one latent → sample map per sample, trained
+    """The neural joint warp on top of Joint (script 03): one latent → sample map per sample, trained
     on anchors and dense groupwise similarity. Per sample; needs torch (pip install joint-align[neural])."""
 
     name = 'neural-joint'

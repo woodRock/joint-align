@@ -1,9 +1,9 @@
 """
-31_wt_warps.py — Cache anchor-calibrated WarpTransformer warps for every batch pair.
+02_wt_warps.py — Cache anchor-calibrated WarpTransformer warps for every batch pair.
 
 Runs warpalign's own calibration step (warpalign.steps.calibrate_pair.compute: pooled anchors,
 N_CALIB_STEPS of anchor calibration, seed fixed before the loop) with warpalign's default
-checkpoint (WarpTransformer v2), and saves the per-sample warps, so script 32 can score the
+checkpoint (WarpTransformer v2), and saves the per-sample warps, so script 03 can score the
 WarpTransformer under the same protocols as every other method. The protocol is warpalign's,
 not a copy of it.
 

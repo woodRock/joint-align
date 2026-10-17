@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / 'scripts'))  # scripts/analysis.py, imported by scripts 40 and 50
+sys.path.insert(0, str(ROOT / 'scripts'))  # scripts/analysis.py, imported by export_site_data.py and script 04
 
 DATA = ROOT / 'data' / 'fish_oil'    # a symlink to the private fish oil data (README)
 RESULTS = ROOT / 'results'

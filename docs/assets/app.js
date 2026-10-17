@@ -1,5 +1,5 @@
 /* joint-align — interactive figures. Every number comes from data/site.json
-   (scripts/40_export_site_data.py). Colours are CSS tokens, so the theme toggle needs no redraw
+   (scripts/export_site_data.py). Colours are CSS tokens, so the theme toggle needs no redraw
    except for charts that compute colours (heatmaps). */
 (() => {
   'use strict';
@@ -667,7 +667,7 @@
     function drawBench() {
       if (!B) {
         document.getElementById('bench-heat').replaceChildren(Object.assign(document.createElement('div'),
-          { className: 'pending', textContent: 'The fair benchmark (script 32) has not been exported yet. Run scripts/32_fair_benchmark.py, then scripts/40_export_site_data.py.' }));
+          { className: 'pending', textContent: 'The fair benchmark (script 03) has not been exported yet. Run scripts/03_fair_benchmark.py, then scripts/export_site_data.py.' }));
         return;
       }
       const pairs = B.pairs.map(p => ({ ...p, drifted: (rowFor(p.a, p.b) || {}).drifted }));
@@ -708,7 +708,7 @@
     console.error(err);
     const msg = window.SITE_DATA
       ? `A figure failed to render: ${err && err.message ? err.message : err}. The browser console has details.`
-      : 'The page data (docs/data/site.js) is missing. It is written by python scripts/40_export_site_data.py and must be committed with the site.';
+      : 'The page data (docs/data/site.js) is missing. It is written by python scripts/export_site_data.py and must be committed with the site.';
     document.querySelector('main').prepend(Object.assign(document.createElement('div'), { className: 'pending', textContent: msg }));
   });
 

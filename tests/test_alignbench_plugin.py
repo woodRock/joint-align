@@ -41,7 +41,7 @@ def test_plugins_are_discovered():
 def test_joint_cv_matches_script30_selection(k3, anc):
     fit = methods.get('joint').fit(k3, anc)
     ref = plugin.most_anchors(anc, 3)
-    # script 30: median |error| over RT-blocked folds per λ, smallest wins (ties: smaller λ)
+    # script 01: median |error| over RT-blocked folds per λ, smallest wins (ties: smaller λ)
     cv = {}
     for lam in LAMBDAS:
         errs = []

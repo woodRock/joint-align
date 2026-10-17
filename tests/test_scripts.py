@@ -1,4 +1,4 @@
-"""Unit tests for the helper functions inside scripts 30 and 32."""
+"""Unit tests for the helper functions inside scripts 01 and 03."""
 from __future__ import annotations
 
 import numpy as np
@@ -12,12 +12,12 @@ GRID = np.arange(T, dtype=float)
 
 @pytest.fixture(scope='module')
 def s30():
-    return load_script('30_multibatch_align.py')
+    return load_script('01_multibatch_align.py')
 
 
 @pytest.fixture(scope='module')
 def s32():
-    return load_script('32_fair_benchmark.py')
+    return load_script('03_fair_benchmark.py')
 
 
 def _tic(pos, h=None, sigma=2.0):
@@ -29,7 +29,7 @@ def _tic(pos, h=None, sigma=2.0):
 PEAKS = np.array([22.0, 31.0, 47.0, 55.0, 71.0, 84.0, 90.0, 108.0, 121.0, 133.0, 150.0, 163.0, 177.0])
 
 
-# ── script 30 ─────────────────────────────────────────────────────────────────
+# ── script 01 ─────────────────────────────────────────────────────────────────
 
 def test_s30_short(s30):
     assert s30.short('batch_jan2016') == 'jan2016'
@@ -108,7 +108,7 @@ def test_s30_composed(s30):
         c.map(0, 1, t)
 
 
-# ── script 32 ─────────────────────────────────────────────────────────────────
+# ── script 03 ─────────────────────────────────────────────────────────────────
 
 def test_s32_corr_uses_common_window(s32):
     x = np.random.default_rng(0).random(T)

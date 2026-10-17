@@ -158,13 +158,13 @@ def test_cached_tic_r_matches_current_data(names, batches):
 
 
 def test_script31_calibrates_one_pair_with_warpalign(tmp_path, monkeypatch):
-    """Script 31 runs warpalign's calibrate step with its default (v2) checkpoint (joint-align[wt])."""
+    """Script 02 runs warpalign's calibrate step with its default (v2) checkpoint (joint-align[wt])."""
     pytest.importorskip('warpalign')
     from warpalign.config import Paths
 
     from conftest import load_script
     _need(Paths().default_ckpt)
-    s31 = load_script('31_wt_warps.py')
+    s31 = load_script('02_wt_warps.py')
     monkeypatch.setattr(s31, 'ROOT', tmp_path)
     monkeypatch.setattr(s31, 'PAIRS', [('batch_aug2015', 'batch_apr2016')])
     s31.main(seed=0, device='cpu', calib_steps=2)

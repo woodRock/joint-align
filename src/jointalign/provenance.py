@@ -3,7 +3,7 @@
 Since joint-align 2.0 the lines come from alignbench.provenance (one implementation for every
 package): header() lists alignbench, every alignbench plugin (this package among them) and the
 numeric environment. jointalign_revision() and display_path() keep their names for downstream
-projects; warpalign_revision() reports warpalign if it is installed (only script 31 needs it).
+projects; warpalign_revision() reports warpalign if it is installed (only script 02 needs it).
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def jointalign_revision() -> str:
 
 
 def warpalign_revision() -> str:
-    """warpalign's provenance line (script 31's WarpTransformer), or 'warpalign (not installed)'."""
+    """warpalign's provenance line (script 02's WarpTransformer), or 'warpalign (not installed)'."""
     return revision('warpalign')
 
 

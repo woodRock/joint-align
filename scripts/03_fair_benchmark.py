@@ -1,5 +1,5 @@
 """
-32_fair_benchmark.py — Every method scored under the same protocols on all 10 batch pairs.
+03_fair_benchmark.py — Every method scored under the same protocols on all 10 batch pairs.
 
 The cow-dcnn numbers mix protocols: PCHIP and COW-TIC warp A into B's raw frame, the
 WarpTransformer and "PCHIP + COW refine" resample both batches, and COW-TIC fits a separate
@@ -21,8 +21,8 @@ Methods
   Pooled PCHIP          alignbench match_pooled anchors (A[0..2] vs B[0], pooled, filtered) + pchip_warp
   PCHIP + COW refine    pooled PCHIP, then per-A_i COW (8 segments, ±4 bins) onto mean B TIC
   COW-TIC               alignbench.methods.tic.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
-  WarpTransformer       script 31 cache (warpalign calibrate_pair, v2 checkpoint, seed 0, CPU)
-  Joint                 src/jointalign/multibatch.py, λ and reference from script 30
+  WarpTransformer       script 02 cache (warpalign calibrate_pair, v2 checkpoint, seed 0, CPU)
+  Joint                 src/jointalign/multibatch.py, λ and reference from script 01
   Neural joint          src/jointalign/neural_joint.py on top of Joint (anchors + dense, sample level)
 
 Output: results/fair_benchmark.txt, results/fair_benchmark.npz
@@ -122,7 +122,7 @@ def main(neural_steps: int) -> None:
     cfg30 = np.load(RESULTS / 'multibatch_align.npz')
     lam, ref = float(cfg30['lam']), int(cfg30['ref'])
     joint = mb.fit_joint(anc, K, lam=lam, gauge=ref)
-    say(f'Joint: λ = {lam:g}, reference {short(names[ref])} (selected in script 30)')
+    say(f'Joint: λ = {lam:g}, reference {short(names[ref])} (selected in script 01)')
 
     # Neural joint (cached)
     g_path = RESULTS / f'neural_joint_G_{neural_steps}.npz'
@@ -241,7 +241,7 @@ if __name__ == '__main__':
     ap.add_argument('--neural-steps', type=int, default=1500)
     ap.add_argument('--data', type=Path, default=DATA, help='batch_* folders (default: the fish oil data)')
     ap.add_argument('--results', type=Path, default=RESULTS,
-                    help="script 30's output folder, also written to (default: results/)")
+                    help="script 01's output folder, also written to (default: results/)")
     a = ap.parse_args()
     DATA, RESULTS = a.data, a.results
     main(a.neural_steps)
