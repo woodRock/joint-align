@@ -1,9 +1,12 @@
-32_fair_benchmark.py — Every method scored under the same protocols on all 10 batch pairs.
+03_fair_benchmark.py — Every method scored under the same protocols on all 10 batch pairs.
 
-gcmsalign 2.0.0 @ 1ffaa24 (src clean) from ~/Desktop/alignment
-Data: ~/Desktop/alignment/data/fish_oil
+alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench
+joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align
+warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align
+environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0
+Data: ~/Desktop/warp-align/data/fish_oil
 
-Joint: λ = 10, reference sep2015 (selected in script 30)
+Joint: λ = 10, reference sep2015 (selected in script 01)
 
 ==============================================================================================================
 B-frame: mean TIC r over all A_i × B_j
@@ -64,4 +67,4 @@ Paired two-sided Wilcoxon per A sample (r averaged over B_j), Joint vs each comp
   Midpoint: Joint vs COW-TIC: sep2015×jul2016 Δ+0.106 p=1.7e-10; sep2015×apr2016 Δ+0.075 p=2.9e-06; jan2016×apr2016 Δ+0.038 p=1.5e-07; jan2016×jul2016 Δ+0.092 p=1.5e-07; sep2015×jan2016 Δ-0.008 p=1.5e-07; apr2016×jul2016 Δ+0.007 p=2.7e-02
   Midpoint: Joint vs Neural joint: sep2015×jul2016 Δ-0.021 p=1.1e-07; sep2015×apr2016 Δ-0.021 p=4.1e-06; jan2016×apr2016 Δ-0.026 p=1.5e-07; jan2016×jul2016 Δ-0.010 p=5.0e-04; sep2015×jan2016 Δ-0.004 p=2.5e-02; apr2016×jul2016 Δ+0.006 p=3.9e-03
 
-Wall time 9 s
+Wall time 5 s
