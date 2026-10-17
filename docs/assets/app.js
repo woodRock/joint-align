@@ -130,17 +130,12 @@
     const batchLegend = id => legend(id, names.map((n, k) => ({ label: `${n} (n=${D.batches[k].n})${k === REF ? ', reference' : ''}`, color: series(k) })));
 
     // ══ Ridgeline (hero + chapter 01) ══════════════════════════════════════
-    // A trace at alignment a ∈ [0, 1] is the raw TIC resampled through a fraction a of its batch's joint warp,
-    // so the morph slides peaks along the time axis instead of cross-fading two pictures.
+    // A trace at alignment a ∈ [0, 1] is a straight cross-fade between its raw and aligned TIC (the same
+    // point-by-point blend a D3 path transition does), which reads better than sliding peaks along the axis.
     function morph(k, si, a) {
       const raw = D.tic[k].raw[si], al = D.tic[k].aligned[si];
-      if (a <= 0 || k === REF) return raw; if (a >= 1) return al;
-      const s = shiftArr(D.warps.joint, REF, k); const out = new Array(T);
-      for (let t = 0; t < T; t++) {
-        const sh = s[t]; const v = sh == null ? null : interp(raw, t + a * sh);
-        out[t] = v == null ? raw[t] * (1 - a) + al[t] * a : v;
-      }
-      return out;
+      if (a <= 0) return raw; if (a >= 1) return al;
+      return raw.map((v, t) => v * (1 - a) + al[t] * a);
     }
     function tween(from, to, dur, step, done) {
       if (reduceMotion || dur <= 0) { step(to); if (done) done(); return { stop() {} }; }
@@ -213,12 +208,12 @@
       heroLabel.classList.toggle('aligned', a >= 0.5);
       heroLabel.lastElementChild.textContent = a <= 0.01 ? 'Unaligned: each batch on its own clock'
         : a >= 0.99 ? `Aligned: every batch warped into ${names[REF]}'s clock`
-        : `Warping: ${Math.round(a * 100)} % of the way into ${names[REF]}'s clock`;
+        : `${Math.round(a * 100)} % of the way into ${names[REF]}'s clock`;
     };
     function heroRender(a) { heroAlpha = a; hero.render(a); heroSlider.value = String(Math.round(a * 100)); setHeroLabel(); }
     function heroGo(target, dur) { if (heroTween) heroTween.stop(); heroTween = tween(heroAlpha, target, dur, heroRender); }
     function drawHero() { hero = ridge('hero-chart', { height: 330, interactive: false, getAlpha: () => heroAlpha, getOverlay: () => false }); }
-    function heroTick() { heroGo(heroAlpha < 0.5 ? 1 : 0, 1600); }
+    function heroTick() { heroGo(heroAlpha < 0.5 ? 1 : 0, 1400); }
     const pressEnds = (raw, al) => { heroBtns.raw.setAttribute('aria-pressed', String(raw)); heroBtns.al.setAttribute('aria-pressed', String(al)); };
     function setPlay(on) {
       heroPlay = on; clearInterval(heroTimer);
@@ -233,11 +228,11 @@
     drawHero(); renderers.push(drawHero); setHeroLabel(); batchLegend('hero-legend'); setPlay(heroPlay);
     if (heroPlay) setTimeout(heroTick, 1200);
 
-    // Chapter 01: the frame toggle runs the same morph, so peaks visibly slide into place.
+    // Chapter 01: the frame toggle runs the same cross-fade.
     let rAlpha = 0, rOverlay = false, rApi, rTween = null;
     const drawRidge = () => { rApi = ridge('ridge-chart', { height: 470, interactive: true, getAlpha: () => rAlpha, getOverlay: () => rOverlay }); };
     drawRidge(); renderers.push(drawRidge); batchLegend('ridge-legend');
-    segGroup('[data-frame]', 'frame', v => { if (rTween) rTween.stop(); rTween = tween(rAlpha, v === 'aligned' ? 1 : 0, DUR * 1.8, a => { rAlpha = a; rApi.render(a); }); });
+    segGroup('[data-frame]', 'frame', v => { if (rTween) rTween.stop(); rTween = tween(rAlpha, v === 'aligned' ? 1 : 0, DUR, a => { rAlpha = a; rApi.render(a); }); });
     document.getElementById('ridge-overlay').addEventListener('change', e => { rOverlay = e.target.checked; rApi.update(); });
 
     // ══ 02 Cycle consistency ════════════════════════════════════════════════
