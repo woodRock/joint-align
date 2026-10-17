@@ -1,7 +1,10 @@
-30_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
+01_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
 
-gcmsalign 2.0.0 @ 1ffaa24 (src clean) from ~/Desktop/alignment
-Data: ~/Desktop/alignment/data/fish_oil
+alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench
+joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align
+warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align
+environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0
+Data: ~/Desktop/warp-align/data/fish_oil
 
 Batches: apr2016 (n=10), aug2015 (n=2), jan2016 (n=26), jul2016 (n=16), sep2015 (n=36)
 Anchors: 25011 from every cross-batch sample pair. Gauge reference (most anchors): sep2015
@@ -168,4 +171,4 @@ Anchors: 25011 from every cross-batch sample pair. Gauge reference (most anchors
    warp-only band (epistemic)          : 0.154
    predictive (band ⊕ anchor scatter)  : 0.809   excluding gross mismatches (|err| > 10 bins, 0.3% of anchors): 0.811
 
-Wall time 392 s
+Wall time 218 s
