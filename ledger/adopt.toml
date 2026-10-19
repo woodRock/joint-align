@@ -1021,6 +1021,16 @@ reason = "100 is listed as a grid candidate, not as the selected lambda, so it m
 by = "claude"
 decided = "2026-10-19T20:52:36+13:00"
 
+[decisions.57453ab98a]
+file = "TAI_template.tex"
+literal = "5.2"
+context = "2016 \\res{drift/drifted-batches/min} to 5.2~min earlier than in a 2015 batch, and t"
+verdict = "result"
+key = "drift/drifted-batches/max"
+reason = "author-approved correction: the fitted joint warps give at most 5.15 min (was typed 5.3)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
+
 [decisions.57d75efd3b]
 file = "TAI_template.tex"
 literal = "4"
@@ -1440,16 +1450,6 @@ key = "bench-native-warptransformer/drifted4/max"
 reason = "This is the highest WarpTransformer score under its native protocol on the drifted pairs (0.641, which rounds to 0.64)."
 by = "claude"
 decided = "2026-10-19T20:54:44+13:00"
-
-[decisions.7ee2a5cd9d]
-file = "TAI_template.tex"
-literal = "5.3"
-context = "in two batches acquired in 2016 3.2 to 5.3~min earlier than in a 2015 batch, and t"
-verdict = "unrecorded"
-key = ""
-reason = "The 5.3 min shift comes from the fitted warps and has no candidate."
-by = "claude"
-decided = "2026-10-19T20:51:35+13:00"
 
 [decisions.80f17a511f]
 file = "TAI_template.tex"
@@ -2211,16 +2211,6 @@ reason = "Sample count per fish/tissue in the data-description table."
 by = "claude"
 decided = "2026-10-19T20:53:12+13:00"
 
-[decisions.be6d335b2d]
-file = "TAI_template.tex"
-literal = "5.3"
-context = "July 2016 batches are shifted by 3.2 to 5.3~min relative to sep2015 and also start"
-verdict = "unrecorded"
-key = ""
-reason = "The 5.3 min shift of the 2016 batches relative to sep2015 is a measured drift, and there are no candidates for it."
-by = "claude"
-decided = "2026-10-19T20:55:30+13:00"
-
 [decisions.be862be89a]
 file = "TAI_template.tex"
 literal = "90\\%"
@@ -2671,16 +2661,6 @@ reason = "Superscript (0) labelling the bootstrap multiplicities w^{(0)}."
 by = "claude"
 decided = "2026-10-19T20:52:26+13:00"
 
-[decisions.dfe2953539]
-file = "TAI_template.tex"
-literal = "0.002"
-context = "ted scores (0.596 and 0.778) are within 0.002 of these, so fitting the scored samples"
-verdict = "unrecorded"
-key = ""
-reason = "'within 0.002 of these' is the computed gap between the joint and cross-fitted scores, and no candidate records that gap."
-by = "claude"
-decided = "2026-10-19T20:54:04+13:00"
-
 [decisions.e040b45433]
 file = "TAI_template.tex"
 literal = "200"
@@ -3051,6 +3031,16 @@ reason = "1.645 is the standard normal quantile for a 90% interval, a fixed cons
 by = "claude"
 decided = "2026-10-19T20:52:36+13:00"
 
+[decisions.f9d9e04dbe]
+file = "TAI_template.tex"
+literal = "5.2"
+context = "d by \\res{drift/drifted-batches/min} to 5.2~min relative to sep2015 and also start"
+verdict = "result"
+key = "drift/drifted-batches/max"
+reason = "author-approved correction: the fitted joint warps give at most 5.15 min (was typed 5.3)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
+
 [decisions.fa209c4f5a]
 file = "TAI_template.tex"
 literal = "60"
@@ -3100,6 +3090,16 @@ key = ""
 reason = "Count of F tissue samples in jan2016, from the data description table."
 by = "claude"
 decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.fd114ac10f]
+file = "TAI_template.tex"
+literal = "0.003"
+context = "-cf/mean-near-aligned/mean}) are within 0.003 of these, so fitting the scored samples"
+verdict = "result"
+key = "ticr-gaps/cf/max"
+reason = "author-approved correction: unrounded joint vs cross-fitted gap is 0.0025 (was typed 0.002, from rounded values)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
 
 [decisions.fdd1075f73]
 file = "TAI_template.tex"
