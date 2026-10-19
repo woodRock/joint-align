@@ -7,3 +7,28 @@ label = "fish-oil-90"
 
 [runs]
 watch = ["src/jointalign"]
+
+# Settings the paper states (\res{settings-<name>/...}); read with ast, never run.
+[settings.model]           # the joint model: knots, gauge weight, slope bounds
+path = "src/jointalign/multibatch.py"
+names = ["N_KNOTS", "GAUGE_WEIGHT", "S_MIN", "S_MAX"]
+
+[settings.align]           # script 01: the λ grid, RT blocks and folds of the CV; bootstrap sizes (flags)
+path = "scripts/01_multibatch_align.py"
+names = ["LAMBDAS", "RT_BLOCK", "N_FOLDS"]
+
+[settings.neural]          # the neural joint warp: training and architecture
+path = "src/jointalign/neural_joint.py"
+names = ["TrainConfig", "NeuralJointWarp.d_emb", "NeuralJointWarp.hidden"]
+
+[settings.match]           # anchor matching lives in alignbench (installed next to joint-align)
+module = "alignbench.anchors"
+python = "python3.11"
+names = ["MatchConfig"]
+
+# How long the pipeline takes, from the run records (\res{timing-<name>/minutes}).
+[timings.evaluation]       # the joint model's full evaluation: scripts 01, 03 and 04 (CPU)
+scripts = ["scripts/01_multibatch_align.py", "scripts/03_fair_benchmark.py", "scripts/04_paper_figures.py"]
+
+[timings.wt-warps]         # the WarpTransformer warps (script 02; its newest run is gpu-spooler task 72)
+scripts = ["scripts/02_wt_warps.py"]
