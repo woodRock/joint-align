@@ -17,11 +17,13 @@ disagree. Main figures:
 Supplementary: figS1_lambda (λ selection and sensitivity, both gauges), figS2_uncertainty
 (coverage, band width vs anchor support), figS3_rejection (robust weights along the run).
 
-Output: figs/paper/*.pdf, figs/paper/*.png, figs/paper/captions.md
+Output: figs/paper/*.pdf, figs/paper/*.png, figs/paper/captions.md, figs/paper/numbers.json (the caption
+numbers unrounded with this run's provenance, for scripts/export_ledger.py)
 """
 from __future__ import annotations
 
 import argparse
+import json
 import tempfile
 from itertools import combinations, pairwise
 from pathlib import Path
@@ -39,6 +41,7 @@ from scipy.stats import spearmanr
 import analysis as an
 from jointalign import multibatch as mb
 from jointalign import synthetic as syn
+from jointalign.provenance import header
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -67,6 +70,19 @@ plt.rcParams.update({
     'ps.fonttype': 42, 'savefig.dpi': 300, 'figure.dpi': 150, 'axes.titleweight': 'bold',
     'axes.titlelocation': 'left',
 })
+
+
+# Numbers behind the captions, unrounded: {result: {metric: value or {stat: value}}} (numbers.json).
+NUM: dict[str, dict] = {}
+
+
+def record(result: str, metric: str, value, stat: str | None = None) -> None:
+    v = int(value) if isinstance(value, (int, np.integer)) else float(value)
+    slot = NUM.setdefault(result, {})
+    if stat is None:
+        slot[metric] = v
+    else:
+        slot.setdefault(metric, {})[stat] = v
 
 
 def save(fig, name: str) -> None:
@@ -166,6 +182,16 @@ def fig1(run: an.Run, cap: dict) -> None:
     ax_s.set_xlabel('retention time (min)')
     panel(ax_s, 'c', r'One monotone warp per batch; any pairwise warp is $f_l^{-1} \circ f_k$')
     save(fig, 'fig1_problem_method')
+    t540 = (GRID * BIN_MIN >= 5) & (GRID * BIN_MIN <= 40)
+    shifts = {}
+    for k, n in enumerate(run.names):
+        if k != run.ref:
+            sh = an.shift(run.joint.map(k, run.ref, GRID))[t540] * BIN_MIN
+            shifts[n] = sh
+            record('drift', an.short(n), np.nanmin(sh), 'min'); record('drift', an.short(n), np.nanmax(sh), 'max')
+    far = [n for n in shifts if any(run.names[run.ref] in p and n in p for p in run.drifted)]
+    record('drift', 'drifted-batches', min(np.nanmin(shifts[n]) for n in far), 'min')
+    record('drift', 'drifted-batches', max(np.nanmax(shifts[n]) for n in far), 'max')
     cap['fig1'] = (
         f'**The problem and the method.** (a) Normalised TICs of three samples from each of the {K} fish '
         f'oil batches ({", ".join(f"{lab(n)} n={len(b)}" for n, b in zip(run.names, run.batches))}), each on '
@@ -287,6 +313,12 @@ def fig2(run: an.Run, cap: dict) -> None:
     allerr = np.concatenate(errs)
     panel(ax, 'c', 'Error, every pair')
     save(fig, 'fig2_recovery')
+    record('recovery', 'real-pair', len(p), 'anchors')
+    record('recovery', 'real-pair', np.mean(w == 0), 'rejected')
+    record('recovery', 'synthetic', len(anc_s), 'anchors')
+    record('recovery', 'synthetic', int(lam_s) if float(lam_s).is_integer() else lam_s, 'lambda')
+    for stat, val in (('median', np.median(allerr)), ('p95', np.percentile(allerr, 95)), ('max', allerr.max())):
+        record('recovery', 'synthetic-err', val, stat)
     cap['fig2'] = (
         f'**Anchors, fits and recovery of known drift.** (a) The {len(p):,} anchors between '
         f'{lab(run.names[a])} and {lab(run.names[b])} (grey; red rings: weight 0 after robust reweighting, '
@@ -397,6 +429,9 @@ def fig4(run: an.Run, cap: dict) -> None:
     panel(ax, 'b', 'Worst route')
     save(fig, 'fig4_consistency')
     pwv = np.array([q['pairwise'] for q in cyc]); jv = np.array([q['joint'] for q in cyc])
+    record('cycle', 'pairwise', pwv.mean(), 'mean'); record('cycle', 'pairwise', pwv.max(), 'max')
+    record('cycle', 'joint', jv.mean(), 'mean'); record('cycle', 'joint', jv.max(), 'max')
+    record('cycle', 'triplets', len(cyc))
     cap['fig4'] = (
         f'**Transitivity.** (a) Disagreement between composing two pairwise warps and the direct warp, '
         f'|g_bc(g_ab(t)) − g_ac(t)| averaged over 5–40 min, for all {len(cyc)} ordered batch triplets. Pairwise '
@@ -448,6 +483,14 @@ def fig5(run: an.Run, cap: dict) -> None:
     panel(ax, 'b', f'Largest change: {lab(run.names[a])} × {lab(run.names[b])}')
     save(fig, 'fig5_borrowing')
     diffs = sorted(abs(x['ticr_joint'] - x['ticr']) for x in lp.values())
+    record('borrowing', 'lopo-change', diffs[-2], 'max-others')
+    record('borrowing', 'lopo-change', diffs[-1], 'max')
+    for stat, val in (('ticr-joint', v['ticr_joint']), ('ticr-lopo', v['ticr']),
+                      ('err-joint', v['err_joint_min']), ('err-lopo', v['err_min'])):
+        record('borrowing', 'worst-pair', val, stat)
+    star_gap = [abs(run.tic_r_of_map(i, j, st) - lp[(i, j)]['ticr_joint'])
+                for i, j in keys if run.ref not in (i, j)]
+    record('borrowing', 'star-gap', max(star_gap), 'max')
     cap['fig5'] = (
         f'**Borrowing strength across batches.** (a) TIC r of each evaluated pair with the joint model fitted '
         f'on all anchors (filled) and refitted without any anchor of that pair (open); crosses: fitted only on '
@@ -602,6 +645,10 @@ def figS3(run: an.Run, cap: dict) -> None:
     top = sorted(ok, key=lambda i: -rej[i])[:3]
     rest = [rej[i] for i in ok if i not in top]
     win = lambda i: f'{edges[i]:.0f}–{edges[i + 1]:.0f} min ({rej[i]:.1%})'
+    record('rejection', 'overall', np.mean(run.joint.weights == 0))
+    for i in ok:
+        record('rejection', f'{edges[i]:.0f}-{edges[i + 1]:.0f}min', rej[i])
+    record('rejection', 'other-windows', min(rest), 'min'); record('rejection', 'other-windows', max(rest), 'max')
     cap['figS3'] = (
         f'**Where anchors are rejected.** Share of anchors with weight 0 after Huber and Tukey reweighting, by '
         f'5-min window of retention time (numbers: anchors per window); {np.mean(run.joint.weights == 0):.1%} '
@@ -612,6 +659,7 @@ def figS3(run: an.Run, cap: dict) -> None:
 def main(only: list[str] | None) -> None:
     run = an.load_run(RESULTS, DATA)
     cap: dict[str, str] = {}
+    NUM.clear()
     figs = {'fig1': fig1, 'fig2': fig2, 'fig3': fig3, 'fig4': fig4, 'fig5': fig5, 'fig6': fig6,
             'figS1': figS1, 'figS2': figS2, 'figS3': figS3}
     print(f'Figures → {OUT}')
@@ -627,6 +675,11 @@ def main(only: list[str] | None) -> None:
             lines += [f'## {k}', '', c, '']
         (OUT / 'captions.md').write_text('\n'.join(lines))
         print(f'  captions.md ({len(cap)} captions)')
+        prov = {'script': 'scripts/04_paper_figures.py', 'ran': header(),   # this run, and the run it reads
+                'from': [str(p) for p in z['provenance']] if 'provenance' in z else []}
+        (OUT / 'numbers.json').write_text(json.dumps({'provenance': prov, 'results': NUM}, indent=2,
+                                                     sort_keys=True) + '\n')
+        print(f'  numbers.json ({sum(map(len, NUM.values()))} numbers)')
 
 
 if __name__ == '__main__':

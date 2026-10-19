@@ -157,6 +157,10 @@ def test_script32_runs_on_script30_outputs(run30):
         assert (figs / f'{n}.pdf').stat().st_size > 5_000 and (figs / f'{n}.png').exists(), n
     captions = (figs / 'captions.md').read_text()
     assert captions.count('## fig') == len(names) and 'nan' not in captions.lower()
+    numbers = json.loads((figs / 'numbers.json').read_text())        # the caption numbers, for the ledger
+    assert {'drift', 'recovery', 'cycle', 'borrowing', 'rejection'} <= numbers['results'].keys()
+    assert numbers['results']['cycle']['triplets'] == 60 and 0 <= numbers['results']['rejection']['overall'] <= 1
+    assert any(line.startswith('joint-align ') for line in numbers['provenance']['ran'])
 
 
 def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
