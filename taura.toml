@@ -1,0 +1,9 @@
+# taura (github.com/woodRock/taura): datasets recorded with every run, and code whose change makes
+# earlier results suspect. The paper is ~/overleaf/joint-align (found by name).
+
+[data.fish-oil]
+path = "data/fish_oil"     # 90 GC-MS runs, five batches (a symlink to the private data)
+label = "fish-oil-90"
+
+[runs]
+watch = ["src/jointalign"]

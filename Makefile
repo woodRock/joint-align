@@ -1,5 +1,5 @@
 # Local equivalents of the CI jobs. `make check` runs all three.
-.PHONY: install check lint types test test-fast site figures
+.PHONY: install check lint types test test-fast site figures paper
 
 # Editable install next to an editable alignbench checkout (--no-deps keeps pip from replacing it
 # with the commit pinned in pyproject.toml). Fresh environments: pip install -e ".[dev,neural]".
@@ -27,3 +27,11 @@ site:
 
 figures:
 	python3.11 scripts/04_paper_figures.py
+
+# Every number, table and figure in the paper, each script recorded as a taura run
+# (ledger/runs/), then exported to ledger/results/. Publish with `taura diff` and `taura publish`.
+paper:
+	taura run -- python3.11 scripts/01_multibatch_align.py
+	taura run -- python3.11 scripts/03_fair_benchmark.py
+	taura run -- python3.11 scripts/04_paper_figures.py
+	python3.11 scripts/export_ledger.py
