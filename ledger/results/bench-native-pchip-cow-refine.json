@@ -41,10 +41,10 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/fair_benchmark.txt",
-    "hash": "sha256:f367e221035ff5aef3e5908f0403d9385e51274d471e421d0125815154fe8ddb",
+    "hash": "sha256:5e4cc30c5f6e0f706d9909176ff520ec15c10e5e2432f8f6995174a6dbcba3b9",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ecfcf7e (src clean) from ~/Desktop/joint-align",
+      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
       "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]

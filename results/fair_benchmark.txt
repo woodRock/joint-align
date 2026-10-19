@@ -1,7 +1,7 @@
 03_fair_benchmark.py — Every method scored under the same protocols on all 10 batch pairs.
 
 alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench
-joint-align 2.0.2 @ ecfcf7e (src clean) from ~/Desktop/joint-align
+joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align
 warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align
 environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0
 Data: ~/Desktop/warp-align/data/fish_oil

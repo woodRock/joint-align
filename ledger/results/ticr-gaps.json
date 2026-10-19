@@ -13,10 +13,10 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.npz",
-    "hash": "sha256:e8f2b250640d6e9f0d5ef99a88283e272216832d3b16af9b6c4a64946a0a7715",
+    "hash": "sha256:e48dda7b3deb48c8a406d3eaf56fc2460eac97e1d0b5c44e1fc4f08c0b507232",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ecfcf7e (src clean) from ~/Desktop/joint-align",
+      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
       "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
