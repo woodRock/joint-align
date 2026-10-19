@@ -1,0 +1,57 @@
+{
+  "name": "bench-bframe-pooled-pchip",
+  "label": "bench bframe pooled pchip",
+  "metrics": {
+    "sep2015-jul2016": {
+      "mean": 0.518
+    },
+    "sep2015-apr2016": {
+      "mean": 0.582
+    },
+    "jan2016-apr2016": {
+      "mean": 0.513
+    },
+    "jan2016-jul2016": {
+      "mean": 0.507
+    },
+    "sep2015-jan2016": {
+      "mean": 0.674
+    },
+    "apr2016-jul2016": {
+      "mean": 0.839
+    },
+    "aug2015-sep2015": {
+      "mean": 0.656
+    },
+    "aug2015-jan2016": {
+      "mean": 0.569
+    },
+    "aug2015-apr2016": {
+      "mean": 0.49
+    },
+    "aug2015-jul2016": {
+      "mean": 0.575
+    },
+    "mean-drifted4": {
+      "mean": 0.53
+    },
+    "mean-near-aligned": {
+      "mean": 0.756
+    },
+    "mean-aug2015": {
+      "mean": 0.572
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/fair_benchmark.txt",
+    "hash": "sha256:50f924b282ce925cd78e0be5371c2ec6b75aaa0d15b7beeaeacbdfb5342c9c97",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "name": "lopo",
+  "label": "Leave-one-pair-out refits",
+  "metrics": {
+    "sep2015-jul2016": {
+      "ticr-unaligned": 0.054,
+      "ticr-hub": 0.589,
+      "ticr-lopo": 0.608,
+      "ticr-joint": 0.615,
+      "err-hub": 0.064,
+      "err-lopo": 0.062,
+      "err-joint": 0.052
+    },
+    "sep2015-apr2016": {
+      "ticr-unaligned": 0.041,
+      "ticr-hub": 0.551,
+      "ticr-lopo": 0.595,
+      "ticr-joint": 0.599,
+      "err-hub": 0.058,
+      "err-lopo": 0.053,
+      "err-joint": 0.052
+    },
+    "jan2016-apr2016": {
+      "ticr-unaligned": 0.128,
+      "ticr-hub": 0.581,
+      "ticr-lopo": 0.578,
+      "ticr-joint": 0.582,
+      "err-hub": 0.061,
+      "err-lopo": 0.055,
+      "err-joint": 0.046
+    },
+    "jan2016-jul2016": {
+      "ticr-unaligned": 0.126,
+      "ticr-hub": 0.614,
+      "ticr-lopo": 0.604,
+      "ticr-joint": 0.61,
+      "err-hub": 0.068,
+      "err-lopo": 0.076,
+      "err-joint": 0.066
+    },
+    "sep2015-jan2016": {
+      "ticr-unaligned": 0.814,
+      "ticr-hub": 0.721,
+      "ticr-lopo": 0.755,
+      "ticr-joint": 0.813,
+      "err-hub": 0.087,
+      "err-lopo": 0.088,
+      "err-joint": 0.061
+    },
+    "apr2016-jul2016": {
+      "ticr-unaligned": 0.898,
+      "ticr-hub": 0.767,
+      "ticr-lopo": 0.899,
+      "ticr-joint": 0.902,
+      "err-hub": 0.068,
+      "err-lopo": 0.072,
+      "err-joint": 0.057
+    },
+    "aug2015-sep2015": {
+      "ticr-unaligned": 0.731,
+      "ticr-hub": 0.645,
+      "ticr-lopo": 0.732,
+      "ticr-joint": 0.729,
+      "err-hub": 0.108,
+      "err-lopo": 0.049,
+      "err-joint": 0.044
+    },
+    "aug2015-jan2016": {
+      "ticr-unaligned": 0.578,
+      "ticr-hub": 0.627,
+      "ticr-lopo": 0.67,
+      "ticr-joint": 0.672,
+      "err-hub": 0.091,
+      "err-lopo": 0.087,
+      "err-joint": 0.073
+    },
+    "aug2015-apr2016": {
+      "ticr-unaligned": 0.003,
+      "ticr-hub": 0.598,
+      "ticr-lopo": 0.59,
+      "ticr-joint": 0.587,
+      "err-hub": 0.105,
+      "err-lopo": 0.092,
+      "err-joint": 0.081
+    },
+    "aug2015-jul2016": {
+      "ticr-unaligned": 0.045,
+      "ticr-hub": 0.596,
+      "ticr-lopo": 0.598,
+      "ticr-joint": 0.598,
+      "err-hub": 0.13,
+      "err-lopo": 0.112,
+      "err-joint": 0.103
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

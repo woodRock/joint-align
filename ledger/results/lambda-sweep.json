@@ -1,0 +1,58 @@
+{
+  "name": "lambda-sweep",
+  "label": "\u03bb sweep: mean TIC r after the fact",
+  "metrics": {
+    "lam0.1": {
+      "drifted": 0.622,
+      "near-aligned": 0.766
+    },
+    "lam1": {
+      "drifted": 0.595,
+      "near-aligned": 0.768
+    },
+    "lam10": {
+      "drifted": 0.598,
+      "near-aligned": 0.779
+    },
+    "lam30": {
+      "drifted": 0.595,
+      "near-aligned": 0.781
+    },
+    "lam100": {
+      "drifted": 0.598,
+      "near-aligned": 0.784
+    },
+    "lam300": {
+      "drifted": 0.599,
+      "near-aligned": 0.788
+    },
+    "lam1000": {
+      "drifted": 0.6,
+      "near-aligned": 0.79
+    },
+    "lam3000": {
+      "drifted": 0.598,
+      "near-aligned": 0.788
+    },
+    "lam10000": {
+      "drifted": 0.596,
+      "near-aligned": 0.786
+    },
+    "lam-ge1": {
+      "drifted-min": 0.595,
+      "drifted-max": 0.6
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

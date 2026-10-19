@@ -1,0 +1,41 @@
+{
+  "name": "rejection",
+  "label": "Share of anchors rejected by reweighting",
+  "metrics": {
+    "0-5min": 0.014925373134328358,
+    "10-15min": 0.05330786594894947,
+    "15-20min": 0.01088534107402032,
+    "20-25min": 0.0016051364365971107,
+    "25-30min": 0.07615700058582309,
+    "30-35min": 0.006373937677053824,
+    "35-40min": 0.02057142857142857,
+    "40-45min": 0.06884596334819218,
+    "5-10min": 0.11119402985074626,
+    "other-windows": {
+      "max": 0.05330786594894947,
+      "min": 0.0016051364365971107
+    },
+    "overall": 0.038662988285154534
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "figs/paper/numbers.json",
+    "hash": "sha256:8c143f34a063fb962dd539b9098af57974020ff1450ddb2d69299cbd7fc19063",
+    "provenance": {
+      "from": [
+        "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+        "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+      ],
+      "ran": [
+        "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+        "joint-align 2.0.2 @ e010b7c (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+      ],
+      "script": "scripts/04_paper_figures.py"
+    }
+  }
+}

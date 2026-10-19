@@ -1,0 +1,47 @@
+{
+  "name": "wilcoxon-joint-cf-vs-pairwise-cf",
+  "label": "wilcoxon joint cf vs pairwise cf",
+  "metrics": {
+    "sep2015-jul2016": {
+      "holm-p": 0.00102,
+      "delta": 0.0022
+    },
+    "sep2015-apr2016": {
+      "holm-p": 3.07e-06,
+      "delta": 0.0062
+    },
+    "jan2016-apr2016": {
+      "holm-p": 1.49e-07,
+      "delta": 0.018
+    },
+    "jan2016-jul2016": {
+      "holm-p": 1.49e-07,
+      "delta": 0.0213
+    },
+    "sep2015-jan2016": {
+      "holm-p": 5.24e-10,
+      "delta": 0.0048
+    },
+    "apr2016-jul2016": {
+      "holm-p": 0.00195,
+      "delta": 0.0079
+    },
+    "all": {
+      "delta-min": 0.0022,
+      "delta-max": 0.0213,
+      "holm-p-max": 0.00195
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}
