@@ -1,0 +1,22 @@
+id = "2026-10-19-215943-4904"
+status = "done"
+started = "2026-10-19T21:59:43+13:00"
+finished = "2026-10-19T22:02:59+13:00"
+exit_code = 0
+commit = "ecfcf7ea28815098ea8d58d9c8344477231d3411"
+dirty = false
+command = "python3.11 scripts/01_multibatch_align.py"
+host = "Jesses-MacBook-Air-2.local"
+runner = "taura"
+inputs = ["scripts/01_multibatch_align.py"]
+
+[data.fish-oil]
+path = "data/fish_oil"
+label = "fish-oil-90"
+hash = "sha256:4bbece5a1f572a9bc9930b658b255ceaf17afbb43fcc989da82809e9dfe6be8b"
+files = 112
+
+[outputs]
+"figs/multibatch_warps.png" = "sha256:56b0289f04ab592f474cd989ff0491db87f1f2040a85ae9497e6c94f594e6c06"
+"results/multibatch_align.npz" = "sha256:e8f2b250640d6e9f0d5ef99a88283e272216832d3b16af9b6c4a64946a0a7715"
+"results/multibatch_align.txt" = "sha256:9053e6d539f6943e3144227f4ba95f08a8be19261989eb4f83f1656b9387f157"

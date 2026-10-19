@@ -1,0 +1,21 @@
+id = "2026-10-19-220534-b605"
+status = "done"
+started = "2026-10-19T22:05:34+13:00"
+finished = "2026-10-19T22:05:41+13:00"
+exit_code = 0
+commit = "ecfcf7ea28815098ea8d58d9c8344477231d3411"
+dirty = false
+command = "python3.11 scripts/03_fair_benchmark.py"
+host = "Jesses-MacBook-Air-2.local"
+runner = "taura"
+inputs = ["scripts/03_fair_benchmark.py"]
+
+[data.fish-oil]
+path = "data/fish_oil"
+label = "fish-oil-90"
+hash = "sha256:4bbece5a1f572a9bc9930b658b255ceaf17afbb43fcc989da82809e9dfe6be8b"
+files = 112
+
+[outputs]
+"results/fair_benchmark.npz" = "sha256:4bc1fa7953c8054e7f77e3f0843b5cc91a673f7077b08f0327289695f593108e"
+"results/fair_benchmark.txt" = "sha256:f367e221035ff5aef3e5908f0403d9385e51274d471e421d0125815154fe8ddb"

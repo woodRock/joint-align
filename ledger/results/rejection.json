@@ -21,17 +21,17 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "figs/paper/numbers.json",
-    "hash": "sha256:8c143f34a063fb962dd539b9098af57974020ff1450ddb2d69299cbd7fc19063",
+    "hash": "sha256:e69a152cb2c180b5030bc7d656e389881107c3978b1685814922c784b193c8de",
     "provenance": {
       "from": [
         "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-        "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+        "joint-align 2.0.2 @ ecfcf7e (src clean) from ~/Desktop/joint-align",
         "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
         "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
       ],
       "ran": [
         "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-        "joint-align 2.0.2 @ e010b7c (src clean) from ~/Desktop/joint-align",
+        "joint-align 2.0.2 @ ecfcf7e (src clean) from ~/Desktop/joint-align",
         "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
         "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
       ],
