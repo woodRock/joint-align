@@ -37,3 +37,6 @@ logs/
 .coverage
 .pytest_cache/
 junit.xml
+
+# taura build staging
+.taura/

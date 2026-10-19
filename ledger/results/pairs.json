@@ -1,0 +1,65 @@
+{
+  "name": "pairs",
+  "label": "Batch pairs (A warped into B)",
+  "metrics": {
+    "sep2015-jul2016": {
+      "anchors": 4396
+    },
+    "sep2015-apr2016": {
+      "anchors": 2475
+    },
+    "jan2016-apr2016": {
+      "anchors": 1891
+    },
+    "jan2016-jul2016": {
+      "anchors": 3374
+    },
+    "sep2015-jan2016": {
+      "anchors": 10227
+    },
+    "apr2016-jul2016": {
+      "anchors": 1463
+    },
+    "aug2015-sep2015": {
+      "anchors": 497
+    },
+    "aug2015-jan2016": {
+      "anchors": 322
+    },
+    "aug2015-apr2016": {
+      "anchors": 138
+    },
+    "aug2015-jul2016": {
+      "anchors": 228
+    }
+  },
+  "groups": {
+    "drifted": [
+      "sep2015-jul2016",
+      "sep2015-apr2016",
+      "jan2016-apr2016",
+      "jan2016-jul2016",
+      "aug2015-apr2016",
+      "aug2015-jul2016"
+    ],
+    "near-aligned": [
+      "sep2015-jan2016",
+      "apr2016-jul2016",
+      "aug2015-sep2015",
+      "aug2015-jan2016"
+    ]
+  },
+  "rule": "drifted: unaligned mean TIC r < 0.5",
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.npz",
+    "hash": "sha256:ea019cc363232ad780dbd92f60a1fa243463e3afcaa4e57d28d5b8fb6c2681a6",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}
