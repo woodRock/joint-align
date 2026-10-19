@@ -1,0 +1,39 @@
+id = "2026-10-19-220541-9f75"
+status = "done"
+started = "2026-10-19T22:05:41+13:00"
+finished = "2026-10-19T22:06:11+13:00"
+exit_code = 0
+commit = "ecfcf7ea28815098ea8d58d9c8344477231d3411"
+dirty = false
+command = "python3.11 scripts/04_paper_figures.py"
+host = "Jesses-MacBook-Air-2.local"
+runner = "taura"
+inputs = ["scripts/04_paper_figures.py"]
+
+[data.fish-oil]
+path = "data/fish_oil"
+label = "fish-oil-90"
+hash = "sha256:4bbece5a1f572a9bc9930b658b255ceaf17afbb43fcc989da82809e9dfe6be8b"
+files = 112
+
+[outputs]
+"figs/paper/captions.md" = "sha256:7831513461f58b952b863ebe60373a365e6b28ef2d155405d8eb39606e0ed0a9"
+"figs/paper/fig1_problem_method.pdf" = "pdf-sha256:7737ee5ccd0a80f4dd7adfce2a2765995c5c8c95fd2bb8c90aa38b6d015bd632"
+"figs/paper/fig1_problem_method.png" = "sha256:7e35e8edd2648ce41392853de09e37a67f3d5e9c232b71f28021a27ad7315077"
+"figs/paper/fig2_recovery.pdf" = "pdf-sha256:716c3eeb3e698c4ac8e82bee029a1d79b01e297437d324fd6b4fae7070158691"
+"figs/paper/fig2_recovery.png" = "sha256:17dc41a282554f7e33dd1d6e94c79329f31d1c46775f28a9769bdc7799afe26e"
+"figs/paper/fig3_comparison.pdf" = "pdf-sha256:93197eedc9c755334e0813f2c30cf4afc81de1f69cc64692f641cce5cadadd68"
+"figs/paper/fig3_comparison.png" = "sha256:5eb41251a54afdcef240344fcb6371eff6c12dd80544bedcb5a85522f627826b"
+"figs/paper/fig4_consistency.pdf" = "pdf-sha256:5da22661965f09fc4594322b97f77b53af428378c61b4a52e6c0d5ff7b7bfa11"
+"figs/paper/fig4_consistency.png" = "sha256:2a920ba2ddcb4d82af0c870289cb736a2ede390284d76c634318197eb7e65fe5"
+"figs/paper/fig5_borrowing.pdf" = "pdf-sha256:301f78d2e15cbb8d1a842fd12a544be90fe21a95cf73213933ce22ac0020d1df"
+"figs/paper/fig5_borrowing.png" = "sha256:aafc84a310659ee3bc8f286887be3f245952a3b47c3229e3a88afd0e58cb0779"
+"figs/paper/fig6_benchmark.pdf" = "pdf-sha256:76f2576ec469e465c494e04bf00a8b8b11f214121ecd58d091bb38573f7b5bc0"
+"figs/paper/fig6_benchmark.png" = "sha256:7cae16bcf5fc5f2915d1acf8f0f083bd3793c628045941d4707ae056bb143c28"
+"figs/paper/figS1_lambda.pdf" = "pdf-sha256:5c386646ae5d44807a2f091dfa6ca89b988c455d384885677b224745e195370c"
+"figs/paper/figS1_lambda.png" = "sha256:4e28cfe19907d58a9ec3acc4c1738512de422010fd7f4841c9f1c0ce15d30c21"
+"figs/paper/figS2_uncertainty.pdf" = "pdf-sha256:4c11cee8d8906904a3ea5394c6605cd7d811daccb114a4bdeba596b626556647"
+"figs/paper/figS2_uncertainty.png" = "sha256:6fe77cdc5f8860cbf9db35abef6f62ff8580e2e8ff1b8ba00c9270f3538bbc89"
+"figs/paper/figS3_rejection.pdf" = "pdf-sha256:b45efc7ba94cd9860ef6c75b04a60fe96792c7e7f1938f637c2513c83d5c5ab2"
+"figs/paper/figS3_rejection.png" = "sha256:424bd155da9f6188c5722470bf23d1237de27dba1aa7e181e05a16b1e064725f"
+"figs/paper/numbers.json" = "sha256:e69a152cb2c180b5030bc7d656e389881107c3978b1685814922c784b193c8de"
