@@ -127,3 +127,34 @@ decimals = 2
 
 [format."cycle/joint/max"]         # numerical: 0.0023
 decimals = 4
+variants = ["up3"]                 # "less than 0.003 min": \res{cycle/joint/max@up3}
+
+# Settings as the paper states them (taura.toml [settings.*]).
+
+[format."settings-match/MatchConfig.max_drift_min"]   # "more than 20~min apart"
+decimals = 0
+[format."settings-match/MatchConfig.sim_threshold"]   # max(0.30, q_70)
+decimals = 2
+[format."settings-match/MatchConfig.ransac_resid"]    # 3 bins
+decimals = 0
+[format."settings-model/S_MIN"]                       # [s_min, s_max] = [0.5, 2]
+decimals = 1
+[format."settings-model/S_MAX"]
+decimals = 0
+[format."settings-align/LAMBDAS/min"]                 # {0.1, ..., 10^4}
+decimals = 1
+[format."settings-align/LAMBDAS/max"]
+sci = "power"
+[format."settings-neural/TrainConfig.huber"]
+decimals = 0
+[format."settings-neural/TrainConfig.power"]          # intensities raised to the power 0.5
+decimals = 1
+[format."settings-neural/TrainConfig.blur/max"]       # blur annealed from 2 to 0.5 bins
+decimals = 0
+[format."settings-neural/TrainConfig.blur/min"]
+decimals = 1
+[format."settings-neural/TrainConfig.lr"]             # 3\times10^{-3}
+sci = true
+decimals = 0
+[format."settings-model/GAUGE_WEIGHT"]                # gamma = 10^3 N_eff / Q
+sci = "power"
