@@ -158,3 +158,7 @@ sci = true
 decimals = 0
 [format."settings-model/GAUGE_WEIGHT"]                # gamma = 10^3 N_eff / Q
 sci = "power"
+
+# Run times, rounded to whole minutes ("about 4~min").
+[format."timing-*/minutes"]
+decimals = 0

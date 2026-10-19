@@ -25,3 +25,10 @@ names = ["TrainConfig", "NeuralJointWarp.d_emb", "NeuralJointWarp.hidden"]
 module = "alignbench.anchors"
 python = "python3.11"
 names = ["MatchConfig"]
+
+# How long the pipeline takes, from the run records (\res{timing-<name>/minutes}).
+[timings.evaluation]       # the joint model's full evaluation: scripts 01, 03 and 04 (CPU)
+scripts = ["scripts/01_multibatch_align.py", "scripts/03_fair_benchmark.py", "scripts/04_paper_figures.py"]
+
+[timings.wt-warps]         # the WarpTransformer warps (script 02; its newest run is gpu-spooler task 72)
+scripts = ["scripts/02_wt_warps.py"]
