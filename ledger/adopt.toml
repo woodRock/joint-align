@@ -1,0 +1,3192 @@
+# Decisions about numbers typed into the paper (taura adopt / resolve).
+# verdict: result (key) | not-a-result | unrecorded. Keyed by literal id.
+
+[decisions.006013c933]
+file = "TAI_template.tex"
+literal = "0.622"
+context = "nges the balance: drifted pairs rise to 0.622, and near-aligned pairs fall to 0.766."
+verdict = "result"
+key = "lambda-sweep/lam0.1/drifted"
+reason = "The text says that at λ=0.1 \"drifted pairs rise to 0.622\"."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.032023a166]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "share of held-out anchors inside their 90\\% band and inside their 90\\% predictive i"
+verdict = "not-a-result"
+key = ""
+reason = "The 90% band level is the nominal coverage level the authors chose."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.048b1a8683]
+file = "TAI_template.tex"
+literal = "0.0023"
+context = "sagree around batch triplets by at most 0.0023~min, numerical error, against 0.116~min"
+verdict = "result"
+key = "cycle/joint/max"
+reason = "'disagree around batch triplets by at most 0.0023 min' is the joint model's maximum cycle inconsistency (0.00231); it needs 4-decimal rendering."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.04bdbe4c35]
+file = "TAI_template.tex"
+literal = "7674"
+context = "nstitute (formerly AgResearch), Lincoln 7674, New Zealand (e-mail: alastair.ross@agr"
+verdict = "not-a-result"
+key = ""
+reason = "This is the postcode in 'Lincoln 7674' in the author affiliation."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.04dbd74d7e]
+file = "TAI_template.tex"
+literal = "0.035"
+context = "its median error is 0.060~min, against 0.035~min for dense PCHIP and 0.052~min for p"
+verdict = "result"
+key = "heldout-dense-pchip/all/median"
+reason = "Dense PCHIP median held-out error, cited from Fig. 3b."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.055a4c2950]
+file = "TAI_template.tex"
+literal = "40"
+context = "b}(t))-g_{a\\to c}(t)|$ averaged over 5--40~min for all 60 ordered batch triplets:"
+verdict = "not-a-result"
+key = ""
+reason = "Upper bound of the 5–40 min averaging window, which the authors chose."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.05bb620f95]
+file = "TAI_template.tex"
+literal = "0.572"
+context = "fitting (TIC correlation 0.598 against 0.572) and did not harm near-aligned pairs. T"
+verdict = "result"
+key = "ticr-pairwise/mean-drifted/mean"
+reason = "The sentence gives pairwise fitting's mean TIC correlation over drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.060b393ebc]
+file = "TAI_template.tex"
+literal = "30"
+context = "conflicting matches; the cluster at 25--30~min is unexplained. Beyond a batch's la"
+verdict = "not-a-result"
+key = ""
+reason = "30 is the upper bound of the 25--30 min window being described, not a computed value."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.0889066bb3]
+file = "TAI_template.tex"
+literal = "2"
+context = "jul2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per tissue in the data-description table (e.g. 'H 2, F 2, R 2')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.08fc0ce52b]
+file = "TAI_template.tex"
+literal = "2"
+context = "and a retention-time blur annealed from 2 to 0.5 bins. We train for 1500 steps wi"
+verdict = "not-a-result"
+key = ""
+reason = "The blur annealed from 2 bins is a training hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.0a0922fa2b]
+file = "TAI_template.tex"
+literal = "0.116"
+context = "oth maps differs from the direct map by 0.116~min on average over the 60 ordered trip"
+verdict = "result"
+key = "cycle/pairwise/mean"
+reason = "Mean cycle inconsistency of composed pairwise smooth maps over the triplets."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.0b122d5319]
+file = "TAI_template.tex"
+literal = "0.116"
+context = ", pairwise maps disagree in this way by 0.116~min on average over batch triplets, and"
+verdict = "result"
+key = "cycle/pairwise/mean"
+reason = "'pairwise maps disagree ... by 0.116 min on average over batch triplets' is the mean pairwise cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.0b3a9012c6]
+file = "TAI_template.tex"
+literal = "0.054"
+context = "uces. The median band width is 0.044 to 0.054~min per pair. Bands widen only weakly w"
+verdict = "result"
+key = "band/all/width-max"
+reason = "This is the upper end of the per-pair median band width range."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.0b5a3dd19a]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "ly lower TIC correlation (0.595 against 0.598 on drifted pairs, 0.768 against 0.779 o"
+verdict = "result"
+key = "ticr-joint/mean-drifted/mean"
+reason = "This is the reference-gauge joint model's TIC r on drifted pairs at λ=10."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.0c1aade158]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "over (Fig.~\\ref{fig:uncertainty}a). The 90\\% predictive intervals contain 81\\% of he"
+verdict = "not-a-result"
+key = ""
+reason = "90% is the nominal level of the predictive intervals, a setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.0c4a1937e1]
+file = "TAI_template.tex"
+literal = "5"
+context = "g_{a\\to c}(t)|$, averaged over $t$ from 5 to 40~min."
+verdict = "not-a-result"
+key = ""
+reason = "Lower bound of the t range (5 to 40 min) used in the transitivity metric."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.0c4aa4af73]
+file = "TAI_template.tex"
+literal = "32"
+context = "ree compounds in every batch (shown 10--32~min). (b) The same TICs mapped into the"
+verdict = "not-a-result"
+key = ""
+reason = "'shown 10--32 min' is a plotting-range bound."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.0c6ced23a7]
+file = "TAI_template.tex"
+literal = "0.066"
+context = "ograms of drifted batch pairs rose from 0.066 unaligned to 0.598, against 0.572 for t"
+verdict = "result"
+key = "ticr-unaligned/mean-drifted/mean"
+reason = "This is the mean TIC correlation of drifted batch pairs 'from 0.066 unaligned'."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.0da65b3d04]
+file = "TAI_template.tex"
+literal = "0.572"
+context = "mean TIC correlation of 0.598, against 0.572 for pairwise smooth, 0.558 for dense PC"
+verdict = "result"
+key = "ticr-pairwise/mean-drifted/mean"
+reason = "\"0.572 for pairwise smooth\" is the pairwise smooth mean TIC r over drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.0e49c3a848]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "h percentiles of $g_{k\\to l}(t)$ form a 90\\% band for the map. This band reflects un"
+verdict = "not-a-result"
+key = ""
+reason = "The 90% band follows from the authors' choice of the 5th and 95th percentiles; it is not a computed result."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.0ef2058f84]
+file = "TAI_template.tex"
+literal = "0.779"
+context = "h pairs that were already close reached 0.779, against 0.755 unaligned. Pairwise warp"
+verdict = "result"
+key = "ticr-joint/mean-near-aligned/mean"
+reason = "'Batch pairs that were already close reached 0.779' is the joint near-aligned mean."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.0f0408256e]
+file = "TAI_template.tex"
+literal = "0.0023"
+context = "in. For the joint model, the maximum is 0.0023~min, which comes from inverting the war"
+verdict = "result"
+key = "cycle/joint/max"
+reason = "Joint model maximum cycle inconsistency; the paper types 4 decimals, so the \\res needs higher precision than the default 0.002."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.1089fb76b3]
+file = "TAI_template.tex"
+literal = "1.345"
+context = "er weights \\cite{huber} with threshold $1.345\\hat\\sigma$. The next four use Tukey bis"
+verdict = "not-a-result"
+key = ""
+reason = "Standard Huber tuning constant 1.345."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.139beb7faa]
+file = "TAI_template.tex"
+literal = "0"
+context = "The output is one warp per batch, $f_k:[0,T-1]\\to\\mathbb{R}$, that maps batch $k$"
+verdict = "not-a-result"
+key = ""
+reason = "Domain bound in f_k:[0,T-1]\\to\\mathbb{R}."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.13da50e459]
+file = "TAI_template.tex"
+literal = "0.02"
+context = "mples, with a median per-sample gain of 0.02 to 0.14 (Holm-corrected $p\\le2\\times10^"
+verdict = "result"
+key = "wilcoxon-joint-vs-pooled-pchip/all/delta-min"
+reason = "This is the lower bound of the 'median per-sample gain of 0.02 to 0.14' over pooled-anchor PCHIP."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.154501dd68]
+file = "TAI_template.tex"
+literal = "200"
+context = ", and the joint model is refitted. Over 200 replicates, the 5th and 95th percentile"
+verdict = "not-a-result"
+key = ""
+reason = "200 bootstrap replicates is a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.159b8eeb3e]
+file = "TAI_template.tex"
+literal = "400"
+context = "n-batch leave-one-out term. It uses the 400 most intense m/z channels, intensities"
+verdict = "not-a-result"
+key = ""
+reason = "The 400 most intense m/z channels is a chosen training setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.162b42496d]
+file = "TAI_template.tex"
+literal = "0.023"
+context = "(dot) and 5th--95th percentile. Median 0.023~min, 95th percentile 0.075~min, maximum"
+verdict = "result"
+key = "recovery/synthetic-err/median"
+reason = "The caption's \"Median 0.023~min\" is the median synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.16ffaba801]
+file = "TAI_template.tex"
+literal = "0.536"
+context = "as 228 anchors, pairwise smooth reaches 0.536 and the joint model 0.598. Dense PCHIP"
+verdict = "result"
+key = "ticr-pairwise/aug2015-jul2016/mean"
+reason = "Pairwise smooth mean TIC r on aug2015 × jul2016."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.178a19e9f7]
+file = "TAI_template.tex"
+literal = "2"
+context = "aug2015 & 2 & B4 2 & H 2 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample counts in the data description table (aug2015 n=2, B4 2, H 2) describe the data."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.18dfa5dfe9]
+file = "TAI_template.tex"
+literal = "0.225"
+context = "ntile is 0.075~min, both below one bin (0.225~min)."
+verdict = "not-a-result"
+key = ""
+reason = "\"one bin (0.225~min)\" is the bin width, a data setting."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.1ce8847ab5]
+file = "TAI_template.tex"
+literal = "4"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'S 4' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.1e81a9b0ec]
+file = "TAI_template.tex"
+literal = "0.755"
+context = "$\\times$ jan2016, it fell from 0.813 to 0.755, and the median error against the pair'"
+verdict = "result"
+key = "lopo/sep2015-jan2016/ticr-lopo"
+reason = "This is the TIC r for sep2015 × jan2016 after refitting without that pair's own anchors."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.1ec683e847]
+file = "TAI_template.tex"
+literal = "0.5"
+context = "annels, intensities raised to the power 0.5, and a retention-time blur annealed fro"
+verdict = "not-a-result"
+key = ""
+reason = "The authors chose an intensity power of 0.5 as a preprocessing hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.1ee23911e3]
+file = "TAI_template.tex"
+literal = "30"
+context = "and at least 5 bins apart, keeping the 30 highest."
+verdict = "not-a-result"
+key = ""
+reason = "Peak-detection setting chosen by the authors: keep the 30 highest peaks."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.1f7210b244]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "\\textit{Under-covering intervals.} The 90\\% predictive intervals cover 81\\% of held"
+verdict = "not-a-result"
+key = ""
+reason = "90% is the nominal level the authors chose for the predictive intervals."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.1f83d4a6c2]
+file = "TAI_template.tex"
+literal = "500"
+context = "brary mass spectra, then calibrated for 500 steps on the pair's pooled anchors (ver"
+verdict = "not-a-result"
+key = ""
+reason = "500 calibration steps is a training setting for WarpTransformer."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.20b1b2d9d4]
+file = "TAI_template.tex"
+literal = "0.778"
+context = "d 0.684. Cross-fitted scores (0.596 and 0.778) are within 0.002 of these, so fitting"
+verdict = "result"
+key = "ticr-joint-cf/mean-near-aligned/mean"
+reason = "The 'Cross-fitted scores (... 0.778)' value is the cross-fitted joint model's near-aligned mean."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.21d258caf7]
+file = "TAI_template.tex"
+literal = "2.5"
+context = "he two shifted batches, compounds elute 2.5 to 5~min early relative to sep2015, and"
+verdict = "not-a-result"
+key = ""
+reason = "Lower bound of the drift range the authors set in the synthetic generator."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.23007013bd]
+file = "TAI_template.tex"
+literal = "1.1"
+context = "invertible. We use $Q=41$ knots, about 1.1~min apart."
+verdict = "not-a-result"
+key = ""
+reason = "Knot spacing of about 1.1 min follows from the chosen knot count and describes the setup."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.24319d2707]
+file = "TAI_template.tex"
+literal = "10"
+context = "\\% of anchors overall, but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\% at 4"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 5–10 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.247bcc41dd]
+file = "TAI_template.tex"
+literal = "0.277"
+context = ": pairwise maps mean 0.116~min, maximum 0.277~min; joint model maximum 0.0023~min (nu"
+verdict = "result"
+key = "cycle/pairwise/max"
+reason = "The caption's pairwise maps maximum cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.24d292eaf8]
+file = "TAI_template.tex"
+literal = "8"
+context = "& T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of R tissue samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.2563587808]
+file = "TAI_template.tex"
+literal = "90"
+context = "e described in \\cite{chromadcnn}. These 90 samples are the 103 samples of \\cite{ch"
+verdict = "not-a-result"
+key = ""
+reason = "The 90 samples is a dataset size count."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.25eeb3e035]
+file = "TAI_template.tex"
+literal = "10"
+context = "e three compounds in every batch (shown 10--32~min). (b) The same TICs mapped into"
+verdict = "not-a-result"
+key = ""
+reason = "'shown 10--32 min' is a plotting-range bound."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.25f0aef99c]
+file = "TAI_template.tex"
+literal = "0.277"
+context = "whereas pairwise maps disagree by up to 0.277~min. On five fish-oil batches, it align"
+verdict = "result"
+key = "cycle/pairwise/max"
+reason = "'Pairwise maps disagree by up to 0.277 min' is the maximum pairwise cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.2764f9a14c]
+file = "TAI_template.tex"
+literal = "-0.40"
+context = "rect anchors are sparse (Spearman $\\rho=-0.40$ between width and the number of nearby"
+verdict = "result"
+key = "band/pooled/spearman"
+reason = "This is the pooled Spearman ρ between band width and the number of nearby anchors."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.28318258b0]
+file = "TAI_template.tex"
+literal = "0.595"
+context = ") but a slightly lower TIC correlation (0.595 against 0.598 on drifted pairs, 0.768 a"
+verdict = "result"
+key = "ticr-joint-mean-gauge/mean-drifted/mean"
+reason = "This is the mean gauge's TIC r on drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.28ae63cad9]
+file = "TAI_template.tex"
+literal = "1000"
+context = "corded on integer m/z from 0 to 999 ($M=1000$), square-root transformed, and normali"
+verdict = "not-a-result"
+key = ""
+reason = "M=1000 is the number of m/z channels in the data representation."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.2984c67d11]
+file = "TAI_template.tex"
+literal = "2"
+context = "me halfway between them, $h(t)=(t+m(t))/2$, so both receive the same interpolatio"
+verdict = "not-a-result"
+key = ""
+reason = "The 2 is the divisor in the midpoint formula h(t)=(t+m(t))/2."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.29b06d686a]
+file = "TAI_template.tex"
+literal = "2"
+context = "_{\\mathrm{band}}^2+(1.645\\,\\sigma_{kl})^2}$, where $h_{\\mathrm{band}}$ is the ban"
+verdict = "not-a-result"
+key = ""
+reason = "This is the exponent 2 on (1.645 sigma_kl) in the half-width formula."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.2d3410bfae]
+file = "TAI_template.tex"
+literal = "3"
+context = "26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of heart (H) tissue samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.2f509a39aa]
+file = "TAI_template.tex"
+literal = "81\\%"
+context = "k of coverage. The 90\\% intervals cover 81\\% of held-out anchors, so they need calib"
+verdict = "result"
+key = "coverage/predictive"
+reason = "'The 90% intervals cover 81% of held-out anchors' is the predictive coverage on held-out anchors."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.2f9448ad72]
+file = "TAI_template.tex"
+literal = "7010"
+context = "t \\& Food Research New Zealand), Nelson 7010, New Zealand (e-mail: daniel.killeen@pl"
+verdict = "not-a-result"
+key = ""
+reason = "This is the postcode in 'Nelson 7010' in the author affiliation."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.3105a3b8b5]
+file = "TAI_template.tex"
+literal = "11"
+context = "jan2016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of gonad (Go) tissue samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.311c3ecfa2]
+file = "TAI_template.tex"
+literal = "0.006"
+context = "roves on pairwise smooth on all six, by 0.006 to 0.028 (Holm-corrected $p\\le2\\times10"
+verdict = "result"
+key = "wilcoxon-joint-vs-pairwise/all/delta-min"
+reason = "This is the lower bound of the gain over pairwise smooth, 'by 0.006 to 0.028'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.31750a54bb]
+file = "TAI_template.tex"
+literal = "10"
+context = "111~min. For every $\\lambda$ from 1 to $10^4$, the drifted-pair mean stays between"
+verdict = "not-a-result"
+key = ""
+reason = "The 10 is the base of $10^4$, the upper end of the λ range described in \"from 1 to $10^4$\"."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.31bda6d40d]
+file = "TAI_template.tex"
+literal = "1"
+context = "nd its increments $\\delta_{kq}=d_k(u_{q+1})-d_k(u_q)$. A cumulative-sum matrix $L"
+verdict = "not-a-result"
+key = ""
+reason = "Index subscript in u_{q+1}."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.31e31bcf58]
+file = "TAI_template.tex"
+literal = "0.572"
+context = "one: mean TIC correlation 0.598 against 0.572, with the largest gain on a pair whose"
+verdict = "result"
+key = "ticr-pairwise/mean-drifted/mean"
+reason = "'against 0.572' is the same fitter applied to each pair alone (pairwise smooth), mean over drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.3287511fe7]
+file = "TAI_template.tex"
+literal = "0.06"
+context = "el beats it on all six tested pairs, by 0.06 to 0.12 in the B-frame protocol (Holm-c"
+verdict = "result"
+key = "bench-wilcoxon-b-frame-joint-vs-warptransformer/all/delta-min"
+reason = "This is the lower bound of the joint model's margin over the WarpTransformer in the B-frame protocol (0.057, which rounds to 0.06)."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.32ce8f5fd0]
+file = "TAI_template.tex"
+literal = "2"
+context = "& B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.3431b6b242]
+file = "TAI_template.tex"
+literal = "2015"
+context = "n 2016 3.2 to 5.3~min earlier than in a 2015 batch, and the shift grows along the ru"
+verdict = "not-a-result"
+key = ""
+reason = "'a 2015 batch' is a year."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.34e296c3e8]
+file = "TAI_template.tex"
+literal = "2\\times10^{-3}"
+context = "are cross-fitted (0.002 to 0.021, $p\\le2\\times10^{-3}$)."
+verdict = "result"
+key = "wilcoxon-joint-cf-vs-pairwise-cf/all/holm-p-max"
+reason = "This is the p bound for the cross-fitted joint model against cross-fitted pairwise smooth."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.3547945d6c]
+file = "TAI_template.tex"
+literal = "2\\times10^{-3}"
+context = "in of 0.02 to 0.14 (Holm-corrected $p\\le2\\times10^{-3}$). It also improves on pairwise smooth"
+verdict = "result"
+key = "wilcoxon-joint-vs-pooled-pchip/all/holm-p-max"
+reason = "This is the 'Holm-corrected p' bound for the joint model against pooled-anchor PCHIP."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.3551773cf6]
+file = "TAI_template.tex"
+literal = "2"
+context = "ive to sep2015 and also start acquiring 2~min earlier. We treat the shift as drif"
+verdict = "not-a-result"
+key = ""
+reason = "acquisition start offset, an instrument setting listed in Table I (5.0 vs 3.0 min)"
+by = "claude"
+decided = "2026-10-19T20:57:11+13:00"
+
+[decisions.36c2ceba5e]
+file = "TAI_template.tex"
+literal = "1"
+context = "batches, pairwise methods estimate $K(K-1)/2$ maps independently, and these maps"
+verdict = "not-a-result"
+key = ""
+reason = "Constant in the formula $K(K-1)/2$."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.38186ab8b0]
+file = "TAI_template.tex"
+literal = "50"
+context = "ge} Under the same sample folds, we fit 50 bootstrap replicates per fold and repor"
+verdict = "not-a-result"
+key = ""
+reason = "Number of bootstrap replicates per fold is a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.382b606271]
+file = "TAI_template.tex"
+literal = "25"
+context = "rall, but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min, agains"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 25–30 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.38772a49fb]
+file = "TAI_template.tex"
+literal = "10"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\"
+verdict = "not-a-result"
+key = ""
+reason = "Batch size n=10 for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.38c7f7cfb8]
+file = "TAI_template.tex"
+literal = "228"
+context = "batch $A$ has two samples and which has 228 anchors, pairwise smooth reaches 0.536"
+verdict = "result"
+key = "pairs/aug2015-jul2016/anchors"
+reason = "The sentence says aug2015 × jul2016 'has 228 anchors'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.3cf757e84c]
+file = "TAI_template.tex"
+literal = "0.30"
+context = "tch if its similarity is at least $\\max(0.30, q_{70})$, where $q_{70}$ is the 70th p"
+verdict = "not-a-result"
+key = ""
+reason = "Similarity threshold chosen by the authors: max(0.30, q_70)."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.3dec92e288]
+file = "TAI_template.tex"
+literal = "70"
+context = "s similarity is at least $\\max(0.30, q_{70})$, where $q_{70}$ is the 70th percenti"
+verdict = "not-a-result"
+key = ""
+reason = "Percentile index in the symbol q_{70}, which is a chosen threshold setting."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.3f19224861]
+file = "TAI_template.tex"
+literal = "0"
+context = "ch $l$ receives the multiplicity $w_j^{(0)}=m_{k,i}m_{l,i'}$, and the joint model"
+verdict = "not-a-result"
+key = ""
+reason = "Superscript (0) in the multiplicity notation w_j^{(0)}."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.4077720ac7]
+file = "TAI_template.tex"
+literal = "0.595"
+context = "4$, the drifted-pair mean stays between 0.595 and 0.600. This sweep was computed afte"
+verdict = "result"
+key = "lambda-sweep/lam-ge1/drifted-min"
+reason = "This is the lower bound of the drifted-pair mean over all λ from 1 to $10^4$ in the sweep."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.417f5f6d8b]
+file = "TAI_template.tex"
+literal = "22"
+context = "onto each $B_j$ (4 segments, slack $\\pm22$ bins), one warp per sample pair, maxim"
+verdict = "not-a-result"
+key = ""
+reason = "COW-TIC slack of ±22 bins is a hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.43a5d30ce4]
+file = "TAI_template.tex"
+literal = "0.007"
+context = "The TIC correlation changed by at most 0.007 on nine of ten pairs. On the tenth, sep"
+verdict = "result"
+key = "borrowing/lopo-change/max-others"
+reason = "This is the largest change in TIC r across the nine pairs other than the worst one when the joint model is refitted without the pair's own anchors."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.44ce9c4b2f]
+file = "TAI_template.tex"
+literal = "0.731"
+context = "on of near-aligned pairs (0.399 against 0.731 unaligned on aug2015 $\\times$ sep2015)."
+verdict = "result"
+key = "ticr-unaligned/aug2015-sep2015/mean"
+reason = "The text gives the unaligned TIC r on aug2015 × sep2015, which is the main TIC r table entry."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.45517596ad]
+file = "TAI_template.tex"
+literal = "2"
+context = "aug2015 & 2 & B4 2 & H 2 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Batch size n=2 or 'B4 2' for aug2015 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.4642626f22]
+file = "TAI_template.tex"
+literal = "-0.40"
+context = "is clamped at a run end; Spearman $\\rho=-0.40$.}"
+verdict = "result"
+key = "band/pooled/spearman"
+reason = "The caption gives one Spearman ρ between band width and nearby anchors across all pairs, which matches the pooled value."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.464af8c7a8]
+file = "TAI_template.tex"
+literal = "1"
+context = "nchor loss is the Huber loss (threshold 1 bin) of every anchor mapped through its"
+verdict = "not-a-result"
+key = ""
+reason = "The Huber threshold of 1 bin is a training hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.467f495dcb]
+file = "TAI_template.tex"
+literal = "0.128"
+context = "retention time, correlated at 0.003 to 0.128 with those of the other three batches."
+verdict = "result"
+key = "ticr-unaligned/jan2016-apr2016/mean"
+reason = "Upper end of the range of unaligned TIC r for the drifted 2016 batches (apr2016, jul2016) against the other batches; in the ledger, jan2016-apr2016 has the maximum value, 0.128."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.46ab7897ed]
+file = "TAI_template.tex"
+literal = "2"
+context = "ches, pairwise methods estimate $K(K-1)/2$ maps independently, and these maps nee"
+verdict = "not-a-result"
+key = ""
+reason = "Constant in the formula $K(K-1)/2$."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.483173783d]
+file = "TAI_template.tex"
+literal = "1"
+context = "\\sum_{j=1}^{N} w_j\\, r_j(\\theta)^2 + \\lambda'\\sum"
+verdict = "not-a-result"
+key = ""
+reason = "Summation lower index j=1 in the objective equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.48672ab10c]
+file = "TAI_template.tex"
+literal = "0.572"
+context = "from 0.066 unaligned to 0.598, against 0.572 for the same fitter applied to each pai"
+verdict = "result"
+key = "ticr-pairwise/mean-drifted/mean"
+reason = "'0.572 for the same fitter applied to each pair alone' is the pairwise drifted mean."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.48da78681e]
+file = "TAI_template.tex"
+literal = "8"
+context = "$, cosine schedule), embeddings of size 8 and hidden layers of size 64. These set"
+verdict = "not-a-result"
+key = ""
+reason = "An embedding size of 8 is an architecture hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.493e31a51b]
+file = "TAI_template.tex"
+literal = "1"
+context = "-(1-s_{\\min})(u_{q+1}-u_q)\\le\\delta_{kq}\\le(s_{\\max}-1)(u_{q"
+verdict = "not-a-result"
+key = ""
+reason = "Knot index offset q+1 in the bound equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.4981bf38f7]
+file = "TAI_template.tex"
+literal = "5"
+context = "block $b$ is assigned to fold $b \\bmod 5$. In fold $f$, an anchor is held out if"
+verdict = "not-a-result"
+key = ""
+reason = "The 5 in 'b mod 5' is the chosen number of folds."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.4c3a9b957b]
+file = "TAI_template.tex"
+literal = "0.654"
+context = "COW refine (0.661) and the joint model (0.654). The ranking depends on the protocol,"
+verdict = "result"
+key = "bench-midpoint-joint/mean-drifted4/mean"
+reason = "This is the joint model's mean at the midpoint on the four drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.4c6f31b72b]
+file = "TAI_template.tex"
+literal = "2"
+context = "jul2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table (e.g. 'T 2, B4 2')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.4e670cab93]
+file = "TAI_template.tex"
+literal = "5.0"
+context = "counts, acquisition starting at 3.0 or 5.0~min, and drifts shaped like the fitted"
+verdict = "not-a-result"
+key = ""
+reason = "The 5.0 min acquisition start is part of the synthetic generator's design."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.502f90dc59]
+file = "TAI_template.tex"
+literal = "15\\%"
+context = ", and the bootstrap bands alone contain 15\\%. One likely reason is that a bootstrap"
+verdict = "result"
+key = "coverage/bootstrap"
+reason = "'the bootstrap bands alone contain 15%' is the bootstrap-only coverage (0.154)."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.5066e4cb3c]
+file = "TAI_template.tex"
+literal = "12"
+context = "indows. Bins are grouped into blocks of 12 (2.7~min), and block $b$ is assigned to"
+verdict = "not-a-result"
+key = ""
+reason = "The block size of 12 bins is a cross-validation setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.5164f40475]
+file = "TAI_template.tex"
+literal = "0.116"
+context = "unaligned. Pairwise warps disagreed by 0.116 min on average around batch triplets; j"
+verdict = "result"
+key = "cycle/pairwise/mean"
+reason = "'Pairwise warps disagreed by 0.116 min on average around batch triplets' is the pairwise cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.51c505eb4a]
+file = "TAI_template.tex"
+literal = "1.4826"
+context = "heir scale robustly as $\\hat\\sigma=\\max(1.4826\\,\\mathrm{MAD}(r),0.25)$ bins, where MAD"
+verdict = "not-a-result"
+key = ""
+reason = "Standard MAD-to-sigma consistency constant 1.4826."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.5239ddd625]
+file = "TAI_template.tex"
+literal = "0.003"
+context = "s at each retention time, correlated at 0.003 to 0.128 with those of the other three"
+verdict = "result"
+key = "ticr-unaligned/aug2015-apr2016/mean"
+reason = "'correlated at 0.003 to 0.128' before alignment: the lower bound is the unaligned TIC r of the aug2015-apr2016 pair."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.528bce17a7]
+file = "TAI_template.tex"
+literal = "1"
+context = "an absolute held-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$."
+verdict = "not-a-result"
+key = ""
+reason = "1 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.5381dd484f]
+file = "TAI_template.tex"
+literal = "0.684"
+context = "ion of near-aligned pairs, to 0.575 and 0.684. Cross-fitted scores (0.596 and 0.778)"
+verdict = "result"
+key = "ticr-pooled-pchip/mean-near-aligned/mean"
+reason = "The sentence says pooled-anchor PCHIP lowers near-aligned correlation to 0.684."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.54314e7573]
+file = "TAI_template.tex"
+literal = "0.003"
+context = "atch triplets; joint warps by less than 0.003 min. The gains over pairwise fitting ar"
+verdict = "unrecorded"
+key = ""
+reason = "'joint warps by less than 0.003 min' is a rounded-up bound on the triplet cycle inconsistency; cycle/joint/max renders as 0.002, not 0.003, and the other 0.003 candidates (TIC r, deltas) match only by coincidence."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.543c1cd15d]
+file = "TAI_template.tex"
+literal = "1"
+context = "-u_q)\\le\\delta_{kq}\\le(s_{\\max}-1)(u_{q+1}-u_q)."
+verdict = "not-a-result"
+key = ""
+reason = "Knot index offset q+1 in the bound equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.55c29a5814]
+file = "TAI_template.tex"
+literal = "0.116"
+context = "st 0.0023~min, numerical error, against 0.116~min on average for pairwise fits (Secti"
+verdict = "result"
+key = "cycle/pairwise/mean"
+reason = "'0.116 min on average for pairwise fits' around triplets is the mean pairwise cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.55f788a288]
+file = "TAI_template.tex"
+literal = "2,475"
+context = "e~\\ref{tab:ticr}), which have 4,396 and 2,475 anchors."
+verdict = "result"
+key = "pairs/sep2015-apr2016/anchors"
+reason = "Anchor count for the other sep2015 drifted pair, sep2015 × apr2016."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.5672a0b1c8]
+file = "TAI_template.tex"
+literal = "100"
+context = "held-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The referenc"
+verdict = "not-a-result"
+key = ""
+reason = "100 is listed as a grid candidate, not as the selected lambda, so it matches recovery/synthetic/lambda only by coincidence."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.57453ab98a]
+file = "TAI_template.tex"
+literal = "5.2"
+context = "2016 \\res{drift/drifted-batches/min} to 5.2~min earlier than in a 2015 batch, and t"
+verdict = "result"
+key = "drift/drifted-batches/max"
+reason = "author-approved correction: the fitted joint warps give at most 5.15 min (was typed 5.3)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
+
+[decisions.57d75efd3b]
+file = "TAI_template.tex"
+literal = "4"
+context = "jul2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 &"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per tissue in the data-description table (e.g. 'H 4')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.5827327198]
+file = "TAI_template.tex"
+literal = "14"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of liver (L) tissue samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.58b8d365f1]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "tches. Its intervals are not calibrated 90\\% intervals. Before use on data from othe"
+verdict = "not-a-result"
+key = ""
+reason = "90% is the nominal level of the intervals."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.59669e3857]
+file = "TAI_template.tex"
+literal = "0.002"
+context = "gain holds when both are cross-fitted (0.002 to 0.021, $p\\le2\\times10^{-3}$)."
+verdict = "result"
+key = "wilcoxon-joint-cf-vs-pairwise-cf/all/delta-min"
+reason = "This is the lower bound of the gain 'when both are cross-fitted (0.002 to 0.021)'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.5b4be44783]
+file = "TAI_template.tex"
+literal = "4"
+context = "followed by COW (8 segments, slack $\\pm4$ bins) of each $A_i$ onto the mean TIC"
+verdict = "not-a-result"
+key = ""
+reason = "COW refine slack of ±4 bins is a hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.5ccfec07da]
+file = "TAI_template.tex"
+literal = "30"
+context = ", but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min, against 0."
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 25–30 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.5d133621ec]
+file = "TAI_template.tex"
+literal = "20"
+context = "e similarity, excluding pairs more than 20~min apart. Keep a match if its similari"
+verdict = "not-a-result"
+key = ""
+reason = "Matching setting chosen by the authors: exclude pairs more than 20 min apart."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.5fa6764b52]
+file = "TAI_template.tex"
+literal = "26"
+context = "r2016 $n=10$, aug2015 $n=2$, jan2016 $n=26$, jul2016 $n=16$, sep2015 $n=36$), each"
+verdict = "not-a-result"
+key = ""
+reason = "jan2016 $n=26$ is a sample count describing the data."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.60e0361b5d]
+file = "TAI_template.tex"
+literal = "0"
+context = "me by a continuous bin coordinate $t\\in[0,T-1]$."
+verdict = "not-a-result"
+key = ""
+reason = "Range bound in the definition t\\in[0,T-1]."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.62f30c2fe0]
+file = "TAI_template.tex"
+literal = "3000"
+context = "from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The reference batch is the ba"
+verdict = "not-a-result"
+key = ""
+reason = "3000 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.65c759e1c3]
+file = "TAI_template.tex"
+literal = "8\\%"
+context = "y sample, retention-time jitter, and an 8\\% chance of being missing from any one sa"
+verdict = "not-a-result"
+key = ""
+reason = "The 8% missingness probability is a generator setting."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.673d43f018]
+file = "TAI_template.tex"
+literal = "2"
+context = "(s_k(\\tau)+s_i(\\tau)))$, with $\\rho=\\ln 2$, so the slope stays within a factor of"
+verdict = "not-a-result"
+key = ""
+reason = "The 2 in rho=ln 2 is a fixed design constant for the slope bound."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.680dcd1791]
+file = "TAI_template.tex"
+literal = "1"
+context = "of 0.111~min. For every $\\lambda$ from 1 to $10^4$, the drifted-pair mean stays"
+verdict = "not-a-result"
+key = ""
+reason = "'from 1 to 10^4' is the lower bound of the λ sweep range, which is a setting."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.68eb82170b]
+file = "TAI_template.tex"
+literal = "3.0"
+context = "nd July 2016 batches start acquiring at 3.0~min; the others start at 5.0~min. We do"
+verdict = "not-a-result"
+key = ""
+reason = "The 3.0 min acquisition start time is an instrument setting that describes the data."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.69c9261238]
+file = "TAI_template.tex"
+literal = "0.028"
+context = "pairwise smooth on all six, by 0.006 to 0.028 (Holm-corrected $p\\le2\\times10^{-3}$),"
+verdict = "result"
+key = "wilcoxon-joint-vs-pairwise/all/delta-max"
+reason = "This is the upper bound of the gain over pairwise smooth, 'by 0.006 to 0.028'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.6b4052c933]
+file = "TAI_template.tex"
+literal = "0.035"
+context = "batch pair; over all pairs, dense PCHIP 0.035, pairwise smooth 0.052, and the joint m"
+verdict = "result"
+key = "heldout-dense-pchip/all/median"
+reason = "Median held-out anchor error for dense PCHIP over all pairs."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.6ba0f99d8f]
+file = "TAI_template.tex"
+literal = "3.9\\%"
+context = "rejection.} Robust reweighting rejects 3.9\\% of anchors overall, but 11.1\\% at 5--10"
+verdict = "result"
+key = "rejection/overall"
+reason = "The text gives the overall share of anchors that reweighting rejects."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.6bda31cbe8]
+file = "TAI_template.tex"
+literal = "0"
+context = "anchors are rejected: share with weight 0 after reweighting, by 5-min window (num"
+verdict = "not-a-result"
+key = ""
+reason = "'Weight 0' defines what counts as rejected."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.6c4d053049]
+file = "TAI_template.tex"
+literal = "11.1\\%"
+context = "g rejects 3.9\\% of anchors overall, but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6"
+verdict = "result"
+key = "rejection/5-10min"
+reason = "The text gives the rejection share in the 5–10 min window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.6c60648178]
+file = "TAI_template.tex"
+literal = "8"
+context = "jul2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2,"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table (e.g. 'S 8, G 8, B4 8')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.6eb99699c5]
+file = "TAI_template.tex"
+literal = "81\\%"
+context = "the 90\\% bootstrap intervals cover only 81\\% of held-out anchors. Joint alignment is"
+verdict = "result"
+key = "coverage/predictive"
+reason = "'90% bootstrap intervals cover only 81% of held-out anchors' is the predictive-interval coverage of held-out anchors (0.809)."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.6fa311e4f9]
+file = "TAI_template.tex"
+literal = "5"
+context = "with $B_j$'s TIC. We use only bins from 5~min onwards, where every run is acquiri"
+verdict = "not-a-result"
+key = ""
+reason = "The 5 min lower bound for TIC bins is a metric setting."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.7039201ec3]
+file = "TAI_template.tex"
+literal = "10"
+context = "absolute held-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The"
+verdict = "not-a-result"
+key = ""
+reason = "10 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.70a4335985]
+file = "TAI_template.tex"
+literal = "4"
+context = "of each $A_i$ directly onto each $B_j$ (4 segments, slack $\\pm22$ bins), one warp"
+verdict = "not-a-result"
+key = ""
+reason = "COW-TIC uses 4 segments, a hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.714570fa86]
+file = "TAI_template.tex"
+literal = "10"
+context = "\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The reference batch is the batch"
+verdict = "not-a-result"
+key = ""
+reason = "This is the base 10 of 10^4 in the lambda grid."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.714d6e49d5]
+file = "TAI_template.tex"
+literal = "2"
+context = "e bound it to $[s_{\\min},s_{\\max}]=[0.5,2]$:"
+verdict = "not-a-result"
+key = ""
+reason = "Slope bound chosen by the authors: s_max=2."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.72fe85865d]
+file = "TAI_template.tex"
+literal = "5"
+context = "to b}(t))-g_{a\\to c}(t)|$ averaged over 5--40~min for all 60 ordered batch triple"
+verdict = "not-a-result"
+key = ""
+reason = "Lower bound of the 5–40 min averaging window, which the authors chose."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.7316c61bc3]
+file = "TAI_template.tex"
+literal = "3"
+context = "B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of skin (Sk) tissue samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.74c68a955f]
+file = "TAI_template.tex"
+literal = "0.531"
+context = "e fitter applied to each pair alone and 0.531 for interpolation through pooled anchor"
+verdict = "result"
+key = "ticr-pooled-pchip/mean-drifted/mean"
+reason = "'0.531 for interpolation through pooled anchors' is the pooled PCHIP drifted mean."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.74f39a3caa]
+file = "TAI_template.tex"
+literal = "26"
+context = "jan2016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3,"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count n for batch jan2016 in the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.7518419815]
+file = "TAI_template.tex"
+literal = "16"
+context = "g2015 $n=2$, jan2016 $n=26$, jul2016 $n=16$, sep2015 $n=36$), each on its own rete"
+verdict = "not-a-result"
+key = ""
+reason = "jul2016 $n=16$ is a sample count describing the data."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.755402f57c]
+file = "TAI_template.tex"
+literal = "0.088"
+context = "e pair's own anchors rose from 0.061 to 0.088~min (Fig.~\\ref{fig:borrowing}b). Withou"
+verdict = "result"
+key = "lopo/sep2015-jan2016/err-lopo"
+reason = "This is the median error against the pair's own anchors for sep2015 × jan2016 after the refit without them."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.7559e99e59]
+file = "TAI_template.tex"
+literal = "0"
+context = "pair's pooled anchors (version 2, seed 0, CPU)."
+verdict = "not-a-result"
+key = ""
+reason = "\"seed 0\" is a random seed the authors chose."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.79fffc5e81]
+file = "TAI_template.tex"
+literal = "0.813"
+context = "sep2015 $\\times$ jan2016, it fell from 0.813 to 0.755, and the median error against"
+verdict = "result"
+key = "lopo/sep2015-jan2016/ticr-joint"
+reason = "The sentence names sep2015 × jan2016, and this is the full joint fit's TIC r before that pair's anchors are removed."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.7b83d5686d]
+file = "TAI_template.tex"
+literal = "0.661"
+context = "model (0.673) leads PCHIP + COW refine (0.661) and the joint model (0.654). The ranki"
+verdict = "result"
+key = "bench-midpoint-pchip-cow-refine/mean-drifted4/mean"
+reason = "This is the PCHIP + COW refine mean at the midpoint on the four drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.7c4a8b91d6]
+file = "TAI_template.tex"
+literal = "0.766"
+context = "o 0.622, and near-aligned pairs fall to 0.766."
+verdict = "result"
+key = "lambda-sweep/lam0.1/near-aligned"
+reason = "The text says that at λ=0.1 \"near-aligned pairs fall to 0.766\"."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.7c646f2545]
+file = "TAI_template.tex"
+literal = "8"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish B4 samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.7d63d1cfb2]
+file = "TAI_template.tex"
+literal = "6012"
+context = "ia University of Wellington, Wellington 6012, New Zealand. J. Wood is with the Abund"
+verdict = "not-a-result"
+key = ""
+reason = "This is the postcode in 'Wellington 6012' in the author affiliation."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.7d9b0d47f4]
+file = "TAI_template.tex"
+literal = "999"
+context = "a are recorded on integer m/z from 0 to 999 ($M=1000$), square-root transformed, an"
+verdict = "not-a-result"
+key = ""
+reason = "999 is the upper bound of the m/z range."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.7db38fab0c]
+file = "TAI_template.tex"
+literal = "0.016"
+context = "e reference batch sep2015, stays within 0.016 of the full joint fit on the pairs that"
+verdict = "result"
+key = "borrowing/star-gap/max"
+reason = "This is the largest gap between the star design and the full joint fit on pairs that do not involve sep2015."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.7dea4c482e]
+file = "TAI_template.tex"
+literal = "4"
+context = "aluation of the joint model takes about 4~min, and the WarpTransformer warps abou"
+verdict = "not-a-result"
+key = ""
+reason = "approximate runtime ('about'), machine-dependent; not a ledger result"
+by = "claude"
+decided = "2026-10-19T20:57:10+13:00"
+
+[decisions.7df88e7b39]
+file = "TAI_template.tex"
+literal = "0.64"
+context = "ol, the WarpTransformer reaches 0.54 to 0.64 on the drifted pairs. COW-TIC, which fi"
+verdict = "result"
+key = "bench-native-warptransformer/drifted4/max"
+reason = "This is the highest WarpTransformer score under its native protocol on the drifted pairs (0.641, which rounds to 0.64)."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.80f17a511f]
+file = "TAI_template.tex"
+literal = "0.531"
+context = "pairwise smooth, 0.558 for dense PCHIP, 0.531 for pooled-anchor PCHIP and 0.066 unali"
+verdict = "result"
+key = "ticr-pooled-pchip/mean-drifted/mean"
+reason = "The sentence gives the mean TIC correlation on drifted pairs as '0.531 for pooled-anchor PCHIP'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.8265d8ffcc]
+file = "TAI_template.tex"
+literal = "25"
+context = "ive conflicting matches; the cluster at 25--30~min is unexplained. Beyond a batch'"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 25–30 min window being discussed."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.82b5e828f3]
+file = "TAI_template.tex"
+literal = "3.0"
+context = "sample counts, acquisition starting at 3.0 or 5.0~min, and drifts shaped like the"
+verdict = "not-a-result"
+key = ""
+reason = "The 3.0 min acquisition start is part of the synthetic generator's design, copied from the real data."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.8312590ee5]
+file = "TAI_template.tex"
+literal = "5"
+context = "45~min, against 0.2--5.3\\% in the other 5-min windows (Fig.~\\ref{fig:rejection})."
+verdict = "not-a-result"
+key = ""
+reason = "This is the width of the windows ('5-min windows'), a binning setting."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.8339559388]
+file = "TAI_template.tex"
+literal = "0.601"
+context = "rs, the best method is the joint model (0.601) in $B$'s frame and the neural joint mo"
+verdict = "result"
+key = "bench-bframe-joint/mean-drifted4/mean"
+reason = "The caption gives the joint model's drifted-pair mean in B's frame."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.84ad789138]
+file = "TAI_template.tex"
+literal = "0"
+context = "pectra are recorded on integer m/z from 0 to 999 ($M=1000$), square-root transfor"
+verdict = "not-a-result"
+key = ""
+reason = "0 is the lower bound of the m/z range."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.8537da78cb]
+file = "TAI_template.tex"
+literal = "-1"
+context = ")(u_{q+1}-u_q)\\le\\delta_{kq}\\le(s_{\\max}-1)(u_{q+1}-u_q)."
+verdict = "not-a-result"
+key = ""
+reason = "Constant in (s_max-1) in the bound equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.855101ab35]
+file = "TAI_template.tex"
+literal = "2"
+context = "\\sum_{k=1}^{K}\\lVert D_2L\\theta_k\\rVert^2 + \\gamma\\lVert G\\theta\\rVert^2"
+verdict = "not-a-result"
+key = ""
+reason = "Squared-norm exponent in the objective equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.856b253bfe]
+file = "TAI_template.tex"
+literal = "2"
+context = "\\sum_{j=1}^{N} w_j\\, r_j(\\theta)^2 + \\lambda'\\sum_{k=1}^{K}\\lVert D_2L\\the"
+verdict = "not-a-result"
+key = ""
+reason = "Subscript of the second-difference operator D_2."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.878efd9932]
+file = "TAI_template.tex"
+literal = "0.075"
+context = "is 0.023~min and the 95th percentile is 0.075~min, both below one bin (0.225~min)."
+verdict = "result"
+key = "recovery/synthetic-err/p95"
+reason = "\"the 95th percentile is 0.075~min\" is the p95 synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.88368b4413]
+file = "TAI_template.tex"
+literal = "0.779"
+context = "t 0.598 on drifted pairs, 0.768 against 0.779 on near-aligned pairs). Our selection r"
+verdict = "result"
+key = "ticr-joint/mean-near-aligned/mean"
+reason = "This is the reference-gauge joint model's TIC r on near-aligned pairs."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.893586ee29]
+file = "TAI_template.tex"
+literal = "2\\times10^{-3}"
+context = "e B-frame protocol (Holm-corrected $p\\le2\\times10^{-3}$). Under its own native protocol, the W"
+verdict = "result"
+key = "bench-wilcoxon-b-frame-joint-vs-warptransformer/all/p-max"
+reason = "This is the largest Holm-corrected p for joint vs WarpTransformer in the B-frame protocol across the six pairs."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.897856d71d]
+file = "TAI_template.tex"
+literal = "50"
+context = "in, and the WarpTransformer warps about 50~min, on the CPU of an Apple M2."
+verdict = "not-a-result"
+key = ""
+reason = "approximate runtime ('about'), machine-dependent; not a ledger result"
+by = "claude"
+decided = "2026-10-19T20:57:10+13:00"
+
+[decisions.8a09654e10]
+file = "TAI_template.tex"
+literal = "0.1"
+context = "median absolute held-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\"
+verdict = "not-a-result"
+key = ""
+reason = "0.1 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.8a37564a0a]
+file = "TAI_template.tex"
+literal = "6"
+context = "jan2016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of liver (L) tissue samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.8c01ac4ad2]
+file = "TAI_template.tex"
+literal = "14"
+context = "jan2016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5"
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish B5 samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.8d5f74c30b]
+file = "TAI_template.tex"
+literal = "0.026"
+context = "'s gain over pairwise fitting is small (0.026 on drifted pairs), and the removal and"
+verdict = "result"
+key = "ticr-gaps/joint-minus-pairwise/mean-drifted"
+reason = "The text says it is the joint model's gain over pairwise fitting on drifted pairs, which is the joint-minus-pairwise mean on drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.8df38421a1]
+file = "TAI_template.tex"
+literal = "3,811"
+context = "n), fitted exactly as on the real data (3,811 anchors, $\\lambda=100$). (c) Absolute e"
+verdict = "result"
+key = "recovery/synthetic/anchors"
+reason = "\"3,811 anchors\" is the synthetic-data anchor count in Fig. 2b."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.8e6ad3877d]
+file = "TAI_template.tex"
+literal = "1"
+context = "-(1-s_{\\min})(u_{q+1}-u_q)\\le\\delta_{kq}\\le"
+verdict = "not-a-result"
+key = ""
+reason = "Constant 1 in the slope-bound equation (1-s_min)."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.8e73337f1b]
+file = "TAI_template.tex"
+literal = "10"
+context = "& 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of gonad (Go) tissue samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.90b8ba281f]
+file = "TAI_template.tex"
+literal = "0.5"
+context = "retention-time blur annealed from 2 to 0.5 bins. We train for 1500 steps with Adam"
+verdict = "not-a-result"
+key = ""
+reason = "The blur annealed to 0.5 bins is a training hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.91962f711f]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "te where anchors are plentiful, and the 90\\% bootstrap intervals cover only 81\\% of"
+verdict = "not-a-result"
+key = ""
+reason = "'90% bootstrap intervals' is a nominal level the authors chose."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.921e8e351b]
+file = "TAI_template.tex"
+literal = "0.096"
+context = "eld-out error than the reference gauge (0.096 against 0.111~min) but a slightly lower"
+verdict = "result"
+key = "lambda-cv/mean-lam10/rt-blocked"
+reason = "This is the mean gauge's held-out error at λ=10."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.922eedfe42]
+file = "TAI_template.tex"
+literal = "5"
+context = "are with weight 0 after reweighting, by 5-min window (numbers: anchors per window"
+verdict = "not-a-result"
+key = ""
+reason = "5 min is the window width used for binning."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.924e811e52]
+file = "TAI_template.tex"
+literal = "-1"
+context = "g_{k\\to l} = f_l^{-1}\\circ f_k ."
+verdict = "not-a-result"
+key = ""
+reason = "Inverse superscript in f_l^{-1}."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.929b68efeb]
+file = "TAI_template.tex"
+literal = "0"
+context = "is a chromatogram $X\\in\\mathbb{R}_{\\ge 0}^{T\\times M}$ over $T$ retention-time b"
+verdict = "not-a-result"
+key = ""
+reason = "Math notation: the 0 in \\mathbb{R}_{\\ge 0} means non-negative reals."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.945dd2f31b]
+file = "TAI_template.tex"
+literal = "0.5"
+context = "unaligned mean TIC correlation is below 0.5. This gives six drifted pairs, all betw"
+verdict = "not-a-result"
+key = ""
+reason = "The 0.5 TIC-correlation cutoff for calling a pair drifted is a threshold the authors chose."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.949878e781]
+file = "TAI_template.tex"
+literal = "3.2"
+context = "mpounds in two batches acquired in 2016 3.2 to 5.3~min earlier than in a 2015 batch"
+verdict = "result"
+key = "drift/drifted-batches/min"
+reason = "'place compounds in two batches acquired in 2016 3.2 to 5.3 min earlier' is the lower bound of the fitted shift across both drifted batches."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.94e0d4dfb1]
+file = "TAI_template.tex"
+literal = "45"
+context = "n, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min, against 0.2--5.3\\% in the other 5-"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 40–45 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.954baac3b0]
+file = "TAI_template.tex"
+literal = "10"
+context = "f the five fish-oil batches (apr2016 $n=10$, aug2015 $n=2$, jan2016 $n=26$, jul201"
+verdict = "not-a-result"
+key = ""
+reason = "apr2016 $n=10$ is a sample count describing the data."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.99142cd118]
+file = "TAI_template.tex"
+literal = "5"
+context = "the TIC's 80th percentile and at least 5 bins apart, keeping the 30 highest."
+verdict = "not-a-result"
+key = ""
+reason = "Peak-detection setting chosen by the authors: peaks at least 5 bins apart."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.99b01d8b36]
+file = "TAI_template.tex"
+literal = "3"
+context = "s (RANSAC) line fit (residual threshold 3 bins). Then keep only anchors that incr"
+verdict = "not-a-result"
+key = ""
+reason = "RANSAC setting chosen by the authors: residual threshold 3 bins."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.9aae1583de]
+file = "TAI_template.tex"
+literal = "36"
+context = "2016 $n=26$, jul2016 $n=16$, sep2015 $n=36$), each on its own retention-time axis."
+verdict = "not-a-result"
+key = ""
+reason = "sep2015 $n=36$ is a sample count describing the data."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.9d5d29cab3]
+file = "TAI_template.tex"
+literal = "2"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'H 2' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.9de227d689]
+file = "TAI_template.tex"
+literal = "4"
+context = "2, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of heart (H) tissue samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.9ea5e1b875]
+file = "TAI_template.tex"
+literal = "0.558"
+context = "598, against 0.572 for pairwise smooth, 0.558 for dense PCHIP, 0.531 for pooled-ancho"
+verdict = "result"
+key = "ticr-dense-pchip/mean-drifted/mean"
+reason = "The sentence gives the mean TIC correlation on drifted pairs as '0.558 for dense PCHIP'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.a0570bd4a9]
+file = "TAI_template.tex"
+literal = "4.685"
+context = "ights \\cite{beaton1974} with threshold $4.685\\hat\\sigma$, which give zero weight to g"
+verdict = "not-a-result"
+key = ""
+reason = "Standard Tukey bisquare tuning constant 4.685."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.a1562be66b]
+file = "TAI_template.tex"
+literal = "1"
+context = "output is one warp per batch, $f_k:[0,T-1]\\to\\mathbb{R}$, that maps batch $k$'s r"
+verdict = "not-a-result"
+key = ""
+reason = "Domain bound in f_k:[0,T-1]\\to\\mathbb{R}."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.a23e1307a3]
+file = "TAI_template.tex"
+literal = "2.7"
+context = "ws. Bins are grouped into blocks of 12 (2.7~min), and block $b$ is assigned to fold"
+verdict = "not-a-result"
+key = ""
+reason = "2.7 min is the duration of the chosen 12-bin block, which describes the setup."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.a241e4d145]
+file = "TAI_template.tex"
+literal = "4"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'Sk 4' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.a24ad923d5]
+file = "TAI_template.tex"
+literal = "0.277"
+context = "r the 60 ordered triplets, and by up to 0.277~min (jul2016 $\\to$ aug2015 $\\to$ jan201"
+verdict = "result"
+key = "cycle/pairwise/max"
+reason = "Maximum pairwise cycle inconsistency, on jul2016 → aug2015 → jan2016."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.a2fcd39821]
+file = "TAI_template.tex"
+literal = "0.0023"
+context = "maximum 0.277~min; joint model maximum 0.0023~min (numerical). (b) The worst route, j"
+verdict = "result"
+key = "cycle/joint/max"
+reason = "The caption's joint model maximum (numerical); it needs 4-decimal precision to render as 0.0023."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.a34d42aee0]
+file = "TAI_template.tex"
+literal = "1"
+context = "ta_k=(c_k,\\delta_{k1},\\dots,\\delta_{k,Q-1})$ to the knot values, $d_k(\\mathbf{u})"
+verdict = "not-a-result"
+key = ""
+reason = "Index subscripts in \\delta_{k1} and Q-1."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.a44e7245f5]
+file = "TAI_template.tex"
+literal = "3.0"
+context = "T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Acquisition start time in the 'Start' column of the jul2016 row; it describes the data and was not computed."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.a44e7245f5-2]
+file = "TAI_template.tex"
+literal = "3.0"
+context = "& 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Acquisition start time in the 'Start' column of the apr2016 row; it describes the data and was not computed."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.a510496973]
+file = "TAI_template.tex"
+literal = "0"
+context = "anchors $N_{\\mathrm{eff}}=\\sum_j w_j^{(0)}$, where $w^{(0)}$ are the bootstrap m"
+verdict = "not-a-result"
+key = ""
+reason = "Superscript (0) labelling the bootstrap multiplicities w^{(0)}."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.a580a4b4a9]
+file = "TAI_template.tex"
+literal = "0"
+context = "15 and jul2016 (grey; red rings: weight 0 after robust reweighting, 2.5\\%), with"
+verdict = "not-a-result"
+key = ""
+reason = "\"weight 0\" describes the robust reweighting rule, not a measurement."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.a605147068]
+file = "TAI_template.tex"
+literal = "1"
+context = "y a continuous bin coordinate $t\\in[0,T-1]$."
+verdict = "not-a-result"
+key = ""
+reason = "Range bound in the definition t\\in[0,T-1]."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.a693610df2]
+file = "TAI_template.tex"
+literal = "100"
+context = "the real data (3,811 anchors, $\\lambda=100$). (c) Absolute error of the joint mode"
+verdict = "result"
+key = "recovery/synthetic/lambda"
+reason = "\"$\\lambda=100$\" is the smoothing value recorded for the synthetic fit, which the paper selects by cross-validation."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.a6a0d366f9]
+file = "TAI_template.tex"
+literal = "2"
+context = "5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.a6a0d366f9-2]
+file = "TAI_template.tex"
+literal = "2"
+context = "016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'R 2' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.a6dc4d112b]
+file = "TAI_template.tex"
+literal = "0.5"
+context = "$. We bound it to $[s_{\\min},s_{\\max}]=[0.5,2]$:"
+verdict = "not-a-result"
+key = ""
+reason = "Slope bound chosen by the authors: s_min=0.5."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.a91fe3cef3]
+file = "TAI_template.tex"
+literal = "4,396"
+context = "ts and recovery of known drift. (a) The 4,396 anchors between sep2015 and jul2016 (gr"
+verdict = "result"
+key = "recovery/real-pair/anchors"
+reason = "\"The 4,396 anchors between sep2015 and jul2016\" is the real-pair anchor count shown in the Fig. 2 panel."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.aa01b2bd05]
+file = "TAI_template.tex"
+literal = "5"
+context = "shifted batches, compounds elute 2.5 to 5~min early relative to sep2015, and the"
+verdict = "not-a-result"
+key = ""
+reason = "Upper bound of the drift range the authors set in the synthetic generator."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.aa5ca56c98]
+file = "TAI_template.tex"
+literal = "5.0"
+context = "8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Acquisition start time for sep2015, an instrument setting in the data table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.ab02249ac4]
+file = "TAI_template.tex"
+literal = "15\\%"
+context = "eir 90\\% interval: bootstrap band alone 15\\%, predictive interval 81\\%. (b) Band wid"
+verdict = "result"
+key = "coverage/bootstrap"
+reason = "Caption: 'bootstrap band alone 15%' is the bootstrap-only held-out coverage."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.ac4ee52f5b]
+file = "TAI_template.tex"
+literal = "2"
+context = "half-width as $\\sqrt{h_{\\mathrm{band}}^2+(1.645\\,\\sigma_{kl})^2}$, where $h_{\\ma"
+verdict = "not-a-result"
+key = ""
+reason = "This is the exponent 2 in the half-width formula sqrt(h_band^2+...)."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.ae700a39f9]
+file = "TAI_template.tex"
+literal = "0.596"
+context = "o 0.575 and 0.684. Cross-fitted scores (0.596 and 0.778) are within 0.002 of these, s"
+verdict = "result"
+key = "ticr-joint-cf/mean-drifted/mean"
+reason = "The 'Cross-fitted scores (0.596 ...)' value is the cross-fitted joint model's drifted mean."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.aef90a3c99]
+file = "TAI_template.tex"
+literal = "6"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'G 6' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.afccc9fabf]
+file = "TAI_template.tex"
+literal = "2016"
+context = "ted pairs, all between an April or July 2016 batch and another batch, and four near-"
+verdict = "not-a-result"
+key = ""
+reason = "Year in the batch name 'April or July 2016'."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.b03dcd94b2]
+file = "TAI_template.tex"
+literal = "8"
+context = "}: pooled-anchor PCHIP followed by COW (8 segments, slack $\\pm4$ bins) of each $A"
+verdict = "not-a-result"
+key = ""
+reason = "COW refine uses 8 segments, a hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.b09c63126b]
+file = "TAI_template.tex"
+literal = "1"
+context = "ation is insensitive to $\\lambda$ above 1 (Fig.~\\ref{fig:lambda}). Cross-validati"
+verdict = "not-a-result"
+key = ""
+reason = "'λ above 1' is a bound on a setting, not a computed value."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.b0ff39cd20]
+file = "TAI_template.tex"
+literal = "81\\%"
+context = ". The 90\\% predictive intervals contain 81\\% of held-out anchors, and the bootstrap"
+verdict = "result"
+key = "coverage/predictive"
+reason = "'The 90% predictive intervals contain 81% of held-out anchors' names predictive coverage directly."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.b1563a2dde]
+file = "TAI_template.tex"
+literal = "25,011"
+context = "sh-oil chromatograms from five batches (25,011 anchors), the mean correlation between"
+verdict = "result"
+key = "anchors/all"
+reason = "'(25,011 anchors)' is the total anchor count across all pairs."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.b19a2272b6]
+file = "TAI_template.tex"
+literal = "0.755"
+context = "re already close reached 0.779, against 0.755 unaligned. Pairwise warps disagreed by"
+verdict = "result"
+key = "ticr-unaligned/mean-near-aligned/mean"
+reason = "'against 0.755 unaligned' is the near-aligned mean before alignment."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.b39e7f9167]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "than pairwise fitting (TIC correlation 0.598 against 0.572) and did not harm near-al"
+verdict = "result"
+key = "ticr-joint/mean-drifted/mean"
+reason = "The sentence gives the joint model's mean TIC correlation over drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.b47cf719e8]
+file = "TAI_template.tex"
+literal = "8"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5."
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish S samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.b47d41a134]
+file = "TAI_template.tex"
+literal = "4"
+context = "& 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table (e.g. 'B5 4', 'L 4')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.b516e2a3ca]
+file = "TAI_template.tex"
+literal = "0.54"
+context = "e protocol, the WarpTransformer reaches 0.54 to 0.64 on the drifted pairs. COW-TIC,"
+verdict = "result"
+key = "bench-native-warptransformer/drifted4/min"
+reason = "This is the lowest WarpTransformer score under its native protocol on the drifted pairs (0.538, which rounds to 0.54)."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.b588b3bcc2]
+file = "TAI_template.tex"
+literal = "1"
+context = "} w_j\\, r_j(\\theta)^2 + \\lambda'\\sum_{k=1}^{K}\\lVert D_2L\\theta_k\\rVert^2 + \\gamm"
+verdict = "not-a-result"
+key = ""
+reason = "Summation lower index k=1 in the objective equation."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.b6f2deb4c4]
+file = "TAI_template.tex"
+literal = "10"
+context = "a}). Cross-validation selected $\\lambda=10$, with a median held-out error of 0.111"
+verdict = "not-a-result"
+key = ""
+reason = "λ=10 is the hyperparameter value that was chosen, not a measured score."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.b805dfc85f]
+file = "TAI_template.tex"
+literal = "2016"
+context = "{Unexplained drift.} The April and July 2016 batches are shifted by 3.2 to 5.3~min r"
+verdict = "not-a-result"
+key = ""
+reason = "2016 is the year in the batch names 'April and July 2016'."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.b89a6876e0]
+file = "TAI_template.tex"
+literal = "0.075"
+context = "tile. Median 0.023~min, 95th percentile 0.075~min, maximum 0.107~min.}"
+verdict = "result"
+key = "recovery/synthetic-err/p95"
+reason = "The caption's \"95th percentile 0.075~min\" is the p95 synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.b8ea73128b]
+file = "TAI_template.tex"
+literal = "0.14"
+context = "ith a median per-sample gain of 0.02 to 0.14 (Holm-corrected $p\\le2\\times10^{-3}$)."
+verdict = "result"
+key = "wilcoxon-joint-vs-pooled-pchip/all/delta-max"
+reason = "This is the upper bound of the 'median per-sample gain of 0.02 to 0.14' over pooled-anchor PCHIP; 0.137 rounds to 0.14."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.ba3b1bc2c7]
+file = "TAI_template.tex"
+literal = "0.021"
+context = "ds when both are cross-fitted (0.002 to 0.021, $p\\le2\\times10^{-3}$)."
+verdict = "result"
+key = "wilcoxon-joint-cf-vs-pairwise-cf/all/delta-max"
+reason = "This is the upper bound of the gain 'when both are cross-fitted (0.002 to 0.021)'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.bcf7381794]
+file = "TAI_template.tex"
+literal = "2"
+context = "8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.be862be89a]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "Share of held-out anchors inside their 90\\% interval: bootstrap band alone 15\\%, pr"
+verdict = "not-a-result"
+key = ""
+reason = "90% is the nominal interval level."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.bf47cd1b78]
+file = "TAI_template.tex"
+literal = "60"
+context = "c}(t)|$ averaged over 5--40~min for all 60 ordered batch triplets: pairwise maps m"
+verdict = "not-a-result"
+key = ""
+reason = "60 ordered batch triplets is a count that describes the design."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.bf4ad8e339]
+file = "TAI_template.tex"
+literal = "3"
+context = "tch's position in $B$ by searching $\\pm 3$ bins for the scan whose spectrum best"
+verdict = "not-a-result"
+key = ""
+reason = "Search window setting chosen by the authors: \\pm 3 bins."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.bf5dd020af]
+file = "TAI_template.tex"
+literal = "0.755"
+context = ", the joint model reaches 0.779 against 0.755 unaligned. Dense PCHIP and pooled-ancho"
+verdict = "result"
+key = "ticr-unaligned/mean-near-aligned/mean"
+reason = "'0.755 unaligned' on near-aligned pairs is the unaligned mean TIC r."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.bfc90a801e]
+file = "TAI_template.tex"
+literal = "30"
+context = ". Anchors are sparse: we detect at most 30 peaks per sample. They are also noisy,"
+verdict = "not-a-result"
+key = ""
+reason = "'at most 30 peaks per sample' is a peak-detection setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.c1d203d723]
+file = "TAI_template.tex"
+literal = "7.6\\%"
+context = "chors overall, but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min,"
+verdict = "result"
+key = "rejection/25-30min"
+reason = "The text gives the rejection share in the 25–30 min window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.c210749c34]
+file = "TAI_template.tex"
+literal = "0.768"
+context = "(0.595 against 0.598 on drifted pairs, 0.768 against 0.779 on near-aligned pairs). O"
+verdict = "result"
+key = "ticr-joint-mean-gauge/mean-near-aligned/mean"
+reason = "This is the mean gauge's TIC r on near-aligned pairs."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.c25d8c4454]
+file = "TAI_template.tex"
+literal = "2016"
+context = "Runs in the April and July 2016 batches start acquiring at 3.0~min; the"
+verdict = "not-a-result"
+key = ""
+reason = "2016 is a year in the batch name."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.c2ab0d370c]
+file = "TAI_template.tex"
+literal = "0.2"
+context = "30~min and 6.9\\% at 40--45~min, against 0.2--5.3\\% in the other 5-min windows (Fig."
+verdict = "result"
+key = "rejection/other-windows/min"
+reason = "'0.2--5.3% in the other 5-min windows' is the lower bound of the rejection share across the remaining windows (0.002)."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.c3e61ca4a5]
+file = "TAI_template.tex"
+literal = "2.5\\%"
+context = "ngs: weight 0 after robust reweighting, 2.5\\%), with the joint model's warp and its 9"
+verdict = "result"
+key = "recovery/real-pair/rejected"
+reason = "\"weight 0 after robust reweighting, 2.5\\%\" is the fraction of real-pair anchors rejected."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.c3f62b7bb1]
+file = "TAI_template.tex"
+literal = "0.673"
+context = "$B$'s frame and the neural joint model (0.673) at the midpoint. COW-TIC fits a separa"
+verdict = "result"
+key = "bench-midpoint-neural-joint/mean-drifted4/mean"
+reason = "The caption gives the neural joint model's drifted-pair mean at the midpoint."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.c5553ef0f9]
+file = "TAI_template.tex"
+literal = "0.061"
+context = "gainst the pair's own anchors rose from 0.061 to 0.088~min (Fig.~\\ref{fig:borrowing}b"
+verdict = "result"
+key = "lopo/sep2015-jan2016/err-joint"
+reason = "This is the joint model's median error against the pair's own anchors for sep2015 × jan2016, before removal."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.c588daaa25]
+file = "TAI_template.tex"
+literal = "40"
+context = "to c}(t)|$, averaged over $t$ from 5 to 40~min."
+verdict = "not-a-result"
+key = ""
+reason = "Upper bound of the t range (5 to 40 min) used in the transitivity metric."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.c6bd0f1f1a]
+file = "TAI_template.tex"
+literal = "0.052"
+context = ", against 0.035~min for dense PCHIP and 0.052~min for pairwise smooth (Fig.~\\ref{fig:"
+verdict = "result"
+key = "heldout-pairwise/all/median"
+reason = "Pairwise smooth median held-out error, cited from Fig. 3b."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.c6e6ff84dd]
+file = "TAI_template.tex"
+literal = "40"
+context = "0~min, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min, against 0.2--5.3\\% in the othe"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 40–45 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.c6ffe4e382]
+file = "TAI_template.tex"
+literal = "5.0"
+context = "aug2015 & 2 & B4 2 & H 2 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Acquisition start time (5.0 min) in the data table is an instrument setting."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.cad1872017]
+file = "TAI_template.tex"
+literal = "1"
+context = "ot interval $q$ is $1+\\delta_{kq}/(u_{q+1}-u_q)$. We bound it to $[s_{\\min},s_{\\m"
+verdict = "not-a-result"
+key = ""
+reason = "Index subscript in u_{q+1}."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.cbbe58353e]
+file = "TAI_template.tex"
+literal = "5.0"
+context = "4, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Acquisition start time for jan2016, an instrument setting in the data table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.cce6b98be8]
+file = "TAI_template.tex"
+literal = "41"
+context = "ly increasing and invertible. We use $Q=41$ knots, about 1.1~min apart."
+verdict = "not-a-result"
+key = ""
+reason = "Q=41 knots is a model setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.cd185399e0]
+file = "TAI_template.tex"
+literal = "1000"
+context = "error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The reference batch is"
+verdict = "not-a-result"
+key = ""
+reason = "1000 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.cd9eb789a4]
+file = "TAI_template.tex"
+literal = "1500"
+context = "nealed from 2 to 0.5 bins. We train for 1500 steps with Adam (learning rate $3\\times"
+verdict = "not-a-result"
+key = ""
+reason = "1500 training steps is a fixed training setting."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.cdc621d594]
+file = "TAI_template.tex"
+literal = "0.1"
+context = "and was not used for it. Only $\\lambda=0.1$ changes the balance: drifted pairs ris"
+verdict = "not-a-result"
+key = ""
+reason = "λ=0.1 is a hyperparameter value in the sweep, not a computed result."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.d1901f8b6d]
+file = "TAI_template.tex"
+literal = "64"
+context = "ngs of size 8 and hidden layers of size 64. These settings were fixed before evalu"
+verdict = "not-a-result"
+key = ""
+reason = "A hidden layer size of 64 is an architecture hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.d20af7d190]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "atch pairs rose from 0.066 unaligned to 0.598, against 0.572 for the same fitter appl"
+verdict = "result"
+key = "ticr-joint/mean-drifted/mean"
+reason = "This is the drifted-pair mean TIC r after joint alignment ('rose ... to 0.598')."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.d3371065a5]
+file = "TAI_template.tex"
+literal = "90"
+context = "ows strength from the other batches. On 90 fish-oil chromatograms from five batche"
+verdict = "not-a-result"
+key = ""
+reason = "'90 fish-oil chromatograms' is a count that describes the dataset."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.d3cd8ccc86]
+file = "TAI_template.tex"
+literal = "1"
+context = "slope of $f_k$ on knot interval $q$ is $1+\\delta_{kq}/(u_{q+1}-u_q)$. We bound it"
+verdict = "not-a-result"
+key = ""
+reason = "Identity slope term in the formula 1+\\delta_{kq}/(...)."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.d4022de519]
+file = "TAI_template.tex"
+literal = "3\\times10^{-3}"
+context = "or 1500 steps with Adam (learning rate $3\\times10^{-3}$, cosine schedule), embeddings of size"
+verdict = "not-a-result"
+key = ""
+reason = "The Adam learning rate of 3e-3 is a hyperparameter, so the 0.003 candidates match only by coincidence."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.d42b2f936e]
+file = "TAI_template.tex"
+literal = "0.107"
+context = "model recovers the true drift to within 0.107~min everywhere compounds exist in both"
+verdict = "result"
+key = "recovery/synthetic-err/max"
+reason = "\"recovers the true drift to within 0.107~min\" is the maximum synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.d501edff2e]
+file = "TAI_template.tex"
+literal = "36"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count n for batch sep2015 in the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.d5689fddb0]
+file = "TAI_template.tex"
+literal = "0"
+context = "drift. Every run is binned onto a fixed 0--45~min grid of $T=200$ windows of 0.22"
+verdict = "not-a-result"
+key = ""
+reason = "0 is the lower bound of the 0--45 min grid range."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.d64fcfe616]
+file = "TAI_template.tex"
+literal = "0.673"
+context = "t the midpoint, the neural joint model (0.673) leads PCHIP + COW refine (0.661) and t"
+verdict = "result"
+key = "bench-midpoint-neural-joint/mean-drifted4/mean"
+reason = "This is the neural joint model's mean TIC r at the midpoint on the four drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.d902575c36]
+file = "TAI_template.tex"
+literal = "8"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish G samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.d9c092db7a]
+file = "TAI_template.tex"
+literal = "0.044"
+context = "ty introduces. The median band width is 0.044 to 0.054~min per pair. Bands widen only"
+verdict = "result"
+key = "band/all/width-min"
+reason = "This is the lower end of the per-pair median band width range."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.da384e4653]
+file = "TAI_template.tex"
+literal = "0.575"
+context = "e correlation of near-aligned pairs, to 0.575 and 0.684. Cross-fitted scores (0.596 a"
+verdict = "result"
+key = "ticr-dense-pchip/mean-near-aligned/mean"
+reason = "The sentence says dense PCHIP lowers near-aligned correlation 'to 0.575'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.db0405889b]
+file = "TAI_template.tex"
+literal = "4"
+context = ".1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The reference batch is the batch wi"
+verdict = "not-a-result"
+key = ""
+reason = "This is the exponent 4 of 10^4 in the lambda grid."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.db11be88f8]
+file = "TAI_template.tex"
+literal = "5"
+context = "3.9\\% of anchors overall, but 11.1\\% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\%"
+verdict = "not-a-result"
+key = ""
+reason = "This is a bound of the 5–10 min time window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.dbcf9ee221]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "with a held-out check of coverage. The 90\\% intervals cover 81\\% of held-out anchor"
+verdict = "not-a-result"
+key = ""
+reason = "'The 90% intervals' is the nominal interval level the authors chose."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.dc632eb6f4]
+file = "TAI_template.tex"
+literal = "0.111"
+context = "da=10$, with a median held-out error of 0.111~min. For every $\\lambda$ from 1 to $10^"
+verdict = "result"
+key = "lambda-cv/sep2015-lam10/rt-blocked"
+reason = "This is the median held-out anchor error at the selected λ=10."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.dc7821de9e]
+file = "TAI_template.tex"
+literal = "90"
+context = "We use 90 GC--MS samples of fatty acid methyl est"
+verdict = "not-a-result"
+key = ""
+reason = "90 GC-MS samples is a count that describes the dataset."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.dcbfd0ae1a]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "inside their 90\\% band and inside their 90\\% predictive interval."
+verdict = "not-a-result"
+key = ""
+reason = "The 90% predictive-interval level is the nominal level the authors chose."
+by = "claude"
+decided = "2026-10-19T20:53:26+13:00"
+
+[decisions.dcd96a25cc]
+file = "TAI_template.tex"
+literal = "6"
+context = "l2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count per fish/tissue in the data-description table (e.g. 'L 6', 'Sk 6')."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.dd12f98cd8]
+file = "TAI_template.tex"
+literal = "40"
+context = "e hypothesise that the rejections after 40~min come from column bleed, whose peaks"
+verdict = "not-a-result"
+key = ""
+reason = "'after 40 min' names a time region, not a result."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.dd779af549]
+file = "TAI_template.tex"
+literal = "5.0"
+context = "quiring at 3.0~min; the others start at 5.0~min. We do not know whether this differ"
+verdict = "not-a-result"
+key = ""
+reason = "The 5.0 min acquisition start time is an instrument setting that describes the data."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.df7690a20e]
+file = "TAI_template.tex"
+literal = "0.023"
+context = "tch pairs, the median absolute error is 0.023~min and the 95th percentile is 0.075~mi"
+verdict = "result"
+key = "recovery/synthetic-err/median"
+reason = "\"the median absolute error is 0.023~min\" is the median synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.df7f3ac64e]
+file = "TAI_template.tex"
+literal = "0"
+context = "hrm{eff}}=\\sum_j w_j^{(0)}$, where $w^{(0)}$ are the bootstrap multiplicities (al"
+verdict = "not-a-result"
+key = ""
+reason = "Superscript (0) labelling the bootstrap multiplicities w^{(0)}."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.e040b45433]
+file = "TAI_template.tex"
+literal = "200"
+context = "inned onto a fixed 0--45~min grid of $T=200$ windows of 0.225~min, keeping the scan"
+verdict = "not-a-result"
+key = ""
+reason = "T=200 windows is a binning setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.e0596b784b]
+file = "TAI_template.tex"
+literal = "2"
+context = "oil batches (apr2016 $n=10$, aug2015 $n=2$, jan2016 $n=26$, jul2016 $n=16$, sep20"
+verdict = "not-a-result"
+key = ""
+reason = "aug2015 $n=2$ is a sample count describing the data."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.e0e601d38d]
+file = "TAI_template.tex"
+literal = "10"
+context = "mbda N_{\\mathrm{eff}}/(KQ)$ and $\\gamma=10^3N_{\\mathrm{eff}}/Q$. The user-facing s"
+verdict = "not-a-result"
+key = ""
+reason = "Base of the chosen gauge weight gamma=10^3 N_eff/Q, a hyperparameter."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.e1ae0f62bc]
+file = "TAI_template.tex"
+literal = "-1"
+context = "he map between any two batches is $f_l^{-1}\\circ f_k$, and all maps between batche"
+verdict = "not-a-result"
+key = ""
+reason = "Exponent in the inverse-function notation $f_l^{-1}$."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.e1c43c5e3f]
+file = "TAI_template.tex"
+literal = "4,396"
+context = "airs (Table~\\ref{tab:ticr}), which have 4,396 and 2,475 anchors."
+verdict = "result"
+key = "pairs/sep2015-jul2016/anchors"
+reason = "Anchor count for a sep2015 drifted pair; 4,396 matches sep2015 × jul2016."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.e21adec6d4]
+file = "TAI_template.tex"
+literal = "0.111"
+context = "than the reference gauge (0.096 against 0.111~min) but a slightly lower TIC correlati"
+verdict = "result"
+key = "lambda-cv/sep2015-lam10/rt-blocked"
+reason = "This is the reference gauge's held-out error at λ=10 (0.111 min)."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.e2fa8dd758]
+file = "TAI_template.tex"
+literal = "6.9\\%"
+context = "% at 5--10~min, 7.6\\% at 25--30~min and 6.9\\% at 40--45~min, against 0.2--5.3\\% in th"
+verdict = "result"
+key = "rejection/40-45min"
+reason = "The text gives the rejection share in the 40–45 min window."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.e440b065cc]
+file = "TAI_template.tex"
+literal = "3.9\\%"
+context = "n window (numbers: anchors per window); 3.9\\% overall.}"
+verdict = "result"
+key = "rejection/overall"
+reason = "'3.9% overall' is the share of anchors rejected by reweighting (0.039)."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.e49be3f6da]
+file = "TAI_template.tex"
+literal = "10"
+context = "ce of gauge is not settled. At $\\lambda=10$, the mean gauge has a lower held-out e"
+verdict = "not-a-result"
+key = ""
+reason = "λ=10 is the selected hyperparameter setting, not a computed result."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.e5b1881121]
+file = "TAI_template.tex"
+literal = "10"
+context = "both gauges; dotted: selected $\\lambda=10$. (b) Mean TIC correlation against $\\la"
+verdict = "not-a-result"
+key = ""
+reason = "λ=10 is the selected hyperparameter setting."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.e7ceb9bfb0]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "mooth reaches 0.536 and the joint model 0.598. Dense PCHIP is best on the two sep2015"
+verdict = "result"
+key = "ticr-joint/aug2015-jul2016/mean"
+reason = "Joint model mean TIC r on aug2015 × jul2016, the Table II figure that pairs with the pairwise smooth value in the same sentence."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.e89faa074a]
+file = "TAI_template.tex"
+literal = "300"
+context = "-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The reference bat"
+verdict = "not-a-result"
+key = ""
+reason = "300 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.e8c5f73d11]
+file = "TAI_template.tex"
+literal = "103"
+context = "e{chromadcnn}. These 90 samples are the 103 samples of \\cite{chromadcnn} minus 13 i"
+verdict = "not-a-result"
+key = ""
+reason = "103 samples is a count quoted from the cited chromadcnn paper."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.e9e484a7fa]
+file = "TAI_template.tex"
+literal = "0.399"
+context = "the correlation of near-aligned pairs (0.399 against 0.731 unaligned on aug2015 $\\ti"
+verdict = "result"
+key = "ticr-dense-pchip/aug2015-sep2015/mean"
+reason = "The text gives Dense PCHIP's correlation on aug2015 × sep2015."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.ea063fb517]
+file = "TAI_template.tex"
+literal = "2"
+context = "apr2016 & 10 & G 6, S 4 & Sk 4, H 2, F 2, R 2 & 3.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'F 2' for apr2016 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.ea33bf81bd]
+file = "TAI_template.tex"
+literal = "0.060"
+context = "rwise smooth 0.052, and the joint model 0.060~min.}"
+verdict = "result"
+key = "heldout-joint/all/median"
+reason = "Median held-out anchor error for the joint model over all pairs."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.ec46f58c68]
+file = "TAI_template.tex"
+literal = "40"
+context = "e anchored in both batches (here, after 40~min), when batches share few compounds,"
+verdict = "not-a-result"
+key = ""
+reason = "'After 40 min' is a rough bound describing where anchors run out, not a reported statistic."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.ec73293710]
+file = "TAI_template.tex"
+literal = "16"
+context = "jul2016 & 16 & B6 8, B5 4, T 2, B4 2 & Sk 6, L 4, H"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count n for batch jul2016 in the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.ee452f2ce3]
+file = "TAI_template.tex"
+literal = "2"
+context = "_k\\rVert^2 + \\gamma\\lVert G\\theta\\rVert^2"
+verdict = "not-a-result"
+key = ""
+reason = "Squared-norm exponent on the gauge term."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.ee710b33e8]
+file = "TAI_template.tex"
+literal = "0.779"
+context = "-aligned pairs, the joint model reaches 0.779 against 0.755 unaligned. Dense PCHIP an"
+verdict = "result"
+key = "ticr-joint/mean-near-aligned/mean"
+reason = "'On near-aligned pairs, the joint model reaches 0.779' is the joint model's mean TIC r, not a lambda sweep value."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.eea4c0635b]
+file = "TAI_template.tex"
+literal = "5.3\\%"
+context = "n and 6.9\\% at 40--45~min, against 0.2--5.3\\% in the other 5-min windows (Fig.~\\ref{f"
+verdict = "result"
+key = "rejection/other-windows/max"
+reason = "The text gives 5.3% as the highest rejection share among the other 5-min windows."
+by = "claude"
+decided = "2026-10-19T20:55:12+13:00"
+
+[decisions.ef17fa59cb]
+file = "TAI_template.tex"
+literal = "0.539"
+context = "protocol. It is weak on drifted pairs (0.539)."
+verdict = "result"
+key = "bench-bframe-cow-tic/mean-drifted4/mean"
+reason = "This is COW-TIC's mean on the drifted pairs in the B-frame protocol."
+by = "claude"
+decided = "2026-10-19T20:54:44+13:00"
+
+[decisions.ef57fdd115]
+file = "TAI_template.tex"
+literal = "70"
+context = "t least $\\max(0.30, q_{70})$, where $q_{70}$ is the 70th percentile of the similar"
+verdict = "not-a-result"
+key = ""
+reason = "'70th percentile' defines the chosen threshold setting."
+by = "claude"
+decided = "2026-10-19T20:52:13+13:00"
+
+[decisions.efdb22393e]
+file = "TAI_template.tex"
+literal = "4"
+context = "~min. For every $\\lambda$ from 1 to $10^4$, the drifted-pair mean stays between 0"
+verdict = "not-a-result"
+key = ""
+reason = "The 4 is the exponent in $10^4$, the upper end of the λ range."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.efe370a87a]
+file = "TAI_template.tex"
+literal = "0.225"
+context = "ed 0--45~min grid of $T=200$ windows of 0.225~min, keeping the scan with the highest"
+verdict = "not-a-result"
+key = ""
+reason = "The 0.225 min window width is a binning setting."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.f0c3402017]
+file = "TAI_template.tex"
+literal = "2016"
+context = "ce compounds in two batches acquired in 2016 3.2 to 5.3~min earlier than in a 2015 b"
+verdict = "not-a-result"
+key = ""
+reason = "'acquired in 2016' is a year."
+by = "claude"
+decided = "2026-10-19T20:51:35+13:00"
+
+[decisions.f25524c6f8]
+file = "TAI_template.tex"
+literal = "2"
+context = "aug2015 & 2 & B4 2 & H 2 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Sample count 'H 2' for aug2015 in the data-description table."
+by = "claude"
+decided = "2026-10-19T20:53:12+13:00"
+
+[decisions.f2e4211484]
+file = "TAI_template.tex"
+literal = "0.066"
+context = "CHIP, 0.531 for pooled-anchor PCHIP and 0.066 unaligned (Table~\\ref{tab:ticr}, Fig.~\\"
+verdict = "result"
+key = "ticr-unaligned/mean-drifted/mean"
+reason = "The sentence gives the mean TIC correlation on drifted pairs as '0.066 unaligned'."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.f3195c1a65]
+file = "TAI_template.tex"
+literal = "0.116"
+context = "ered batch triplets: pairwise maps mean 0.116~min, maximum 0.277~min; joint model max"
+verdict = "result"
+key = "cycle/pairwise/mean"
+reason = "The caption's pairwise maps mean cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.f3afd70cd3]
+file = "TAI_template.tex"
+literal = "12"
+context = "sep2015 & 36 & T 12, S 8, G 8, B4 8 & L 14, Go 10, R 8, H 4"
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish T samples in sep2015, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.f475c3e29a]
+file = "TAI_template.tex"
+literal = "12"
+context = "jan2016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of fish B6 samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.f4e85dd7cc]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "o each pair alone: mean TIC correlation 0.598 against 0.572, with the largest gain on"
+verdict = "result"
+key = "ticr-joint/mean-drifted/mean"
+reason = "Mean TIC correlation of joint fitting over drifted batches, compared with the pairwise fitter."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.f4f60867e1]
+file = "TAI_template.tex"
+literal = "90\\%"
+context = "%), with the joint model's warp and its 90\\% bootstrap band, the same fitter on this"
+verdict = "not-a-result"
+key = ""
+reason = "\"90\\% bootstrap band\" is a chosen interval level."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.f5bdf6f80f]
+file = "TAI_template.tex"
+literal = "45"
+context = "ft. Every run is binned onto a fixed 0--45~min grid of $T=200$ windows of 0.225~mi"
+verdict = "not-a-result"
+key = ""
+reason = "45 is the upper bound of the fixed retention-time grid."
+by = "claude"
+decided = "2026-10-19T20:52:48+13:00"
+
+[decisions.f795f5faca]
+file = "TAI_template.tex"
+literal = "2\\times10^{-3}"
+context = "by 0.006 to 0.028 (Holm-corrected $p\\le2\\times10^{-3}$), and the gain holds when both are cro"
+verdict = "result"
+key = "wilcoxon-joint-vs-pairwise/all/holm-p-max"
+reason = "This is the 'Holm-corrected p' bound for the joint model against pairwise smooth."
+by = "claude"
+decided = "2026-10-19T20:54:04+13:00"
+
+[decisions.f8756f7d43]
+file = "TAI_template.tex"
+literal = "0.060"
+context = "t held-out anchors: its median error is 0.060~min, against 0.035~min for dense PCHIP"
+verdict = "result"
+key = "heldout-joint/all/median"
+reason = "The joint model's median held-out error, which the text cites from Fig. 3b."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.f8d4a03b77]
+file = "TAI_template.tex"
+literal = "1.645"
+context = "lf-width as $\\sqrt{h_{\\mathrm{band}}^2+(1.645\\,\\sigma_{kl})^2}$, where $h_{\\mathrm{ba"
+verdict = "not-a-result"
+key = ""
+reason = "1.645 is the standard normal quantile for a 90% interval, a fixed constant in the formula."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.f9d9e04dbe]
+file = "TAI_template.tex"
+literal = "5.2"
+context = "d by \\res{drift/drifted-batches/min} to 5.2~min relative to sep2015 and also start"
+verdict = "result"
+key = "drift/drifted-batches/max"
+reason = "author-approved correction: the fitted joint warps give at most 5.15 min (was typed 5.3)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
+
+[decisions.fa209c4f5a]
+file = "TAI_template.tex"
+literal = "60"
+context = "ct map by 0.116~min on average over the 60 ordered triplets, and by up to 0.277~mi"
+verdict = "not-a-result"
+key = ""
+reason = "60 ordered triplets is the number of permutations of the batches, so it describes the design."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.fa80cc6790]
+file = "TAI_template.tex"
+literal = "81\\%"
+context = "ap band alone 15\\%, predictive interval 81\\%. (b) Band width (200 refits) against th"
+verdict = "result"
+key = "coverage/predictive"
+reason = "Caption: 'predictive interval 81%' is the predictive held-out coverage."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.faa0f6206d]
+file = "TAI_template.tex"
+literal = "0.600"
+context = "ifted-pair mean stays between 0.595 and 0.600. This sweep was computed after selectio"
+verdict = "result"
+key = "lambda-sweep/lam-ge1/drifted-max"
+reason = "This is the upper bound of the drifted-pair mean over all λ from 1 to $10^4$ in the sweep."
+by = "claude"
+decided = "2026-10-19T20:55:00+13:00"
+
+[decisions.fcd9886718]
+file = "TAI_template.tex"
+literal = "30"
+context = "lute held-out error from $\\{0.1, 1, 10, 30, 100, 300, 1000, 3000, 10^4\\}$. The ref"
+verdict = "not-a-result"
+key = ""
+reason = "30 is a value in the lambda search grid, a chosen setting."
+by = "claude"
+decided = "2026-10-19T20:52:36+13:00"
+
+[decisions.fcefb5b378]
+file = "TAI_template.tex"
+literal = "3"
+context = "016 & 26 & B5 14, B6 12 & Go 11, L 6, F 3, H 3, Sk 3 & 5.0\\\\"
+verdict = "not-a-result"
+key = ""
+reason = "Count of F tissue samples in jan2016, from the data description table."
+by = "claude"
+decided = "2026-10-19T20:53:00+13:00"
+
+[decisions.fd114ac10f]
+file = "TAI_template.tex"
+literal = "0.003"
+context = "-cf/mean-near-aligned/mean}) are within 0.003 of these, so fitting the scored samples"
+verdict = "result"
+key = "ticr-gaps/cf/max"
+reason = "author-approved correction: unrounded joint vs cross-fitted gap is 0.0025 (was typed 0.002, from rounded values)"
+by = "claude"
+decided = "2026-10-19T21:11:51+13:00"
+
+[decisions.fdd1075f73]
+file = "TAI_template.tex"
+literal = "3.2"
+context = "il and July 2016 batches are shifted by 3.2 to 5.3~min relative to sep2015 and also"
+verdict = "result"
+key = "drift/drifted-batches/min"
+reason = "'The April and July 2016 batches are shifted by 3.2 to 5.3 min' is the lower bound of the fitted shift across both drifted batches."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.fecf99fb01]
+file = "TAI_template.tex"
+literal = "200"
+context = "edictive interval 81\\%. (b) Band width (200 refits) against the number of nearby di"
+verdict = "not-a-result"
+key = ""
+reason = "200 refits is a bootstrap setting the authors chose."
+by = "claude"
+decided = "2026-10-19T20:55:30+13:00"
+
+[decisions.fed2e5a34f]
+file = "TAI_template.tex"
+literal = "0.598"
+context = "model reaches a mean TIC correlation of 0.598, against 0.572 for pairwise smooth, 0.5"
+verdict = "result"
+key = "ticr-joint/mean-drifted/mean"
+reason = "\"On drifted pairs, the joint model reaches a mean TIC correlation of 0.598\" is the joint model's mean over drifted pairs."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.ff550f6a0b]
+file = "TAI_template.tex"
+literal = "0.277"
+context = "erage over batch triplets, and by up to 0.277~min. Aligning every batch to one refere"
+verdict = "result"
+key = "cycle/pairwise/max"
+reason = "'and by up to 0.277 min' is the maximum pairwise cycle inconsistency."
+by = "claude"
+decided = "2026-10-19T20:52:03+13:00"
+
+[decisions.ff6ef128bd]
+file = "TAI_template.tex"
+literal = "81\\%"
+context = "s.} The 90\\% predictive intervals cover 81\\% of held-out anchors, and the bands bare"
+verdict = "result"
+key = "coverage/predictive"
+reason = "'The 90% predictive intervals cover 81% of held-out anchors' is the predictive coverage."
+by = "claude"
+decided = "2026-10-19T20:57:34+13:00"
+
+[decisions.ffa454260b]
+file = "TAI_template.tex"
+literal = "0.052"
+context = "irs, dense PCHIP 0.035, pairwise smooth 0.052, and the joint model 0.060~min.}"
+verdict = "result"
+key = "heldout-pairwise/all/median"
+reason = "Median held-out anchor error for pairwise smooth over all pairs."
+by = "claude"
+decided = "2026-10-19T20:54:20+13:00"
+
+[decisions.ffc5038fa0]
+file = "TAI_template.tex"
+literal = "0.107"
+context = "min, 95th percentile 0.075~min, maximum 0.107~min.}"
+verdict = "result"
+key = "recovery/synthetic-err/max"
+reason = "The caption's \"maximum 0.107~min\" is the maximum synthetic recovery error."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"
+
+[decisions.ffd79633c7]
+file = "TAI_template.tex"
+literal = "0.25"
+context = "\\hat\\sigma=\\max(1.4826\\,\\mathrm{MAD}(r),0.25)$ bins, where MAD is the median absolut"
+verdict = "not-a-result"
+key = ""
+reason = "Chosen floor of 0.25 bins on the robust scale estimate."
+by = "claude"
+decided = "2026-10-19T20:52:26+13:00"
+
+[decisions.ffe8bd44db]
+file = "TAI_template.tex"
+literal = "2"
+context = "s on the pair's pooled anchors (version 2, seed 0, CPU)."
+verdict = "not-a-result"
+key = ""
+reason = "\"version 2\" is the WarpTransformer model version, a setting."
+by = "claude"
+decided = "2026-10-19T20:53:42+13:00"

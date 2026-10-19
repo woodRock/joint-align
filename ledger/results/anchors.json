@@ -1,0 +1,20 @@
+{
+  "name": "anchors",
+  "label": "Anchor counts",
+  "metrics": {
+    "all": 25011,
+    "star-design": 17595
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

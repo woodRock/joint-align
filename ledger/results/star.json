@@ -1,0 +1,48 @@
+{
+  "name": "star",
+  "label": "Star design (anchors against the reference only)",
+  "metrics": {
+    "jan2016-apr2016": {
+      "ticr-unaligned": 0.128,
+      "ticr-star": 0.581,
+      "ticr-joint": 0.582
+    },
+    "jan2016-jul2016": {
+      "ticr-unaligned": 0.126,
+      "ticr-star": 0.603,
+      "ticr-joint": 0.61
+    },
+    "apr2016-jul2016": {
+      "ticr-unaligned": 0.898,
+      "ticr-star": 0.899,
+      "ticr-joint": 0.902
+    },
+    "aug2015-jan2016": {
+      "ticr-unaligned": 0.578,
+      "ticr-star": 0.656,
+      "ticr-joint": 0.672
+    },
+    "aug2015-apr2016": {
+      "ticr-unaligned": 0.003,
+      "ticr-star": 0.59,
+      "ticr-joint": 0.587
+    },
+    "aug2015-jul2016": {
+      "ticr-unaligned": 0.045,
+      "ticr-star": 0.592,
+      "ticr-joint": 0.598
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

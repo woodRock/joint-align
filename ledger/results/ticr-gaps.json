@@ -1,0 +1,24 @@
+{
+  "name": "ticr-gaps",
+  "label": "Gaps between mean TIC r of methods",
+  "metrics": {
+    "cf": {
+      "max": 0.002533774292361235
+    },
+    "joint-minus-pairwise": {
+      "mean-drifted": 0.026489491037753332
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.npz",
+    "hash": "sha256:ea019cc363232ad780dbd92f60a1fa243463e3afcaa4e57d28d5b8fb6c2681a6",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

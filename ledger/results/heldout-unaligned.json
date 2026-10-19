@@ -1,0 +1,62 @@
+{
+  "name": "heldout-unaligned",
+  "label": "heldout unaligned",
+  "metrics": {
+    "apr2016-aug2015": {
+      "median": 4.312,
+      "within-bin": 0.0
+    },
+    "apr2016-jan2016": {
+      "median": 4.24,
+      "within-bin": 0.0
+    },
+    "apr2016-jul2016": {
+      "median": 0.062,
+      "within-bin": 0.86
+    },
+    "apr2016-sep2015": {
+      "median": 4.275,
+      "within-bin": 0.0
+    },
+    "aug2015-jan2016": {
+      "median": 0.169,
+      "within-bin": 0.72
+    },
+    "aug2015-jul2016": {
+      "median": 4.274,
+      "within-bin": 0.0
+    },
+    "aug2015-sep2015": {
+      "median": 0.103,
+      "within-bin": 0.86
+    },
+    "jan2016-jul2016": {
+      "median": 4.265,
+      "within-bin": 0.0
+    },
+    "jan2016-sep2015": {
+      "median": 0.076,
+      "within-bin": 0.91
+    },
+    "jul2016-sep2015": {
+      "median": 4.3,
+      "within-bin": 0.0
+    },
+    "all": {
+      "median": 1.108,
+      "within-bin": 0.45
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

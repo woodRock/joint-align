@@ -1,0 +1,47 @@
+{
+  "name": "wilcoxon-joint-vs-pooled-pchip",
+  "label": "wilcoxon joint vs pooled pchip",
+  "metrics": {
+    "sep2015-jul2016": {
+      "holm-p": 1.75e-10,
+      "delta": 0.0969
+    },
+    "sep2015-apr2016": {
+      "holm-p": 2.33e-10,
+      "delta": 0.0203
+    },
+    "jan2016-apr2016": {
+      "holm-p": 8.94e-08,
+      "delta": 0.0734
+    },
+    "jan2016-jul2016": {
+      "holm-p": 8.94e-08,
+      "delta": 0.1036
+    },
+    "sep2015-jan2016": {
+      "holm-p": 1.75e-10,
+      "delta": 0.1365
+    },
+    "apr2016-jul2016": {
+      "holm-p": 0.00195,
+      "delta": 0.0644
+    },
+    "all": {
+      "delta-min": 0.0203,
+      "delta-max": 0.1365,
+      "holm-p-max": 0.00195
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

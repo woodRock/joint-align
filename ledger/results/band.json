@@ -1,0 +1,85 @@
+{
+  "name": "band",
+  "label": "90 % bootstrap band width (min)",
+  "metrics": {
+    "apr2016-aug2015": {
+      "width": 0.054,
+      "width-supported": 0.054,
+      "width-unsupported": 0.053,
+      "spearman": -0.14
+    },
+    "apr2016-jan2016": {
+      "width": 0.052,
+      "width-supported": 0.041,
+      "width-unsupported": 0.061,
+      "spearman": -0.5
+    },
+    "apr2016-jul2016": {
+      "width": 0.054,
+      "width-supported": 0.046,
+      "width-unsupported": 0.058,
+      "spearman": -0.36
+    },
+    "apr2016-sep2015": {
+      "width": 0.047,
+      "width-supported": 0.041,
+      "width-unsupported": 0.053,
+      "spearman": -0.45
+    },
+    "aug2015-jan2016": {
+      "width": 0.054,
+      "width-supported": 0.046,
+      "width-unsupported": 0.062,
+      "spearman": -0.62
+    },
+    "aug2015-jul2016": {
+      "width": 0.053,
+      "width-supported": 0.049,
+      "width-unsupported": 0.066,
+      "spearman": -0.34
+    },
+    "aug2015-sep2015": {
+      "width": 0.044,
+      "width-supported": 0.041,
+      "width-unsupported": 0.045,
+      "spearman": -0.07
+    },
+    "jan2016-jul2016": {
+      "width": 0.051,
+      "width-supported": 0.041,
+      "width-unsupported": 0.077,
+      "spearman": -0.42
+    },
+    "jan2016-sep2015": {
+      "width": 0.046,
+      "width-supported": 0.04,
+      "width-unsupported": 0.063,
+      "spearman": -0.52
+    },
+    "jul2016-sep2015": {
+      "width": 0.051,
+      "width-supported": 0.043,
+      "width-unsupported": 0.069,
+      "spearman": -0.4
+    },
+    "all": {
+      "width-min": 0.044,
+      "width-max": 0.054
+    },
+    "pooled": {
+      "spearman": -0.4
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.txt",
+    "hash": "sha256:8be38423726037ea8469bf22f893d897852a0fae8356ad25bdf59fb4e7d2517a",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}

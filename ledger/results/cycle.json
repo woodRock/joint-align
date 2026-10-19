@@ -1,0 +1,36 @@
+{
+  "name": "cycle",
+  "label": "Cycle inconsistency over triplets (min)",
+  "metrics": {
+    "joint": {
+      "max": 0.002310935089002371,
+      "mean": 0.00022260128903476932
+    },
+    "pairwise": {
+      "max": 0.27704127840297815,
+      "mean": 0.11555075726886396
+    },
+    "triplets": 60
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "figs/paper/numbers.json",
+    "hash": "sha256:8c143f34a063fb962dd539b9098af57974020ff1450ddb2d69299cbd7fc19063",
+    "provenance": {
+      "from": [
+        "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+        "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+      ],
+      "ran": [
+        "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+        "joint-align 2.0.2 @ e010b7c (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+      ],
+      "script": "scripts/04_paper_figures.py"
+    }
+  }
+}
