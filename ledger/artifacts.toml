@@ -22,6 +22,61 @@ group_align = "@{}l"
 [format.default]
 decimals = 3
 
+# Figures: written by script 04 (figs/paper/, gitignored there); compared by content, not bytes.
+[artifacts.fig1_problem_method]
+kind = "figure"
+output = "generated/fig1_problem_method.pdf"
+source = "figs/paper/fig1_problem_method.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.fig2_recovery]
+kind = "figure"
+output = "generated/fig2_recovery.pdf"
+source = "figs/paper/fig2_recovery.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.fig3_comparison]
+kind = "figure"
+output = "generated/fig3_comparison.pdf"
+source = "figs/paper/fig3_comparison.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.fig4_consistency]
+kind = "figure"
+output = "generated/fig4_consistency.pdf"
+source = "figs/paper/fig4_consistency.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.fig5_borrowing]
+kind = "figure"
+output = "generated/fig5_borrowing.pdf"
+source = "figs/paper/fig5_borrowing.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.fig6_benchmark]
+kind = "figure"
+output = "generated/fig6_benchmark.pdf"
+source = "figs/paper/fig6_benchmark.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.figS1_lambda]
+kind = "figure"
+output = "generated/figS1_lambda.pdf"
+source = "figs/paper/figS1_lambda.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.figS2_uncertainty]
+kind = "figure"
+output = "generated/figS2_uncertainty.pdf"
+source = "figs/paper/figS2_uncertainty.pdf"
+made_by = "scripts/04_paper_figures.py"
+
+[artifacts.figS3_rejection]
+kind = "figure"
+output = "generated/figS3_rejection.pdf"
+source = "figs/paper/figS3_rejection.pdf"
+made_by = "scripts/04_paper_figures.py"
+
 # How the paper prints each kind of number (checked by `taura check`: adopt-mismatch).
 [format."anchors/*"]
 thousands = true
