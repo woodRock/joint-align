@@ -1,0 +1,24 @@
+# What each paper artifact is built from. Outputs land in ~/overleaf/joint-align/generated/.
+# Results come from scripts/export_ledger.py (script 01's npz). Keys: \res{ticr-joint/sep2015-jul2016/mean}.
+
+[artifacts.results]
+kind = "macros"
+output = "generated/results.tex"
+results = ["pairs", "ticr-dense-pchip", "ticr-joint", "ticr-joint-cf", "ticr-pairwise",
+           "ticr-pooled-pchip", "ticr-unaligned"]
+
+# Table II (tab:ticr). Caption, label, \tablefont, \tabcolsep and the footnote stay in TAI_template.tex.
+[artifacts.table_ticr]
+kind = "table"
+output = "generated/table_ticr.tex"
+script = "artifacts/table_ticr.py"
+results = ["pairs", "ticr-dense-pchip", "ticr-joint", "ticr-joint-cf", "ticr-pairwise",
+           "ticr-pooled-pchip", "ticr-unaligned"]
+rules = "hline"
+colspec = "@{}lrrrrrrr@{}"
+bold = "max"
+bold_by = "row"                    # best in-sample method per row (Anchors and Joint-CF excluded)
+group_align = "@{}l"
+
+[format.default]
+decimals = 3

@@ -1,0 +1,66 @@
+{
+  "name": "ticr-joint-cf",
+  "label": "Mean TIC r, Joint CF",
+  "metrics": {
+    "sep2015-jul2016": {
+      "mean": 0.6100865172810788,
+      "n": 576
+    },
+    "sep2015-apr2016": {
+      "mean": 0.5971101358353362,
+      "n": 360
+    },
+    "jan2016-apr2016": {
+      "mean": 0.5784101116182292,
+      "n": 260
+    },
+    "jan2016-jul2016": {
+      "mean": 0.6064335641978015,
+      "n": 416
+    },
+    "sep2015-jan2016": {
+      "mean": 0.8120595924462222,
+      "n": 936
+    },
+    "apr2016-jul2016": {
+      "mean": 0.9024937912691599,
+      "n": 160
+    },
+    "aug2015-sep2015": {
+      "mean": 0.7277180795722675,
+      "n": 72
+    },
+    "aug2015-jan2016": {
+      "mean": 0.6696878208725947,
+      "n": 52
+    },
+    "aug2015-apr2016": {
+      "mean": 0.5859982021399123,
+      "n": 20
+    },
+    "aug2015-jul2016": {
+      "mean": 0.597188058006541,
+      "n": 32
+    },
+    "mean-drifted": {
+      "mean": 0.5958710981798164,
+      "n": 6
+    },
+    "mean-near-aligned": {
+      "mean": 0.7779898210400611,
+      "n": 4
+    }
+  },
+  "runs": [],
+  "produced_by": "scripts/export_ledger.py",
+  "source": {
+    "path": "results/multibatch_align.npz",
+    "hash": "sha256:ea019cc363232ad780dbd92f60a1fa243463e3afcaa4e57d28d5b8fb6c2681a6",
+    "provenance": [
+      "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
+      "joint-align 2.0.2 @ b730f08 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
+    ]
+  }
+}
