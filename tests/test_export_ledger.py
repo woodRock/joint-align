@@ -95,8 +95,10 @@ def test_report03(ex):
 
 
 def test_report_results(ex, tmp_path):
-    out = ex.report_results()
-    assert out['ticr-gaps']['metrics']['joint-minus-pairwise']['mean-drifted'] == pytest.approx(0.0265, abs=1e-4)
+    # results/*.npz are not in git (CI has only the reports): a synthetic npz for the TIC r part
+    npz = _npz(tmp_path / 'm.npz', ex, unaligned=[0.05, 0.8])
+    out = ex.report_results(npz)
+    assert out['ticr-gaps']['metrics']['joint-minus-pairwise']['mean-drifted'] == pytest.approx(0.2)
     assert out['recovery']['metrics']['synthetic'] == {'anchors': 3811, 'lambda': 100}
     assert out['cycle']['source']['path'] == 'figs/paper/numbers.json'
     assert out['wilcoxon-joint-vs-pairwise']['source']['path'] == 'results/multibatch_align.txt'
@@ -108,7 +110,7 @@ def test_report_results(ex, tmp_path):
     assert out['cycle']['source']['provenance']['script'] == 'scripts/04_paper_figures.py'
     assert out['ticr-gaps']['source']['provenance'] == out['pairs']['source']['provenance']
     assert all(r['source'].get('provenance') for r in out.values())
-    names = {p.stem for p in ex.main(out=tmp_path / 'out')}
+    names = {p.stem for p in ex.main(npz, out=tmp_path / 'out')}
     assert names == set(out) and len(names) > 50
     with pytest.raises(ValueError, match='not a batch pair'):
         ex._pair('sep2015-jul2016')
