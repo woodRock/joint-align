@@ -1,174 +1,174 @@
 01_multibatch_align.py — Joint K-batch alignment on the fish oil data, with uncertainty.
 
 alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench
-joint-align 2.0.2 @ 22a247e (src clean) from ~/Desktop/joint-align
+joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align
 warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align
 environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0
 Data: ~/Desktop/warp-align/data/fish_oil_103
 
 Batches: apr2016 (n=10), aug2015 (n=2), jan2016 (n=39), jul2016 (n=16), sep2015 (n=36)
-Anchors: 25011 from every cross-batch sample pair. Gauge reference (most anchors): sep2015
-  apr2016×aug2015=138  apr2016×jan2016=1891  apr2016×jul2016=1463  apr2016×sep2015=2475  aug2015×jan2016=322  aug2015×jul2016=228  aug2015×sep2015=497  jan2016×jul2016=3374  jan2016×sep2015=10227  jul2016×sep2015=4396
+Anchors: 32325 from every cross-batch sample pair. Gauge reference (most anchors): jan2016
+  apr2016×aug2015=138  apr2016×jan2016=2718  apr2016×jul2016=1463  apr2016×sep2015=2475  aug2015×jan2016=477  aug2015×jul2016=228  aug2015×sep2015=497  jan2016×jul2016=4848  jan2016×sep2015=15085  jul2016×sep2015=4396
 
 ================================================================================================
 1. Hyper-parameters by 5-fold held-out anchor error (no TIC r). RT-blocked: RT windows of 12 bins held out; samples: folds over samples within each batch.
         λ    gauge  RT-blocked median |err| min  ≤1 bin  samples median |err| min  ≤1 bin
-      0.1  sep2015                       0.1640   0.586                    0.0438   0.915
-      1.0  sep2015                       0.1227   0.718                    0.0487   0.910
-     10.0  sep2015                       0.1106   0.775                    0.0597   0.908
-     30.0  sep2015                       0.1112   0.815                    0.0648   0.904
-    100.0  sep2015                       0.1160   0.835                    0.0711   0.904
-    300.0  sep2015                       0.1175   0.831                    0.0778   0.901
-   1000.0  sep2015                       0.1168   0.819                    0.0819   0.890
-   3000.0  sep2015                       0.1144   0.807                    0.0811   0.879
-   10000.0  sep2015                       0.1117   0.803                    0.0802   0.875
-      0.1     mean                       0.1817   0.573                    0.0426   0.911
-      1.0     mean                       0.1288   0.708                    0.0467   0.913
-     10.0     mean                       0.0957   0.784                    0.0540   0.910
-     30.0     mean                       0.0964   0.829                    0.0597   0.908
-    100.0     mean                       0.1070   0.839                    0.0663   0.905
-    300.0     mean                       0.1152   0.835                    0.0736   0.902
-   1000.0     mean                       0.1173   0.829                    0.0809   0.897
-   3000.0     mean                       0.1171   0.819                    0.0835   0.888
-   10000.0     mean                       0.1145   0.808                    0.0824   0.879
-   selected λ = 10.0 with gauge = sep2015
+      0.1  jan2016                       0.1434   0.650                    0.0459   0.915
+      1.0  jan2016                       0.1193   0.723                    0.0497   0.914
+     10.0  jan2016                       0.0925   0.822                    0.0547   0.908
+     30.0  jan2016                       0.0978   0.827                    0.0601   0.904
+    100.0  jan2016                       0.1072   0.831                    0.0667   0.900
+    300.0  jan2016                       0.1097   0.843                    0.0742   0.899
+   1000.0  jan2016                       0.1113   0.837                    0.0811   0.895
+   3000.0  jan2016                       0.1124   0.827                    0.0840   0.888
+   10000.0  jan2016                       0.1103   0.816                    0.0830   0.880
+      0.1     mean                       0.1565   0.606                    0.0454   0.911
+      1.0     mean                       0.1234   0.718                    0.0484   0.913
+     10.0     mean                       0.1042   0.767                    0.0559   0.913
+     30.0     mean                       0.0994   0.818                    0.0612   0.908
+    100.0     mean                       0.1095   0.829                    0.0679   0.902
+    300.0     mean                       0.1142   0.837                    0.0750   0.899
+   1000.0     mean                       0.1148   0.829                    0.0815   0.894
+   3000.0     mean                       0.1146   0.820                    0.0840   0.888
+   10000.0     mean                       0.1127   0.811                    0.0833   0.880
+   selected λ = 10.0 with gauge = jan2016
 
 ================================================================================================
 2. Mean between-batch TIC r (A warped into B frame; mean over all A_i × B_j)
    In-sample: warps fitted on all anchors. Cross-fit: A_i warped by the fold model that never saw A_i.
    A × B                   n    Unaligned Pooled PCHIP  Dense PCHIP Pairwise smo Joint (mean         Joint Pairwise smo     Joint CF
-   sep2015×jul2016       576        0.054        0.518        0.676        0.608        0.610        0.615        0.607        0.613
-   sep2015×apr2016       360        0.041        0.582        0.647        0.591        0.587        0.599        0.590        0.597
-   jan2016×apr2016       390        0.113        0.484        0.463        0.550        0.570        0.574        0.549        0.572
-   jan2016×jul2016       624        0.113        0.491        0.472        0.566        0.596        0.596        0.570        0.594
-   sep2015×jan2016      1404        0.829        0.770        0.808        0.818        0.804        0.822        0.817        0.822
-   apr2016×jul2016       160        0.898        0.839        0.688        0.895        0.901        0.902        0.893        0.902
-   aug2015×sep2015        72        0.731        0.656        0.399        0.708        0.711        0.729        0.697        0.728
-   aug2015×jan2016        78        0.595        0.610        0.388        0.633        0.655        0.662        0.628        0.659
-   aug2015×apr2016        20        0.003        0.490        0.571        0.554        0.592        0.587        0.552        0.585
-   aug2015×jul2016        32        0.045        0.575        0.498        0.536        0.599        0.598        0.535        0.596
-   mean, drifted pairs             0.061        0.523        0.555        0.567        0.592        0.595        0.567        0.593
-   mean, near-aligned pairs        0.763        0.719        0.571        0.764        0.768        0.779        0.759        0.778
+   sep2015×jul2016       576        0.054        0.518        0.676        0.608        0.614        0.606        0.607        0.605
+   sep2015×apr2016       360        0.041        0.582        0.647        0.591        0.586        0.581        0.590        0.581
+   jan2016×apr2016       390        0.113        0.484        0.473        0.551        0.568        0.572        0.550        0.571
+   jan2016×jul2016       624        0.113        0.491        0.521        0.561        0.596        0.600        0.566        0.600
+   sep2015×jan2016      1404        0.829        0.770        0.791        0.805        0.806        0.808        0.809        0.808
+   apr2016×jul2016       160        0.898        0.839        0.688        0.895        0.899        0.900        0.893        0.900
+   aug2015×sep2015        72        0.731        0.656        0.399        0.708        0.703        0.709        0.697        0.708
+   aug2015×jan2016        78        0.595        0.610        0.388        0.646        0.650        0.657        0.640        0.659
+   aug2015×apr2016        20        0.003        0.490        0.571        0.554        0.593        0.589        0.552        0.586
+   aug2015×jul2016        32        0.045        0.575        0.498        0.536        0.599        0.597        0.535        0.596
+   mean, drifted pairs             0.061        0.523        0.564        0.567        0.593        0.591        0.567        0.590
+   mean, near-aligned pairs        0.763        0.719        0.567        0.764        0.764        0.768        0.760        0.769
    Drifted = unaligned TIC r < 0.5 (the cow-dcnn exclusion rule).
 
    Post-hoc sensitivity of the joint model to λ (NOT used for selection), mean TIC r:
           λ  drifted  near-aligned
-        0.1    0.615         0.763
-          1    0.588         0.767
-         10    0.595         0.779   ← selected
-         30    0.592         0.780
-        100    0.594         0.784
-        300    0.596         0.788
-       1000    0.597         0.790
-       3000    0.596         0.789
-      10000    0.594         0.787
+        0.1    0.616         0.762
+          1    0.579         0.763
+         10    0.591         0.768   ← selected
+         30    0.595         0.774
+        100    0.596         0.777
+        300    0.597         0.781
+       1000    0.596         0.784
+       3000    0.595         0.784
+      10000    0.594         0.784
 
    Paired two-sided Wilcoxon per A sample (r averaged over B_j), Holm over pairs with n_A ≥ 6:
    Joint vs Pooled PCHIP (cow-dcnn):
-     sep2015×jul2016    Holm p=1.16e-10  median Δr +0.0969
-     sep2015×apr2016    Holm p=1.16e-10  median Δr +0.0203
-     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0924
-     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.1046
-     sep2015×jan2016    Holm p=1.16e-10  median Δr +0.0527
-     apr2016×jul2016    Holm p=1.95e-03  median Δr +0.0644
+     sep2015×jul2016    Holm p=1.16e-10  median Δr +0.0870
+     sep2015×apr2016    Holm p=7.04e-01  median Δr +0.0002
+     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0950
+     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.1032
+     sep2015×jan2016    Holm p=1.16e-10  median Δr +0.0395
+     apr2016×jul2016    Holm p=3.91e-03  median Δr +0.0617
    Joint vs Pairwise smooth:
-     sep2015×jul2016    Holm p=1.75e-10  median Δr +0.0065
-     sep2015×apr2016    Holm p=1.16e-10  median Δr +0.0087
-     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0257
-     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.0319
-     sep2015×jan2016    Holm p=4.07e-10  median Δr +0.0046
-     apr2016×jul2016    Holm p=1.95e-03  median Δr +0.0070
+     sep2015×jul2016    Holm p=6.23e-04  median Δr -0.0024
+     sep2015×apr2016    Holm p=1.16e-10  median Δr -0.0104
+     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0205
+     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.0401
+     sep2015×jan2016    Holm p=7.68e-09  median Δr +0.0025
+     apr2016×jul2016    Holm p=1.95e-03  median Δr +0.0042
    Joint CF vs Pairwise smooth CF:
-     sep2015×jul2016    Holm p=2.19e-05  median Δr +0.0057
-     sep2015×apr2016    Holm p=1.16e-09  median Δr +0.0065
-     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0224
-     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.0227
-     sep2015×jan2016    Holm p=4.80e-09  median Δr +0.0043
-     apr2016×jul2016    Holm p=1.95e-03  median Δr +0.0089
+     sep2015×jul2016    Holm p=1.90e-02  median Δr -0.0015
+     sep2015×apr2016    Holm p=3.49e-10  median Δr -0.0104
+     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.0212
+     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.0334
+     sep2015×jan2016    Holm p=1.90e-02  median Δr -0.0010
+     apr2016×jul2016    Holm p=5.86e-03  median Δr +0.0063
    Joint vs Unaligned:
-     sep2015×jul2016    Holm p=1.16e-10  median Δr +0.5533
-     sep2015×apr2016    Holm p=1.16e-10  median Δr +0.5495
-     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.4655
-     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.4820
-     sep2015×jan2016    Holm p=1.92e-09  median Δr -0.0076
-     apr2016×jul2016    Holm p=1.95e-03  median Δr +0.0036
+     sep2015×jul2016    Holm p=1.16e-10  median Δr +0.5461
+     sep2015×apr2016    Holm p=1.16e-10  median Δr +0.5341
+     jan2016×apr2016    Holm p=2.18e-11  median Δr +0.4618
+     jan2016×jul2016    Holm p=2.18e-11  median Δr +0.4842
+     sep2015×jan2016    Holm p=1.16e-10  median Δr -0.0212
+     apr2016×jul2016    Holm p=1.31e-01  median Δr +0.0011
 
 ================================================================================================
 3. Cross-fitted held-out anchor error, median |error| in minutes (fraction ≤ 1 bin)
    pair                    n        Unaligned      Dense PCHIP  Pairwise smooth            Joint
-   apr2016×aug2015       247     4.312 (0.00)     0.013 (0.85)     0.046 (0.89)     0.087 (0.89)
-   apr2016×jan2016      3418     4.239 (0.00)     0.026 (0.87)     0.041 (0.93)     0.050 (0.91)
-   apr2016×jul2016      2623     0.062 (0.87)     0.035 (0.88)     0.055 (0.86)     0.058 (0.85)
-   apr2016×sep2015      4465     4.275 (0.00)     0.029 (0.88)     0.050 (0.95)     0.056 (0.95)
-   aug2015×jan2016       576     0.168 (0.72)     0.050 (0.94)     0.054 (0.95)     0.075 (0.91)
-   aug2015×jul2016       406     4.274 (0.00)     0.090 (0.78)     0.082 (0.74)     0.103 (0.68)
-   aug2015×sep2015       894     0.103 (0.86)     0.043 (0.87)     0.047 (0.88)     0.046 (0.88)
-   jan2016×jul2016      6059     4.263 (0.00)     0.047 (0.91)     0.064 (0.84)     0.066 (0.82)
-   jan2016×sep2015     18379     0.076 (0.91)     0.037 (0.93)     0.055 (0.92)     0.062 (0.93)
-   jul2016×sep2015      7898     4.300 (0.00)     0.033 (0.95)     0.045 (0.94)     0.054 (0.93)
-   all                 44965     1.321 (0.45)     0.036 (0.92)     0.052 (0.91)     0.060 (0.91)
+   apr2016×aug2015       247     4.312 (0.00)     0.013 (0.85)     0.046 (0.89)     0.081 (0.89)
+   apr2016×jan2016      4901     4.242 (0.00)     0.028 (0.89)     0.047 (0.93)     0.056 (0.91)
+   apr2016×jul2016      2623     0.062 (0.87)     0.035 (0.88)     0.055 (0.86)     0.056 (0.86)
+   apr2016×sep2015      4465     4.275 (0.00)     0.029 (0.88)     0.050 (0.95)     0.049 (0.94)
+   aug2015×jan2016       853     0.162 (0.77)     0.046 (0.95)     0.052 (0.95)     0.070 (0.90)
+   aug2015×jul2016       406     4.274 (0.00)     0.090 (0.78)     0.082 (0.74)     0.110 (0.68)
+   aug2015×sep2015       894     0.103 (0.86)     0.043 (0.87)     0.047 (0.88)     0.048 (0.87)
+   jan2016×jul2016      8711     4.281 (0.00)     0.051 (0.91)     0.063 (0.84)     0.066 (0.81)
+   jan2016×sep2015     27178     0.074 (0.92)     0.041 (0.92)     0.055 (0.92)     0.055 (0.94)
+   jul2016×sep2015      7898     4.300 (0.00)     0.033 (0.95)     0.045 (0.94)     0.043 (0.93)
+   all                 58176     0.240 (0.49)     0.039 (0.91)     0.053 (0.91)     0.055 (0.91)
    Sample folds; λ was selected on separate RT-blocked folds of the same data.
 
 ================================================================================================
 4. Missing correspondences: all anchors of the evaluated pair are removed
    Joint LOPO = joint fit without that pair; Hub = pairwise smooth warps composed through the hub h maximising min(n_ah, n_hb).
    A × B                   hub  TIC unal     Hub    LOPO   Joint   |err| Hub    LOPO   Joint (min, vs the pair's own anchors)
-   sep2015×jul2016     jan2016     0.054   0.589   0.608   0.615       0.064   0.062   0.052
-   sep2015×apr2016     jan2016     0.041   0.551   0.595   0.599       0.058   0.053   0.052
-   jan2016×apr2016     sep2015     0.113   0.582   0.573   0.574       0.061   0.055   0.046
-   jan2016×jul2016     sep2015     0.113   0.609   0.592   0.596       0.068   0.076   0.066
-   sep2015×jan2016     jul2016     0.829   0.721   0.759   0.822       0.087   0.088   0.061
-   apr2016×jul2016     sep2015     0.898   0.767   0.899   0.902       0.068   0.072   0.057
-   aug2015×sep2015     jan2016     0.731   0.645   0.732   0.729       0.108   0.049   0.044
-   aug2015×jan2016     sep2015     0.595   0.621   0.662   0.662       0.091   0.087   0.073
-   aug2015×apr2016     sep2015     0.003   0.598   0.590   0.587       0.105   0.092   0.081
-   aug2015×jul2016     sep2015     0.045   0.596   0.598   0.598       0.130   0.112   0.103
+   sep2015×jul2016     jan2016     0.054   0.572   0.597   0.606       0.064   0.058   0.040
+   sep2015×apr2016     jan2016     0.041   0.552   0.567   0.581       0.063   0.051   0.045
+   jan2016×apr2016     sep2015     0.113   0.581   0.582   0.572       0.069   0.066   0.053
+   jan2016×jul2016     sep2015     0.113   0.611   0.604   0.600       0.074   0.081   0.065
+   sep2015×jan2016     jul2016     0.829   0.712   0.776   0.808       0.089   0.070   0.053
+   apr2016×jul2016     jan2016     0.898   0.753   0.891   0.900       0.082   0.075   0.055
+   aug2015×sep2015     jan2016     0.731   0.633   0.696   0.709       0.106   0.075   0.048
+   aug2015×jan2016     sep2015     0.595   0.618   0.663   0.657       0.087   0.088   0.065
+   aug2015×apr2016     sep2015     0.003   0.598   0.592   0.589       0.105   0.086   0.076
+   aug2015×jul2016     sep2015     0.045   0.596   0.597   0.597       0.130   0.120   0.106
 
-   Star design: only anchors against sep2015 (17595 of 25011 anchors); evaluated on pairs that exclude it
+   Star design: only anchors against jan2016 (23128 of 32325 anchors); evaluated on pairs that exclude it
    A × B                 Unal    Star   Joint
-   jan2016×apr2016      0.113   0.577   0.574
-   jan2016×jul2016      0.113   0.594   0.596
-   apr2016×jul2016      0.898   0.899   0.902
-   aug2015×jan2016      0.595   0.651   0.662
-   aug2015×apr2016      0.003   0.590   0.587
-   aug2015×jul2016      0.045   0.592   0.598
+   sep2015×jul2016      0.054   0.603   0.606
+   sep2015×apr2016      0.041   0.547   0.581
+   apr2016×jul2016      0.898   0.871   0.900
+   aug2015×sep2015      0.731   0.634   0.709
+   aug2015×apr2016      0.003   0.598   0.589
+   aug2015×jul2016      0.045   0.589   0.597
 
 ================================================================================================
 5. Cycle inconsistency |g_bc(g_ab(t)) − g_ac(t)| over ordered triplets, t ∈ [5, 40] min
-   Pairwise smooth  mean 0.116 min   max 0.277 min   (60 triplets)
-   Joint            mean 0.000 min   max 0.002 min   (60 triplets)
+   Pairwise smooth  mean 0.127 min   max 0.305 min   (60 triplets)
+   Joint            mean 0.000 min   max 0.004 min   (60 triplets)
    Worst pairwise triplet: jul2016 → aug2015 → jan2016
 
 ================================================================================================
 6. Uncertainty: 200 bootstrap refits, samples resampled within each batch
    90 % band width (min) vs direct anchor support (anchors of the pair within ±2.5 bins), t ∈ [2, 43] min where the warp is not clamped at a run end
    pair               median width  supported  unsupported  Spearman(width, support)
-   apr2016×aug2015           0.056      0.056        0.055                     -0.16
-   apr2016×jan2016           0.053      0.042        0.064                     -0.51
-   apr2016×jul2016           0.053      0.045        0.059                     -0.32
-   apr2016×sep2015           0.047      0.041        0.052                     -0.42
-   aug2015×jan2016           0.057      0.048        0.062                     -0.56
-   aug2015×jul2016           0.056      0.052        0.064                     -0.34
-   aug2015×sep2015           0.045      0.044        0.048                     -0.12
-   jan2016×jul2016           0.052      0.042        0.079                     -0.44
-   jan2016×sep2015           0.050      0.044        0.061                     -0.52
-   jul2016×sep2015           0.051      0.040        0.061                     -0.40
-   all pairs pooled: Spearman ρ(width, support) = -0.39
+   apr2016×aug2015           0.056      0.053        0.059                     -0.23
+   apr2016×jan2016           0.043      0.032        0.049                     -0.38
+   apr2016×jul2016           0.048      0.044        0.049                     -0.25
+   apr2016×sep2015           0.049      0.037        0.057                     -0.46
+   aug2015×jan2016           0.046      0.043        0.047                     -0.09
+   aug2015×jul2016           0.059      0.053        0.063                     -0.38
+   aug2015×sep2015           0.046      0.043        0.048                     -0.14
+   jan2016×jul2016           0.044      0.037        0.056                     -0.25
+   jan2016×sep2015           0.041      0.032        0.052                     -0.47
+   jul2016×sep2015           0.051      0.039        0.066                     -0.42
+   all pairs pooled: Spearman ρ(width, support) = -0.34
 
    Band width with and without the pair's own anchors (50 bootstrap refits each, median over t ∈ [2, 43] min):
-   sep2015×jul2016    with 0.049 min   without 0.053 min   ×1.1
-   sep2015×apr2016    with 0.044 min   without 0.065 min   ×1.5
-   jan2016×apr2016    with 0.049 min   without 0.057 min   ×1.2
-   jan2016×jul2016    with 0.052 min   without 0.052 min   ×1.0
-   sep2015×jan2016    with 0.050 min   without 0.061 min   ×1.2
-   apr2016×jul2016    with 0.053 min   without 0.062 min   ×1.2
-   aug2015×sep2015    with 0.045 min   without 0.055 min   ×1.2
-   aug2015×jan2016    with 0.057 min   without 0.052 min   ×0.9
-   aug2015×apr2016    with 0.050 min   without 0.057 min   ×1.1
-   aug2015×jul2016    with 0.056 min   without 0.057 min   ×1.0
+   sep2015×jul2016    with 0.049 min   without 0.059 min   ×1.2
+   sep2015×apr2016    with 0.044 min   without 0.062 min   ×1.4
+   jan2016×apr2016    with 0.041 min   without 0.039 min   ×1.0
+   jan2016×jul2016    with 0.044 min   without 0.037 min   ×0.8
+   sep2015×jan2016    with 0.041 min   without 0.058 min   ×1.4
+   apr2016×jul2016    with 0.048 min   without 0.061 min   ×1.3
+   aug2015×sep2015    with 0.046 min   without 0.060 min   ×1.3
+   aug2015×jan2016    with 0.046 min   without 0.046 min   ×1.0
+   aug2015×apr2016    with 0.052 min   without 0.057 min   ×1.1
+   aug2015×jul2016    with 0.059 min   without 0.048 min   ×0.8
 
    Held-out anchor coverage of 90 % intervals (50 bootstrap refits per fold):
    warp-only band (epistemic)          : 0.153
-   predictive (band ⊕ anchor scatter)  : 0.810   excluding gross mismatches (|err| > 10 bins, 0.3% of anchors): 0.812
+   predictive (band ⊕ anchor scatter)  : 0.775   excluding gross mismatches (|err| > 10 bins, 0.3% of anchors): 0.778
 
-Wall time 193 s
+Wall time 258 s
