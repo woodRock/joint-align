@@ -2,8 +2,8 @@
 # earlier results suspect. The paper is ~/overleaf/joint-align (found by name).
 
 [data.fish-oil]
-path = "data/fish_oil"     # 90 GC-MS runs, five batches (a symlink to the private data)
-label = "fish-oil-90"
+path = "data/fish_oil"     # 103 GC-MS runs, five batches (a symlink to the private data); 13 of them
+label = "fish-oil-103"     # carry BLANK run names but are fish samples (warp-align step 03 --keep-blank-headers)
 
 [runs]
 watch = ["src/jointalign"]

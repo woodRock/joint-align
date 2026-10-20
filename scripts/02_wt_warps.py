@@ -25,7 +25,7 @@ from jointalign.provenance import warpalign_revision
 
 ROOT = Path(__file__).resolve().parent.parent
 
-DATA = Paths().fish_oil
+DATA = ROOT / 'data' / 'fish_oil'   # the same data as scripts 01 and 03 (a symlink; README)
 PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),
          ('batch_jan2016', 'batch_apr2016'), ('batch_jan2016', 'batch_jul2016'),
          ('batch_sep2015', 'batch_jan2016'), ('batch_apr2016', 'batch_jul2016'),
@@ -59,5 +59,7 @@ if __name__ == '__main__':
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--device', default='cpu')
     ap.add_argument('--ckpt', type=Path, default=None, help='default: warpalign Paths().default_ckpt')
+    ap.add_argument('--data', type=Path, default=DATA, help='the fish-oil batches (default: data/fish_oil)')
     a = ap.parse_args()
+    DATA = a.data
     main(a.seed, a.device, a.ckpt)
