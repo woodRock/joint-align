@@ -74,7 +74,8 @@ def test_report01(ex):
     assert r['heldout-joint']['all'] == {'median': 0.055, 'within-bin': 0.91}
     assert r['heldout-dense-pchip']['all']['median'] == 0.039
     assert r['lopo']['sep2015-jan2016']['ticr-lopo'] == 0.776 and len(r['lopo']) == 10
-    assert r['star']['aug2015-sep2015'] == {'ticr-unaligned': 0.731, 'ticr-star': 0.634, 'ticr-joint': 0.709}  # the hub is the reference, jan2016
+    # the star's hub is the reference batch, jan2016
+    assert r['star']['aug2015-sep2015'] == {'ticr-unaligned': 0.731, 'ticr-star': 0.634, 'ticr-joint': 0.709}
     assert r['band']['all'] == {'width-min': 0.041, 'width-max': 0.059}
     assert r['band']['pooled'] == {'spearman': -0.34}
     assert r['coverage'] == {'bootstrap': 0.153, 'predictive': 0.775, 'predictive-no-gross': 0.778}
