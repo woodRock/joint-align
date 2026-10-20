@@ -3,55 +3,55 @@
   "label": "\u03bb sweep: mean TIC r after the fact",
   "metrics": {
     "lam0.1": {
-      "drifted": 0.622,
-      "near-aligned": 0.766
+      "drifted": 0.616,
+      "near-aligned": 0.762
     },
     "lam1": {
-      "drifted": 0.595,
-      "near-aligned": 0.768
+      "drifted": 0.579,
+      "near-aligned": 0.763
     },
     "lam10": {
-      "drifted": 0.598,
-      "near-aligned": 0.779
+      "drifted": 0.591,
+      "near-aligned": 0.768
     },
     "lam30": {
       "drifted": 0.595,
-      "near-aligned": 0.781
+      "near-aligned": 0.774
     },
     "lam100": {
-      "drifted": 0.598,
-      "near-aligned": 0.784
+      "drifted": 0.596,
+      "near-aligned": 0.777
     },
     "lam300": {
-      "drifted": 0.599,
-      "near-aligned": 0.788
+      "drifted": 0.597,
+      "near-aligned": 0.781
     },
     "lam1000": {
-      "drifted": 0.6,
-      "near-aligned": 0.79
+      "drifted": 0.596,
+      "near-aligned": 0.784
     },
     "lam3000": {
-      "drifted": 0.598,
-      "near-aligned": 0.788
+      "drifted": 0.595,
+      "near-aligned": 0.784
     },
     "lam10000": {
-      "drifted": 0.596,
-      "near-aligned": 0.786
+      "drifted": 0.594,
+      "near-aligned": 0.784
     },
     "lam-ge1": {
-      "drifted-min": 0.595,
-      "drifted-max": 0.6
+      "drifted-min": 0.579,
+      "drifted-max": 0.597
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

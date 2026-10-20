@@ -4,104 +4,104 @@
   "metrics": {
     "sep2015-jul2016": {
       "ticr-unaligned": 0.054,
-      "ticr-hub": 0.589,
-      "ticr-lopo": 0.608,
-      "ticr-joint": 0.615,
+      "ticr-hub": 0.572,
+      "ticr-lopo": 0.597,
+      "ticr-joint": 0.606,
       "err-hub": 0.064,
-      "err-lopo": 0.062,
-      "err-joint": 0.052
+      "err-lopo": 0.058,
+      "err-joint": 0.04
     },
     "sep2015-apr2016": {
       "ticr-unaligned": 0.041,
-      "ticr-hub": 0.551,
-      "ticr-lopo": 0.595,
-      "ticr-joint": 0.599,
-      "err-hub": 0.058,
-      "err-lopo": 0.053,
-      "err-joint": 0.052
+      "ticr-hub": 0.552,
+      "ticr-lopo": 0.567,
+      "ticr-joint": 0.581,
+      "err-hub": 0.063,
+      "err-lopo": 0.051,
+      "err-joint": 0.045
     },
     "jan2016-apr2016": {
-      "ticr-unaligned": 0.128,
+      "ticr-unaligned": 0.113,
       "ticr-hub": 0.581,
-      "ticr-lopo": 0.578,
-      "ticr-joint": 0.582,
-      "err-hub": 0.061,
-      "err-lopo": 0.055,
-      "err-joint": 0.046
+      "ticr-lopo": 0.582,
+      "ticr-joint": 0.572,
+      "err-hub": 0.069,
+      "err-lopo": 0.066,
+      "err-joint": 0.053
     },
     "jan2016-jul2016": {
-      "ticr-unaligned": 0.126,
-      "ticr-hub": 0.614,
+      "ticr-unaligned": 0.113,
+      "ticr-hub": 0.611,
       "ticr-lopo": 0.604,
-      "ticr-joint": 0.61,
-      "err-hub": 0.068,
-      "err-lopo": 0.076,
-      "err-joint": 0.066
+      "ticr-joint": 0.6,
+      "err-hub": 0.074,
+      "err-lopo": 0.081,
+      "err-joint": 0.065
     },
     "sep2015-jan2016": {
-      "ticr-unaligned": 0.814,
-      "ticr-hub": 0.721,
-      "ticr-lopo": 0.755,
-      "ticr-joint": 0.813,
-      "err-hub": 0.087,
-      "err-lopo": 0.088,
-      "err-joint": 0.061
+      "ticr-unaligned": 0.829,
+      "ticr-hub": 0.712,
+      "ticr-lopo": 0.776,
+      "ticr-joint": 0.808,
+      "err-hub": 0.089,
+      "err-lopo": 0.07,
+      "err-joint": 0.053
     },
     "apr2016-jul2016": {
       "ticr-unaligned": 0.898,
-      "ticr-hub": 0.767,
-      "ticr-lopo": 0.899,
-      "ticr-joint": 0.902,
-      "err-hub": 0.068,
-      "err-lopo": 0.072,
-      "err-joint": 0.057
+      "ticr-hub": 0.753,
+      "ticr-lopo": 0.891,
+      "ticr-joint": 0.9,
+      "err-hub": 0.082,
+      "err-lopo": 0.075,
+      "err-joint": 0.055
     },
     "aug2015-sep2015": {
       "ticr-unaligned": 0.731,
-      "ticr-hub": 0.645,
-      "ticr-lopo": 0.732,
-      "ticr-joint": 0.729,
-      "err-hub": 0.108,
-      "err-lopo": 0.049,
-      "err-joint": 0.044
+      "ticr-hub": 0.633,
+      "ticr-lopo": 0.696,
+      "ticr-joint": 0.709,
+      "err-hub": 0.106,
+      "err-lopo": 0.075,
+      "err-joint": 0.048
     },
     "aug2015-jan2016": {
-      "ticr-unaligned": 0.578,
-      "ticr-hub": 0.627,
-      "ticr-lopo": 0.67,
-      "ticr-joint": 0.672,
-      "err-hub": 0.091,
-      "err-lopo": 0.087,
-      "err-joint": 0.073
+      "ticr-unaligned": 0.595,
+      "ticr-hub": 0.618,
+      "ticr-lopo": 0.663,
+      "ticr-joint": 0.657,
+      "err-hub": 0.087,
+      "err-lopo": 0.088,
+      "err-joint": 0.065
     },
     "aug2015-apr2016": {
       "ticr-unaligned": 0.003,
       "ticr-hub": 0.598,
-      "ticr-lopo": 0.59,
-      "ticr-joint": 0.587,
+      "ticr-lopo": 0.592,
+      "ticr-joint": 0.589,
       "err-hub": 0.105,
-      "err-lopo": 0.092,
-      "err-joint": 0.081
+      "err-lopo": 0.086,
+      "err-joint": 0.076
     },
     "aug2015-jul2016": {
       "ticr-unaligned": 0.045,
       "ticr-hub": 0.596,
-      "ticr-lopo": 0.598,
-      "ticr-joint": 0.598,
+      "ticr-lopo": 0.597,
+      "ticr-joint": 0.597,
       "err-hub": 0.13,
-      "err-lopo": 0.112,
-      "err-joint": 0.103
+      "err-lopo": 0.12,
+      "err-joint": 0.106
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

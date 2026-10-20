@@ -7,55 +7,55 @@
       "within-bin": 0.85
     },
     "apr2016-jan2016": {
-      "median": 0.026,
-      "within-bin": 0.88
+      "median": 0.028,
+      "within-bin": 0.89
     },
     "apr2016-jul2016": {
-      "median": 0.034,
+      "median": 0.035,
       "within-bin": 0.88
     },
     "apr2016-sep2015": {
-      "median": 0.028,
+      "median": 0.029,
       "within-bin": 0.88
     },
     "aug2015-jan2016": {
       "median": 0.046,
-      "within-bin": 0.94
+      "within-bin": 0.95
     },
     "aug2015-jul2016": {
-      "median": 0.086,
-      "within-bin": 0.73
+      "median": 0.09,
+      "within-bin": 0.78
     },
     "aug2015-sep2015": {
-      "median": 0.042,
-      "within-bin": 0.88
+      "median": 0.043,
+      "within-bin": 0.87
     },
     "jan2016-jul2016": {
-      "median": 0.046,
+      "median": 0.051,
       "within-bin": 0.91
     },
     "jan2016-sep2015": {
-      "median": 0.037,
-      "within-bin": 0.93
+      "median": 0.041,
+      "within-bin": 0.92
     },
     "jul2016-sep2015": {
       "median": 0.033,
-      "within-bin": 0.94
+      "within-bin": 0.95
     },
     "all": {
-      "median": 0.035,
-      "within-bin": 0.92
+      "median": 0.039,
+      "within-bin": 0.91
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

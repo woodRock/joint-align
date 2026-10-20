@@ -3,44 +3,44 @@
   "label": "wilcoxon joint vs unaligned",
   "metrics": {
     "sep2015-jul2016": {
-      "holm-p": 1.75e-10,
-      "delta": 0.5533
+      "holm-p": 1.16e-10,
+      "delta": 0.5461
     },
     "sep2015-apr2016": {
-      "holm-p": 1.75e-10,
-      "delta": 0.5495
+      "holm-p": 1.16e-10,
+      "delta": 0.5341
     },
     "jan2016-apr2016": {
-      "holm-p": 1.19e-07,
-      "delta": 0.4548
+      "holm-p": 2.18e-11,
+      "delta": 0.4618
     },
     "jan2016-jul2016": {
-      "holm-p": 1.19e-07,
-      "delta": 0.4838
+      "holm-p": 2.18e-11,
+      "delta": 0.4842
     },
     "sep2015-jan2016": {
-      "holm-p": 0.181,
-      "delta": -0.0017
+      "holm-p": 1.16e-10,
+      "delta": -0.0212
     },
     "apr2016-jul2016": {
-      "holm-p": 0.00391,
-      "delta": 0.0036
+      "holm-p": 0.131,
+      "delta": 0.0011
     },
     "all": {
-      "delta-min": -0.0017,
-      "delta-max": 0.5533,
-      "holm-p-max": 0.181
+      "delta-min": -0.0212,
+      "delta-max": 0.5461,
+      "holm-p-max": 0.131
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

@@ -7,8 +7,8 @@
       "within-bin": 0.89
     },
     "apr2016-jan2016": {
-      "median": 0.042,
-      "within-bin": 0.92
+      "median": 0.047,
+      "within-bin": 0.93
     },
     "apr2016-jul2016": {
       "median": 0.055,
@@ -20,18 +20,18 @@
     },
     "aug2015-jan2016": {
       "median": 0.052,
-      "within-bin": 0.94
+      "within-bin": 0.95
     },
     "aug2015-jul2016": {
-      "median": 0.075,
-      "within-bin": 0.75
+      "median": 0.082,
+      "within-bin": 0.74
     },
     "aug2015-sep2015": {
       "median": 0.047,
-      "within-bin": 0.9
+      "within-bin": 0.88
     },
     "jan2016-jul2016": {
-      "median": 0.064,
+      "median": 0.063,
       "within-bin": 0.84
     },
     "jan2016-sep2015": {
@@ -43,7 +43,7 @@
       "within-bin": 0.94
     },
     "all": {
-      "median": 0.052,
+      "median": 0.053,
       "within-bin": 0.91
     }
   },
@@ -51,11 +51,11 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

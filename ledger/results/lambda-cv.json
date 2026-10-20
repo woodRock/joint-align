@@ -2,113 +2,113 @@
   "name": "lambda-cv",
   "label": "\u03bb selection: median held-out anchor error (min)",
   "metrics": {
-    "sep2015-lam0.1": {
-      "rt-blocked": 0.164,
-      "rt-blocked-within-bin": 0.586,
-      "samples": 0.0441,
-      "samples-within-bin": 0.916
+    "jan2016-lam0.1": {
+      "rt-blocked": 0.1434,
+      "rt-blocked-within-bin": 0.65,
+      "samples": 0.0459,
+      "samples-within-bin": 0.915
     },
-    "sep2015-lam1": {
-      "rt-blocked": 0.1227,
-      "rt-blocked-within-bin": 0.718,
-      "samples": 0.0489,
-      "samples-within-bin": 0.91
+    "jan2016-lam1": {
+      "rt-blocked": 0.1193,
+      "rt-blocked-within-bin": 0.723,
+      "samples": 0.0497,
+      "samples-within-bin": 0.914
     },
-    "sep2015-lam10": {
-      "rt-blocked": 0.1106,
-      "rt-blocked-within-bin": 0.775,
-      "samples": 0.0599,
-      "samples-within-bin": 0.906
+    "jan2016-lam10": {
+      "rt-blocked": 0.0925,
+      "rt-blocked-within-bin": 0.822,
+      "samples": 0.0547,
+      "samples-within-bin": 0.908
     },
-    "sep2015-lam30": {
-      "rt-blocked": 0.1112,
-      "rt-blocked-within-bin": 0.815,
-      "samples": 0.0648,
-      "samples-within-bin": 0.903
+    "jan2016-lam30": {
+      "rt-blocked": 0.0978,
+      "rt-blocked-within-bin": 0.827,
+      "samples": 0.0601,
+      "samples-within-bin": 0.904
     },
-    "sep2015-lam100": {
-      "rt-blocked": 0.116,
-      "rt-blocked-within-bin": 0.835,
-      "samples": 0.0715,
-      "samples-within-bin": 0.902
-    },
-    "sep2015-lam300": {
-      "rt-blocked": 0.1175,
+    "jan2016-lam100": {
+      "rt-blocked": 0.1072,
       "rt-blocked-within-bin": 0.831,
-      "samples": 0.0775,
+      "samples": 0.0667,
       "samples-within-bin": 0.9
     },
-    "sep2015-lam1000": {
-      "rt-blocked": 0.1168,
-      "rt-blocked-within-bin": 0.819,
-      "samples": 0.0818,
-      "samples-within-bin": 0.889
+    "jan2016-lam300": {
+      "rt-blocked": 0.1097,
+      "rt-blocked-within-bin": 0.843,
+      "samples": 0.0742,
+      "samples-within-bin": 0.899
     },
-    "sep2015-lam3000": {
-      "rt-blocked": 0.1144,
-      "rt-blocked-within-bin": 0.807,
-      "samples": 0.0813,
-      "samples-within-bin": 0.878
+    "jan2016-lam1000": {
+      "rt-blocked": 0.1113,
+      "rt-blocked-within-bin": 0.837,
+      "samples": 0.0811,
+      "samples-within-bin": 0.895
     },
-    "sep2015-lam10000": {
-      "rt-blocked": 0.1117,
-      "rt-blocked-within-bin": 0.803,
-      "samples": 0.0804,
-      "samples-within-bin": 0.874
+    "jan2016-lam3000": {
+      "rt-blocked": 0.1124,
+      "rt-blocked-within-bin": 0.827,
+      "samples": 0.084,
+      "samples-within-bin": 0.888
+    },
+    "jan2016-lam10000": {
+      "rt-blocked": 0.1103,
+      "rt-blocked-within-bin": 0.816,
+      "samples": 0.083,
+      "samples-within-bin": 0.88
     },
     "mean-lam0.1": {
-      "rt-blocked": 0.1817,
-      "rt-blocked-within-bin": 0.573,
-      "samples": 0.0427,
-      "samples-within-bin": 0.913
+      "rt-blocked": 0.1565,
+      "rt-blocked-within-bin": 0.606,
+      "samples": 0.0454,
+      "samples-within-bin": 0.911
     },
     "mean-lam1": {
-      "rt-blocked": 0.1288,
-      "rt-blocked-within-bin": 0.708,
-      "samples": 0.0469,
+      "rt-blocked": 0.1234,
+      "rt-blocked-within-bin": 0.718,
+      "samples": 0.0484,
       "samples-within-bin": 0.913
     },
     "mean-lam10": {
-      "rt-blocked": 0.0957,
-      "rt-blocked-within-bin": 0.784,
-      "samples": 0.054,
-      "samples-within-bin": 0.91
+      "rt-blocked": 0.1042,
+      "rt-blocked-within-bin": 0.767,
+      "samples": 0.0559,
+      "samples-within-bin": 0.913
     },
     "mean-lam30": {
-      "rt-blocked": 0.0964,
-      "rt-blocked-within-bin": 0.829,
-      "samples": 0.0596,
-      "samples-within-bin": 0.907
+      "rt-blocked": 0.0994,
+      "rt-blocked-within-bin": 0.818,
+      "samples": 0.0612,
+      "samples-within-bin": 0.908
     },
     "mean-lam100": {
-      "rt-blocked": 0.107,
-      "rt-blocked-within-bin": 0.839,
-      "samples": 0.0664,
-      "samples-within-bin": 0.903
+      "rt-blocked": 0.1095,
+      "rt-blocked-within-bin": 0.829,
+      "samples": 0.0679,
+      "samples-within-bin": 0.902
     },
     "mean-lam300": {
-      "rt-blocked": 0.1152,
-      "rt-blocked-within-bin": 0.835,
-      "samples": 0.0736,
-      "samples-within-bin": 0.901
+      "rt-blocked": 0.1142,
+      "rt-blocked-within-bin": 0.837,
+      "samples": 0.075,
+      "samples-within-bin": 0.899
     },
     "mean-lam1000": {
-      "rt-blocked": 0.1173,
+      "rt-blocked": 0.1148,
       "rt-blocked-within-bin": 0.829,
-      "samples": 0.081,
-      "samples-within-bin": 0.896
+      "samples": 0.0815,
+      "samples-within-bin": 0.894
     },
     "mean-lam3000": {
-      "rt-blocked": 0.1171,
-      "rt-blocked-within-bin": 0.819,
-      "samples": 0.0837,
-      "samples-within-bin": 0.887
+      "rt-blocked": 0.1146,
+      "rt-blocked-within-bin": 0.82,
+      "samples": 0.084,
+      "samples-within-bin": 0.888
     },
     "mean-lam10000": {
-      "rt-blocked": 0.1145,
-      "rt-blocked-within-bin": 0.808,
-      "samples": 0.0825,
-      "samples-within-bin": 0.878
+      "rt-blocked": 0.1127,
+      "rt-blocked-within-bin": 0.811,
+      "samples": 0.0833,
+      "samples-within-bin": 0.88
     },
     "selected": {
       "lambda": 10
@@ -118,11 +118,11 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

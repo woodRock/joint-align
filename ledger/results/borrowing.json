@@ -3,35 +3,35 @@
   "label": "Borrowing strength (fig 5)",
   "metrics": {
     "lopo-change": {
-      "max": 0.058336815527473496,
-      "max-others": 0.007269973946016806
+      "max": 0.032386782823428995,
+      "max-others": 0.0140680323018878
     },
     "star-gap": {
-      "max": 0.016128318451926305
+      "max": 0.07476417929383994
     },
     "worst-pair": {
-      "err-joint": 0.060684719217529805,
-      "err-lopo": 0.08838072457110897,
-      "ticr-joint": 0.81290157955681,
-      "ticr-lopo": 0.7545647640293365
+      "err-joint": 0.05328853665605138,
+      "err-lopo": 0.06972702256110495,
+      "ticr-joint": 0.8079564707082507,
+      "ticr-lopo": 0.7755696878848217
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "figs/paper/numbers.json",
-    "hash": "sha256:6f38e17474c684388849235e4df25b9da1a50bb64399743fe2c19def81d02ce5",
+    "hash": "sha256:11c29d51b4ac117a1447a2f077af4591363fc3aad67b1fa3db855106f604b80d",
     "provenance": {
       "from": [
         "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-        "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
         "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
       ],
       "ran": [
         "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-        "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-        "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+        "joint-align 2.0.2 @ 84cd0a3 (src clean) from ~/Desktop/joint-align",
+        "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
         "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
       ],
       "script": "scripts/04_paper_figures.py"

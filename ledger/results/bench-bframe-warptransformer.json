@@ -3,54 +3,54 @@
   "label": "bench bframe warptransformer",
   "metrics": {
     "sep2015-jul2016": {
-      "mean": 0.499
+      "mean": 0.495
     },
     "sep2015-apr2016": {
-      "mean": 0.547
+      "mean": 0.556
     },
     "jan2016-apr2016": {
-      "mean": 0.488
+      "mean": 0.457
     },
     "jan2016-jul2016": {
-      "mean": 0.491
+      "mean": 0.515
     },
     "sep2015-jan2016": {
-      "mean": 0.689
+      "mean": 0.772
     },
     "apr2016-jul2016": {
-      "mean": 0.814
+      "mean": 0.813
     },
     "aug2015-sep2015": {
-      "mean": 0.644
+      "mean": 0.617
     },
     "aug2015-jan2016": {
-      "mean": 0.546
+      "mean": 0.634
     },
     "aug2015-apr2016": {
-      "mean": 0.465
+      "mean": 0.461
     },
     "aug2015-jul2016": {
-      "mean": 0.587
+      "mean": 0.581
     },
     "mean-drifted4": {
       "mean": 0.506
     },
     "mean-near-aligned": {
-      "mean": 0.751
+      "mean": 0.792
     },
     "mean-aug2015": {
-      "mean": 0.561
+      "mean": 0.573
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/fair_benchmark.txt",
-    "hash": "sha256:5e4cc30c5f6e0f706d9909176ff520ec15c10e5e2432f8f6995174a6dbcba3b9",
+    "hash": "sha256:4dfed49e426ae6f06fa09cb1f1fc604fa0337091bf838b8a1648ed8b55881f79",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 2afa1d4 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }
