@@ -303,23 +303,38 @@ make check                                # ruff, mypy, full tests + coverage
 make test-fast                            # skips the end-to-end runs
 ```
 
-Reproducing the paper on the fish oil data (needs access to the private data). The numbered
-scripts run in this order; each reads only what the earlier ones wrote to `results/`:
+Reproducing the paper on the fish oil data (needs access to the private data). First build the
+103-run dataset with warp-align's step 03, keeping the 13 runs whose instrument run name is
+BLANK003–018 (they are fish samples; see [Data](#data)), and point `data/fish_oil` at it:
 
 ```bash
-python scripts/01_multibatch_align.py     # joint model, ~7 min
-python scripts/02_wt_warps.py             # WarpTransformer warps, ~50 min on CPU (needs .[wt], torch 2.7.1)
-python scripts/03_fair_benchmark.py       # every method, same protocols, ~5 min
-python scripts/04_paper_figures.py        # paper figures + captions, ~30 s
-python scripts/export_site_data.py        # (not part of the paper) refresh the project site's data
+python ../warp-align/scripts/03_preprocess_fish_oil_batches.py --raw-dir RAW \
+    --output-dir ../warp-align/data/fish_oil_103 --keep-blank-headers
+ln -sfn "$PWD/../warp-align/data/fish_oil_103" data/fish_oil
 ```
 
-A full rerun on 2026-10-17 reproduced every committed number bit for bit, except the neural joint's,
-whose CPU training is not run-to-run reproducible (its TIC r moved by ≤ 0.002 per pair; no ranking or
-test verdict changed). `scripts/make_synthetic_data.py` writes the public synthetic stand-in.
+The numbered scripts then run in this order, each recorded as a taura run; each reads only what
+the earlier ones wrote to `results/`:
+
+```bash
+taura run -- python3.11 scripts/01_multibatch_align.py   # joint model, ~4 min
+task submit -- python3 scripts/02_wt_warps.py --device cuda --force   # WarpTransformer warps on a GPU
+                                                          # via gpu-spooler, ~3 min (needs .[wt]);
+task fetch results/wt_warps --after ID                    # then fetch them (recorded as a taura run)
+taura run -- python3.11 scripts/03_fair_benchmark.py     # every method, same protocols, ~6.5 min
+taura run -- python3.11 scripts/04_paper_figures.py      # paper figures + captions, ~30 s
+python3.11 scripts/export_ledger.py                      # results → ledger/results/ (then taura publish)
+python3.11 scripts/export_site_data.py                   # (not part of the paper) the project site's data
+```
+
+The paper's numbers come from the runs of 2026-10-20 on the 103-run data (`taura runs`). The neural
+joint's training is not bit-for-bit reproducible from run to run (its TIC r moves by ≤ 0.002 per
+pair). `scripts/make_synthetic_data.py` writes the public synthetic stand-in.
 
 Scripts 01–03 reuse caches in `results/` (anchors, COW maps, neural warps, WarpTransformer warps).
-Delete those caches when the data or alignbench changes. `tests/test_real_data.py` checks that
+Each cache records the batch sizes it was built from, and a cache for other data is rebuilt (or,
+for the anchors and WarpTransformer warps in script 03, refused). Delete the caches when
+alignbench changes; `--force` recomputes script 02's warps. `tests/test_real_data.py` checks that
 the results still match the data and the README.
 
 Git holds the text reports (`results/*.txt`) and figure captions, not caches or binaries:
@@ -372,6 +387,12 @@ Pages → Deploy from branch, and choose `main` and `/docs`.
 The fish oil data and the WarpTransformer checkpoint are not tracked here. The scripts read the
 data from `data/fish_oil` (a symlink to the private data, git-ignored) or `--data PATH`; script 02
 reads the checkpoint through warpalign.
+
+The data are 103 GC-MS runs in five batches. Thirteen runs of 12 Jan 2016 carry BLANK003–018 as
+their instrument run name (`comment1`), which warp-align's step 03 skips by default; their file
+names identify their fish and tissue, their TICs agree with named replicates at replicate level
+(e.g. r = 0.998 between BCO5 Gonad Male A and B), and their intensities and peak counts are those
+of samples, so joint-align uses them (`--keep-blank-headers`).
 
 ## Open questions
 
