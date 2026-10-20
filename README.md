@@ -116,23 +116,26 @@ script 03 skips that method when its warps are absent.
 
 ## Results at a glance
 
-On five fish oil batches (90 chromatograms, 25,011 anchors):
+On five fish oil batches (103 chromatograms, 32,325 anchors):
 
-- **Joint warps align drifted batches best on average.** Mean TIC r on the drifted pairs is 0.598,
-  against 0.572 for the same fitter run pairwise and 0.531 for pooled-anchor PCHIP. Unaligned,
-  it is 0.066.
+- **Joint warps align drifted batches best among the anchor-based maps on average.** Mean TIC r on
+  the drifted pairs is 0.591, against 0.567 for the same fitter run pairwise and 0.523 for
+  pooled-anchor PCHIP. Unaligned, it is 0.061.
 - **They do no harm where batches already agree.** On near-aligned pairs the joint warps score
-  0.779, against 0.755 unaligned.
+  0.768, against 0.763 unaligned.
 - **They are consistent by construction.** Composed pairwise warps disagree with the direct
-  warp by 0.116 min on average over batch triplets, and by up to 0.277 min. Joint warps disagree
+  warp by 0.127 min on average over batch triplets, and by up to 0.305 min. Joint warps disagree
   by 0.000 min.
-- **In the fair benchmark the joint model leads on drifted pairs under one protocol, not both.**
-  Every method is scored under the same protocols, and the WarpTransformer is the weakest
-  warping method under both.
-- **Not yet solved.** Dense PCHIP wins on two pairs, and the 90 % intervals cover only 81 % of
-  held-out anchors (see [Limitations](#limitations)).
+- **In the fair benchmark no method leads on drifted pairs under both protocols.** Under the
+  B-frame protocol joint, neural joint and PCHIP + COW refine are within 0.001 of each other;
+  under the midpoint protocol neural joint leads.
+- **Not yet solved.** Dense PCHIP wins the two sep2015 drifted pairs, the joint model is no
+  better than pooled-anchor PCHIP on sep2015 × apr2016, and the 90 % intervals cover only 78 %
+  of held-out anchors (see [Limitations](#limitations)).
 
-All numbers below come from `results/` produced at warp-align `1ffaa24` (clean source tree), when the package was still named `gcmsalign`; its result headers say so.
+All numbers below come from `results/` produced on the 103-run data (`data/fish_oil`, warp-align
+step 03 with `--keep-blank-headers`) at the commits in their headers; the WarpTransformer warps
+are gpu-spooler task 83 (warpalign 3.0.1 at `156cfe2`).
 TIC r is the Pearson correlation of normalised total ion chromatograms on the common acquisition
 window (bins ≥ 22, i.e. from 5 min, when every run has started acquiring).
 
@@ -142,15 +145,15 @@ Each batch k gets one warp f_k(t) = t + d_k(t) into a shared latent frame. d_k i
 linear on 41 knots. All warps are fitted together in one bounded least-squares problem:
 
 - **Anchors.** Peaks on the raw TIC are matched by mass spectrum between *every* cross-batch
-  sample pair, with parabolic sub-bin refinement. This gives 25,011 anchors on the fish data. Each anchor
+  sample pair, with parabolic sub-bin refinement. This gives 32,325 anchors on the fish data. Each anchor
   constrains f_a(t_a) = f_b(t_b). Anchors are robustly reweighted, first with Huber weights and then
-  with Tukey weights. 3.9 % end with weight 0.
+  with Tukey weights. 4.2 % end with weight 0.
 - **Smoothness.** A penalty λ on the second differences of d_k. λ is chosen by **RT-blocked**
   cross-validation of held-out anchor error: whole retention-time windows are held out, so the
   score measures interpolation between compounds. TIC r is never used for selection. The
   selected value is λ = 10.
 - **Monotonicity.** The slope of every f_k is bounded to 0.5–2.
-- **Gauge.** The reference batch is the one with the most anchors (sep2015), and its drift is fixed at 0.
+- **Gauge.** The reference batch is the one with the most anchors (jan2016), and its drift is fixed at 0.
   An identity-on-average gauge is also implemented.
 
 The warp from batch k to batch l is f_l⁻¹ ∘ f_k, so it is transitive by construction. A batch
@@ -170,35 +173,38 @@ unaligned TIC r < 0.5, which gives six drifted pairs and four near-aligned pairs
 
 | Method | Drifted | Near-aligned |
 |---|---|---|
-| Unaligned | 0.066 | 0.755 |
-| Pooled-anchor PCHIP (warpalign, A[0..2] vs B[0]) | 0.531 | 0.684 |
-| Dense PCHIP (all anchors of the pair) | 0.558 | 0.575 |
-| Pairwise smooth (same fitter, one pair's anchors) | 0.572 | 0.765 |
-| **Joint** | **0.598** | **0.779** |
-| Joint, cross-fitted (A_i's warp never saw A_i) | 0.596 | 0.778 |
+| Unaligned | 0.061 | 0.763 |
+| Pooled-anchor PCHIP (warpalign, A[0..2] vs B[0]) | 0.523 | 0.719 |
+| Dense PCHIP (all anchors of the pair) | 0.564 | 0.567 |
+| Pairwise smooth (same fitter, one pair's anchors) | 0.567 | 0.764 |
+| **Joint** | **0.591** | **0.768** |
+| Joint, cross-fitted (A_i's warp never saw A_i) | 0.590 | 0.769 |
 
-- **Joint beats pooled-anchor PCHIP on every pair with n_A ≥ 6.** The median per-sample gain is
-  +0.02 to +0.14 r (Holm p ≤ 2e-3). It also beats pairwise smooth on all six of those pairs.
-  That gain is small (+0.006 to +0.028), but it holds in the cross-fitted comparison too.
+- **Joint beats pooled-anchor PCHIP on five of the six pairs with n_A ≥ 6.** The median
+  per-sample gain is +0.04 to +0.10 r (Holm p ≤ 4e-3). On sep2015 × apr2016 there is no
+  difference (+0.0002, Holm p = 0.70).
+- **Against pairwise smooth the picture is mixed.** Joint is better on four of those pairs
+  (+0.003 to +0.040) and slightly worse on the two sep2015 drifted pairs (−0.002 and −0.010). In
+  the cross-fitted comparison it is better on three and slightly worse on three (≤ 0.010).
 - **The gain comes from borrowing across batches.** It is largest where the direct anchors are
-  weakest. On aug2015 × jul2016 (two A samples), pairwise smooth gets 0.536 and joint gets 0.598.
+  weakest. On aug2015 × jul2016 (two A samples), pairwise smooth gets 0.536 and joint gets 0.597.
 - **Joint does no harm on near-aligned pairs.** Dense PCHIP and pooled-anchor PCHIP both lower
   TIC r there. Dense PCHIP falls to 0.399 on aug2015 × sep2015, against 0.731 unaligned.
-- **Dense PCHIP wins the two sep2015 drifted pairs.** It scores 0.676 against 0.615 on
-  sep2015 × jul2016, and 0.647 against 0.599 on sep2015 × apr2016. It also has the lowest
-  held-out anchor error (median 0.035 min, against 0.060 min for joint). So the joint model's
+- **Dense PCHIP wins the two sep2015 drifted pairs.** It scores 0.676 against 0.606 on
+  sep2015 × jul2016, and 0.647 against 0.581 on sep2015 × apr2016. It also has the lowest
+  held-out anchor error (median 0.039 min, against 0.055 min for joint). So the joint model's
   smoothing costs local accuracy where anchors are dense, and it gains where they are sparse
   or noisy.
 - **Missing correspondences.** Refit without *any* anchors of the evaluated pair, and TIC r
-  changes by at most 0.007 on nine of ten pairs. The exception is sep2015 × jan2016, which
-  drops from 0.813 to 0.755. Fitting only against the reference batch (star design) stays within
-  0.016 of the full joint fit.
-- **Cycle consistency.** Pairwise warps disagree with each other by 0.116 min on average over
-  the 60 ordered batch triplets, and by up to 0.277 min (jul2016 → aug2015 → jan2016). Joint
+  changes by at most 0.014 on nine of ten pairs. The exception is sep2015 × jan2016, which
+  drops from 0.808 to 0.776. Fitting only against the reference batch (star design) stays within
+  0.075 of the full joint fit (the largest gap is aug2015 × sep2015).
+- **Cycle consistency.** Pairwise warps disagree with each other by 0.127 min on average over
+  the 60 ordered batch triplets, and by up to 0.305 min (jul2016 → aug2015 → jan2016). Joint
   warps disagree by 0.000 min.
-- **λ is not critical.** For λ from 1 to 10,000, the drifted-pair TIC r stays between 0.595 and
-  0.600. Only λ = 0.1 trades the pair types off: drifted pairs reach 0.622, and near-aligned
-  pairs fall to 0.766.
+- **λ is not critical.** For λ from 1 to 10,000, the drifted-pair TIC r stays between 0.579 and
+  0.597. Only λ = 0.1 trades the pair types off: drifted pairs reach 0.616, and near-aligned
+  pairs fall to 0.762.
 
 ### Fair benchmark (`scripts/02_wt_warps.py`, `scripts/03_fair_benchmark.py` → `results/fair_benchmark.txt`)
 
@@ -210,34 +216,36 @@ per group:
 
 | Group | Protocol | Unaligned | Pooled PCHIP | PCHIP + COW | COW-TIC | WarpTransformer | Joint | Neural joint |
 |---|---|---|---|---|---|---|---|---|
-| Drifted (4 pairs) | B-frame | 0.087 | 0.530 | 0.583 | 0.539 | 0.506 | **0.601** | 0.585 |
-| Drifted (4 pairs) | Midpoint | 0.087 | 0.599 | 0.661 | 0.575 | 0.583 | 0.654 | **0.673** |
-| Near-aligned (2) | B-frame | 0.856 | 0.756 | 0.814 | **0.862** | 0.751 | 0.858 | 0.848 |
-| aug2015 (4 pairs) | B-frame | 0.339 | 0.572 | 0.622 | **0.649** | 0.561 | 0.647 | 0.640 |
+| Drifted (4 pairs) | B-frame | 0.080 | 0.519 | 0.589 | 0.534 | 0.506 | **0.590** | **0.590** |
+| Drifted (4 pairs) | Midpoint | 0.080 | 0.586 | 0.666 | 0.571 | 0.580 | 0.647 | **0.678** |
+| Near-aligned (2) | B-frame | 0.864 | 0.805 | 0.815 | **0.868** | 0.792 | 0.854 | 0.842 |
+| aug2015 (4 pairs) | B-frame | 0.343 | 0.583 | 0.630 | **0.648** | 0.573 | 0.638 | 0.633 |
 
-- **B-frame protocol:** joint has the best drifted-pair mean, and is the best method on 3 of
-  the 4 drifted pairs.
+- **B-frame protocol:** joint and neural joint share the best drifted-pair mean, 0.001 ahead of
+  PCHIP + COW refine, which beats joint on sep2015 × apr2016 (−0.044 for joint).
 - **Midpoint protocol:** neural joint has the best drifted-pair mean, ahead of PCHIP + COW refine
   and joint. Which method "wins" depends on the protocol, so report both.
-- **The WarpTransformer is the weakest warping method in both protocols.** Joint beats it on all six tested
-  pairs, by +0.06 to +0.12 in the B-frame protocol (Holm p ≤ 2e-3). Under its own native protocol
-  it gets 0.54–0.64 on the drifted pairs.
+- **The WarpTransformer is the weakest warping method under the B-frame protocol.** Joint beats it
+  on all six tested pairs there, by +0.03 to +0.12 (Holm p ≤ 2e-3). Under the midpoint protocol
+  COW-TIC is lower on the drifted pairs, and joint and the WarpTransformer tie on
+  sep2015 × apr2016 (+0.002, p = 0.98). Under its own native protocol the WarpTransformer gets
+  0.54–0.66 on the drifted pairs.
 - **COW-TIC fits a separate warp for every sample pair to maximise TIC r**, so it is strongest
   where little warping is needed (near-aligned and aug2015 pairs). It is weak on the drifted pairs.
 
 ## Limitations
 
-- **Intervals under-cover.** The 90 % predictive intervals cover 81 % of held-out anchors, and
+- **Intervals under-cover.** The 90 % predictive intervals cover 78 % of held-out anchors, and
   the warp-only bands cover 15 %. A bootstrap of a regularised fit misses its bias, so the
   intervals need calibration (for example conformal scaling) before anyone relies on them.
-- **Bands barely track evidence.** Median band widths are 0.044–0.054 min per pair. They widen
-  only weakly where direct anchors are sparse (pooled Spearman ρ = −0.40, over bins where the warp
+- **Bands barely track evidence.** Median band widths are 0.041–0.059 min per pair. They widen
+  only weakly where direct anchors are sparse (pooled Spearman ρ = −0.34, over bins where the warp
   is not clamped at a run end).
-- **The gauge choice is not settled.** At the selected λ, the identity-on-average gauge has lower
-  RT-blocked held-out error than the reference gauge (0.096 vs 0.111 min), but slightly lower
-  TIC r. The selection rule fixes the reference gauge and only tunes λ.
-- **Rejected anchors cluster in a few windows.** In 5-min windows, the robust fit rejects 11.1 %
-  of anchors at 5–10 min, 7.6 % at 25–30 min and 6.9 % at 40–45 min, against 0.2–5.3 % in the
+- **The gauge choice.** At the selected λ, the reference gauge (jan2016) has lower RT-blocked
+  held-out error than the identity-on-average gauge (0.093 vs 0.104 min). The selection rule
+  fixes the reference gauge and only tunes λ.
+- **Rejected anchors cluster in a few windows.** In 5-min windows, the robust fit rejects 11.4 %
+  of anchors at 5–10 min, 8.5 % at 25–30 min and 7.5 % at 40–45 min, against 0.2–5.2 % in the
   other windows (Fig. S3, `figs/paper/`). Late in the run, bleed-like peaks with similar spectra
   plausibly produce the conflicting matches. The 25–30 min cluster is not explained yet. Beyond a
   batch's last compound, the warp is an extrapolation.

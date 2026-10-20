@@ -9,13 +9,13 @@
       "anchors": 2475
     },
     "jan2016-apr2016": {
-      "anchors": 1891
+      "anchors": 2718
     },
     "jan2016-jul2016": {
-      "anchors": 3374
+      "anchors": 4848
     },
     "sep2015-jan2016": {
-      "anchors": 10227
+      "anchors": 15085
     },
     "apr2016-jul2016": {
       "anchors": 1463
@@ -24,7 +24,7 @@
       "anchors": 497
     },
     "aug2015-jan2016": {
-      "anchors": 322
+      "anchors": 477
     },
     "aug2015-apr2016": {
       "anchors": 138
@@ -54,11 +54,11 @@
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.npz",
-    "hash": "sha256:e48dda7b3deb48c8a406d3eaf56fc2460eac97e1d0b5c44e1fc4f08c0b507232",
+    "hash": "sha256:8181c50c1d188312995feace28f0f2a40abde77c3383c4b6b111d1aa468ff3ac",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }

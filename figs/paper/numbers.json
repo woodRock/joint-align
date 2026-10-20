@@ -2,14 +2,14 @@
   "provenance": {
     "from": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ],
     "ran": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 84cd0a3 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ],
     "script": "scripts/04_paper_figures.py"
@@ -17,56 +17,56 @@
   "results": {
     "borrowing": {
       "lopo-change": {
-        "max": 0.058336815527473496,
-        "max-others": 0.007269973946016806
+        "max": 0.032386782823428995,
+        "max-others": 0.0140680323018878
       },
       "star-gap": {
-        "max": 0.016128318451926305
+        "max": 0.07476417929383994
       },
       "worst-pair": {
-        "err-joint": 0.060684719217529805,
-        "err-lopo": 0.08838072457110897,
-        "ticr-joint": 0.81290157955681,
-        "ticr-lopo": 0.7545647640293365
+        "err-joint": 0.05328853665605138,
+        "err-lopo": 0.06972702256110495,
+        "ticr-joint": 0.8079564707082507,
+        "ticr-lopo": 0.7755696878848217
       }
     },
     "cycle": {
       "joint": {
-        "max": 0.002310935089002371,
-        "mean": 0.00022260128903476932
+        "max": 0.004329696803175107,
+        "mean": 0.0004492613520569949
       },
       "pairwise": {
-        "max": 0.27704127840297815,
-        "mean": 0.11555075726886396
+        "max": 0.30518921851333103,
+        "mean": 0.12692026594396208
       },
       "triplets": 60
     },
     "drift": {
       "apr2016": {
-        "max": 5.152507300489725,
-        "min": 3.2119099368805677
+        "max": 5.277796322462905,
+        "min": 3.3817310472128623
       },
       "aug2015": {
-        "max": 0.05481518616003918,
-        "min": -0.17085183913905164
+        "max": 0.2156088277743435,
+        "min": -0.18034545223313855
       },
       "drifted-batches": {
-        "max": 5.152507300489725,
-        "min": 3.2119099368805677
-      },
-      "jan2016": {
-        "max": 0.13004127145683883,
-        "min": -0.11329991318625225
+        "max": 5.277796322462905,
+        "min": 3.3817310472128623
       },
       "jul2016": {
-        "max": 5.106920972865783,
-        "min": 3.288151990165117
+        "max": 5.242229925489356,
+        "min": 3.485349466979153
+      },
+      "sep2015": {
+        "max": 0.16848977084048775,
+        "min": -0.13557858550303978
       }
     },
     "recovery": {
       "real-pair": {
-        "anchors": 4396,
-        "rejected": 0.024795268425841673
+        "anchors": 4848,
+        "rejected": 0.1276815181518152
       },
       "synthetic": {
         "anchors": 3811,
@@ -80,19 +80,19 @@
     },
     "rejection": {
       "0-5min": 0.014925373134328358,
-      "10-15min": 0.05330786594894947,
-      "15-20min": 0.01088534107402032,
-      "20-25min": 0.0016051364365971107,
-      "25-30min": 0.07615700058582309,
-      "30-35min": 0.006373937677053824,
-      "35-40min": 0.02057142857142857,
-      "40-45min": 0.06884596334819218,
-      "5-10min": 0.11119402985074626,
+      "10-15min": 0.05157232704402516,
+      "15-20min": 0.01062937062937063,
+      "20-25min": 0.002475804636506865,
+      "25-30min": 0.08548387096774193,
+      "30-35min": 0.006510416666666667,
+      "35-40min": 0.024989923417976623,
+      "40-45min": 0.07451612903225806,
+      "5-10min": 0.11444521981856245,
       "other-windows": {
-        "max": 0.05330786594894947,
-        "min": 0.0016051364365971107
+        "max": 0.05157232704402516,
+        "min": 0.002475804636506865
       },
-      "overall": 0.038662988285154534
+      "overall": 0.04170146945088941
     }
   }
 }

@@ -99,7 +99,7 @@ def test_script32_runs_on_script30_outputs(run30):
     # a cached WarpTransformer result for one pair (identity warps) exercises that branch
     na, nb = BATCHES['batch_sep2015'].n, BATCHES['batch_jul2016'].n
     (res / 'wt_warps').mkdir()
-    np.savez(res / 'wt_warps' / 'batch_sep2015__batch_jul2016.npz',
+    np.savez(res / 'wt_warps' / 'batch_sep2015__batch_jul2016.npz', n_a=na, n_b=nb,
              warps=np.tile(np.arange(T, dtype=float), (na + nb, 1)), r_native=np.zeros(na * nb))
     mp = pytest.MonkeyPatch()
     mp.setattr(s32, 'DATA', run30 / 'data')
@@ -163,16 +163,32 @@ def test_script32_runs_on_script30_outputs(run30):
     assert any(line.startswith('joint-align ') for line in numbers['provenance']['ran'])
 
 
-def test_script31_skips_cached_pairs(tmp_path, monkeypatch, capsys):
+def test_script31_skips_cached_pairs(workspace, tmp_path, monkeypatch, capsys):
     pytest.importorskip('warpalign')                  # script 02 only: pip install -e ".[wt]"
     s31 = load_script('02_wt_warps.py')
     out = tmp_path / 'results' / 'wt_warps'
     out.mkdir(parents=True)
-    for a, b in s31.PAIRS:
-        (out / f'{a}__{b}.npz').write_bytes(b'')
+    for a, b in s31.PAIRS:   # a cache counts only if it was computed on batches of these sizes
+        np.savez(out / f'{a}__{b}.npz', n_a=BATCHES[a].n, n_b=BATCHES[b].n)
     monkeypatch.setattr(s31, 'ROOT', tmp_path)
+    monkeypatch.setattr(s31, 'DATA', workspace / 'data')
     s31.main(seed=0, device='cpu')
     assert capsys.readouterr().out.count('cached') == len(s31.PAIRS)
+
+    class Recomputed(Exception):
+        pass
+
+    def compute(*args, **kwargs):
+        raise Recomputed
+    monkeypatch.setattr(s31, 'compute', compute)
+    a, b = s31.PAIRS[0]
+    np.savez(out / f'{a}__{b}.npz', n_a=BATCHES[a].n + 1, n_b=BATCHES[b].n)   # other data
+    with pytest.raises(Recomputed):
+        s31.main(seed=0, device='cpu')
+    assert 'recomputing' in capsys.readouterr().out
+    np.savez(out / f'{a}__{b}.npz', n_a=BATCHES[a].n, n_b=BATCHES[b].n)
+    with pytest.raises(Recomputed):
+        s31.main(seed=0, device='cpu', force=True)
 
 
 def test_demo_commands_from_the_docs(tmp_path):

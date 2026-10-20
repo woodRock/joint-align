@@ -21,7 +21,7 @@ Methods
   Pooled PCHIP          alignbench match_pooled anchors (A[0..2] vs B[0], pooled, filtered) + pchip_warp
   PCHIP + COW refine    pooled PCHIP, then per-A_i COW (8 segments, ±4 bins) onto mean B TIC
   COW-TIC               alignbench.methods.tic.cow_tic_align per (A_i, B_j) (4 segments, ±22 bins)
-  WarpTransformer       script 02 cache (warpalign calibrate_pair, v2 checkpoint, seed 0, CPU)
+  WarpTransformer       script 02 cache (warpalign calibrate_pair, v2 checkpoint, seed 0)
   Joint                 src/jointalign/multibatch.py, λ and reference from script 01
   Neural joint          src/jointalign/neural_joint.py on top of Joint (anchors + dense, sample level)
 
@@ -118,6 +118,8 @@ def main(neural_steps: int) -> None:
     say = lambda s='': (L.append(s), print(s, flush=True))
 
     z = np.load(RESULTS / 'anchors_all_pairs.npz')
+    if 'sizes' not in z.files or list(z['sizes']) != sizes:
+        raise SystemExit('results/anchors_all_pairs.npz is for other data: run script 01 first')
     anc = mb.Anchors(*(z[k] for k in ('ba', 'bb', 'sa', 'sb', 'ta', 'tb')))
     cfg30 = np.load(RESULTS / 'multibatch_align.npz')
     lam, ref = float(cfg30['lam']), int(cfg30['ref'])
@@ -126,9 +128,10 @@ def main(neural_steps: int) -> None:
 
     # Neural joint (cached)
     g_path = RESULTS / f'neural_joint_G_{neural_steps}.npz'
-    if g_path.exists():
-        zz = np.load(g_path); taus, G = zz['taus'], zz['G']
-    else:
+    zz = np.load(g_path) if g_path.exists() else None
+    if zz is not None and zz['G'].shape[0] == sum(sizes):
+        taus, G = zz['taus'], zz['G']
+    else:  # no cache, or one for other data
         taus, g0 = nj.latent_grid_from_joint(joint, K)
         batch_of = np.concatenate([[k] * n for k, n in enumerate(sizes)])
         sidx = np.full((K, max(sizes)), -1)
@@ -158,9 +161,8 @@ def main(neural_steps: int) -> None:
         cref = [read_warp(m24, cow_map(sample(TA[i], m24), ref_b, 8, 4)) for i in range(na)]
         maps['PCHIP + COW refine'] = lambda i, j, c=cref: c[i]
         cache = RESULTS / 'cow_tic_maps' / f'{A_}__{B_}.npy'
-        if cache.exists():
-            ct = np.load(cache)
-        else:
+        ct = np.load(cache) if cache.exists() else None
+        if ct is None or ct.shape[:2] != (na, nb):  # no cache, or one for other data
             cache.parent.mkdir(exist_ok=True)
             ct = np.stack([[cow_map(TA[i], TB[j], 4, 22) for j in range(nb)] for i in range(na)])
             np.save(cache, ct)
@@ -168,6 +170,8 @@ def main(neural_steps: int) -> None:
         wt_file = RESULTS / 'wt_warps' / f'{A_}__{B_}.npz'
         if wt_file.exists():
             wz = np.load(wt_file)
+            if (int(wz['n_a']), int(wz['n_b'])) != (na, nb):
+                raise SystemExit(f'{wt_file} is for other data: rerun script 02')
             W = np.stack([strict(w) for w in wz['warps']])
             maps['WarpTransformer'] = lambda i, j, W=W, na=na: read_warp(W[i], invert_src(W[na + j], GRID))
             native[(A_, B_, 'WarpTransformer')] = wz['r_native'].reshape(na, nb)

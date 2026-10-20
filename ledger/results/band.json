@@ -3,82 +3,82 @@
   "label": "90 % bootstrap band width (min)",
   "metrics": {
     "apr2016-aug2015": {
-      "width": 0.054,
-      "width-supported": 0.054,
-      "width-unsupported": 0.053,
-      "spearman": -0.14
+      "width": 0.056,
+      "width-supported": 0.053,
+      "width-unsupported": 0.059,
+      "spearman": -0.23
     },
     "apr2016-jan2016": {
-      "width": 0.052,
-      "width-supported": 0.041,
-      "width-unsupported": 0.061,
-      "spearman": -0.5
+      "width": 0.043,
+      "width-supported": 0.032,
+      "width-unsupported": 0.049,
+      "spearman": -0.38
     },
     "apr2016-jul2016": {
-      "width": 0.054,
-      "width-supported": 0.046,
-      "width-unsupported": 0.058,
-      "spearman": -0.36
+      "width": 0.048,
+      "width-supported": 0.044,
+      "width-unsupported": 0.049,
+      "spearman": -0.25
     },
     "apr2016-sep2015": {
-      "width": 0.047,
-      "width-supported": 0.041,
-      "width-unsupported": 0.053,
-      "spearman": -0.45
+      "width": 0.049,
+      "width-supported": 0.037,
+      "width-unsupported": 0.057,
+      "spearman": -0.46
     },
     "aug2015-jan2016": {
-      "width": 0.054,
-      "width-supported": 0.046,
-      "width-unsupported": 0.062,
-      "spearman": -0.62
+      "width": 0.046,
+      "width-supported": 0.043,
+      "width-unsupported": 0.047,
+      "spearman": -0.09
     },
     "aug2015-jul2016": {
-      "width": 0.053,
-      "width-supported": 0.049,
-      "width-unsupported": 0.066,
-      "spearman": -0.34
+      "width": 0.059,
+      "width-supported": 0.053,
+      "width-unsupported": 0.063,
+      "spearman": -0.38
     },
     "aug2015-sep2015": {
-      "width": 0.044,
-      "width-supported": 0.041,
-      "width-unsupported": 0.045,
-      "spearman": -0.07
+      "width": 0.046,
+      "width-supported": 0.043,
+      "width-unsupported": 0.048,
+      "spearman": -0.14
     },
     "jan2016-jul2016": {
-      "width": 0.051,
-      "width-supported": 0.041,
-      "width-unsupported": 0.077,
-      "spearman": -0.42
+      "width": 0.044,
+      "width-supported": 0.037,
+      "width-unsupported": 0.056,
+      "spearman": -0.25
     },
     "jan2016-sep2015": {
-      "width": 0.046,
-      "width-supported": 0.04,
-      "width-unsupported": 0.063,
-      "spearman": -0.52
+      "width": 0.041,
+      "width-supported": 0.032,
+      "width-unsupported": 0.052,
+      "spearman": -0.47
     },
     "jul2016-sep2015": {
       "width": 0.051,
-      "width-supported": 0.043,
-      "width-unsupported": 0.069,
-      "spearman": -0.4
+      "width-supported": 0.039,
+      "width-unsupported": 0.066,
+      "spearman": -0.42
     },
     "all": {
-      "width-min": 0.044,
-      "width-max": 0.054
+      "width-min": 0.041,
+      "width-max": 0.059
     },
     "pooled": {
-      "spearman": -0.4
+      "spearman": -0.34
     }
   },
   "runs": [],
   "produced_by": "scripts/export_ledger.py",
   "source": {
     "path": "results/multibatch_align.txt",
-    "hash": "sha256:59a958aaafb7a06515ff19454f3ca4f26636de18448f2c13fdd96ac61184f9f2",
+    "hash": "sha256:1604b6b2a1a6092d647d3254ab16ebdc55caa631b51d14ab5b56e08fdbdfb6ba",
     "provenance": [
       "alignbench 0.1.0.dev0 @ 40c6fdb (src clean) from ~/Desktop/align-bench",
-      "joint-align 2.0.2 @ ca0f4d5 (src clean) from ~/Desktop/joint-align",
-      "warpalign 3.0.1 @ 156cfe2 (src clean) from ~/Desktop/warp-align",
+      "joint-align 2.0.2 @ 86a0308 (src clean) from ~/Desktop/joint-align",
+      "warpalign 3.0.1 @ 05b36f0 (src clean) from ~/Desktop/warp-align",
       "environment: Darwin-arm64 blas=accelerate python=3.11.15 numpy=2.4.6 scipy=1.17.1 scikit-learn=1.8.0"
     ]
   }
