@@ -148,13 +148,16 @@ def main(n_boot: int, n_boot_cv: int, seed: int) -> None:
     say('Batches: ' + ', '.join(f'{short(b)} (n={n})' for b, n in zip(names, sizes)))
 
     # ── Anchors ──────────────────────────────────────────────────────────────
+    # The cache records the batch sizes it was built from: a cache from other data is rebuilt.
     cache = RESULTS / 'anchors_all_pairs.npz'
-    if cache.exists():
-        z   = np.load(cache)
+    z = np.load(cache) if cache.exists() else None
+    if z is not None and 'sizes' in z.files and list(z['sizes']) == sizes:
         anc = mb.Anchors(*(z[k] for k in ('ba', 'bb', 'sa', 'sb', 'ta', 'tb')))
     else:
+        if z is not None:
+            print('Anchor cache is for other data: rebuilding it', flush=True)
         anc = mb.harvest_anchors(chroma, [bt.tic_raw for bt in batches])
-        np.savez(cache, ba=anc.ba, bb=anc.bb, sa=anc.sa, sb=anc.sb, ta=anc.ta, tb=anc.tb)
+        np.savez(cache, ba=anc.ba, bb=anc.bb, sa=anc.sa, sb=anc.sb, ta=anc.ta, tb=anc.tb, sizes=sizes)
     n_pair = np.zeros((K, K), int)
     for a, b in combinations(range(K), 2):
         n_pair[a, b] = n_pair[b, a] = len(anc.pair(a, b))
