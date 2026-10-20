@@ -6,7 +6,7 @@
 <title>Joint Align</title>
 <meta name="description" content="Aligning GC-MS retention times across many batches at once: one monotone warp per batch into a shared clock, fitted to every spectral anchor jointly.">
 <meta property="og:title" content="joint-align — five batches, one shared clock">
-<meta property="og:description" content="One monotone retention-time warp per GC-MS batch, fitted jointly to 25,011 spectral anchors. Interactive results, cycle consistency, uncertainty and a fair benchmark.">
+<meta property="og:description" content="One monotone retention-time warp per GC-MS batch, fitted jointly to spectral anchors from every cross-batch sample pair. Interactive results, cycle consistency, uncertainty and a fair benchmark.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -241,7 +241,7 @@
 <section class="chapter" id="results">
   <div class="chapter-head reveal">
     <div class="num">05 — RESULTS</div>
-    <h2>Better alignment where batches drift, no harm where they don't</h2>
+    <h2>Better alignment of drifted batches on average, little change where they already agree</h2>
     <p class="intro">Mean Pearson correlation between batch-A and batch-B chromatograms after warping A into B's
       frame (common acquisition window), for every batch pair and method. Drifted pairs are those with unaligned
       r &lt; 0.5.</p>
@@ -309,7 +309,7 @@
 <section class="chapter" id="uncertainty">
   <div class="chapter-head reveal">
     <div class="num">07 — UNCERTAINTY</div>
-    <h2>Confident bands, honestly calibrated</h2>
+    <h2>Narrow bands that under-cover</h2>
     <p class="intro">Resampling samples within each batch and refitting 200 times gives a band around every warp.
       Those bands are narrow, and the predictive intervals built from them cover fewer held-out anchors than they
       should, so they need calibration before anyone relies on them.</p>
