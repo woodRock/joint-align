@@ -33,7 +33,8 @@ PAIRS = [('batch_sep2015', 'batch_jul2016'), ('batch_sep2015', 'batch_apr2016'),
          ('batch_aug2015', 'batch_apr2016'), ('batch_aug2015', 'batch_jul2016')]
 
 
-def main(seed: int, device: str, ckpt: Path | None = None, calib_steps: int | None = None) -> None:
+def main(seed: int, device: str, ckpt: Path | None = None, calib_steps: int | None = None,
+         force: bool = False) -> None:
     out_dir = ROOT / 'results' / 'wt_warps'
     out_dir.mkdir(parents=True, exist_ok=True)
     ckpt = ckpt or Paths().default_ckpt
@@ -42,10 +43,14 @@ def main(seed: int, device: str, ckpt: Path | None = None, calib_steps: int | No
     print(rev, flush=True)
     for a, b in PAIRS:
         out = out_dir / f'{a}__{b}.npz'
-        if out.exists():
-            print(f'{a} × {b}: cached')
-            continue
         A, B = load_batch(a, DATA), load_batch(b, DATA)
+        if out.exists() and not force:
+            old = np.load(out)
+            if (int(old['n_a']), int(old['n_b'])) == (len(A), len(B)):
+                print(f'{a} × {b}: cached')
+                continue
+            print(f'{a} × {b}: cache is for {int(old["n_a"])}×{int(old["n_b"])} samples, data has '
+                  f'{len(A)}×{len(B)}: recomputing', flush=True)
         kw = {} if calib_steps is None else {'calib_steps': calib_steps}
         res = compute(A, B, ckpt, dev, seed, **kw)
         np.savez(out, warps=res.warps, n_a=len(A), n_b=len(B), anchors=np.array(res.anchors.anchors),
@@ -60,6 +65,7 @@ if __name__ == '__main__':
     ap.add_argument('--device', default='cpu')
     ap.add_argument('--ckpt', type=Path, default=None, help='default: warpalign Paths().default_ckpt')
     ap.add_argument('--data', type=Path, default=DATA, help='the fish-oil batches (default: data/fish_oil)')
+    ap.add_argument('--force', action='store_true', help='recompute every pair, ignoring cached warps')
     a = ap.parse_args()
     DATA = a.data
-    main(a.seed, a.device, a.ckpt)
+    main(a.seed, a.device, a.ckpt, force=a.force)
